@@ -23,8 +23,10 @@ export class Book extends GemElement {
   render() {
     const { sidebar, nav, github = '', title } = this.config;
 
-    const routes = flatNav(sidebar).map(({ title, link }) => ({
-      title,
+    const links = flatNav(sidebar);
+
+    const routes = links.map(({ title: pageTitle, link }) => ({
+      title: `${pageTitle} - ${title}`,
       pattern: link,
       content: html`
         <gem-book-main link=${link}></gem-book-main>
@@ -32,7 +34,15 @@ export class Book extends GemElement {
     }));
 
     return html`
-      <style></style>
+      <style>
+        :host {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+            'Helvetica Neue', sans-serif;
+          display: grid;
+          grid-template-areas: 'left aside content right';
+          grid-template-columns: auto 280px 900px auto;
+        }
+      </style>
       ${nav
         ? html`
             <gem-book-nav tl=${title} .nav=${nav} github=${github}></gem-book-nav>
@@ -42,10 +52,10 @@ export class Book extends GemElement {
       <gem-route .routes=${routes}></gem-route>
       ${github
         ? html`
-            <gem-book-edit-link></gem-book-edit-link>
+            <gem-book-edit-link github=${github}></gem-book-edit-link>
           `
         : null}
-      <gem-book-ref-link .sidebar=${sidebar}></gem-book-ref-link>
+      <gem-book-rel-link .links=${links}></gem-book-rel-link>
       <gem-book-footer></gem-book-footer>
     `;
   }

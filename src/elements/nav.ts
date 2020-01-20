@@ -17,9 +17,44 @@ export class Nav extends GemElement {
   };
 
   render() {
+    const githubLink = this.github && this.renderItem({ title: 'github', link: this.github });
+
     return html`
-      <div>${this.tl}</div>
-      ${this.nav.map(this.renderItem)} ${this.github && this.renderItem({ title: 'github', link: this.github })}
+      <style>
+        :host {
+          height: 54px;
+          line-height: 54px;
+          font-size: 1.2rem;
+          display: flex;
+          grid-area: auto / aside / auto / content;
+        }
+        .title {
+          flex-grow: 1;
+        }
+        gem-active-link {
+          position: relative;
+          font-size: 1rem;
+          text-decoration: none;
+          color: inherit;
+        }
+        gem-active-link + gem-active-link {
+          margin-inline-start: 1rem;
+        }
+        gem-active-link.active {
+          color: green;
+        }
+        gem-active-link.active::after {
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          height: 2px;
+          background: currentColor;
+          content: '';
+          width: 100%;
+        }
+      </style>
+      <div class="title">${this.tl}</div>
+      ${this.nav.map(this.renderItem)} ${githubLink}
     `;
   }
 }

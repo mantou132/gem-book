@@ -1,3 +1,4 @@
+import { history } from '@mantou/gem';
 export default function add(a: number, b: number) {
   return a + b;
 }
@@ -12,4 +13,12 @@ export function flatNav(nav: NavItem[]): NavItem[] {
       return item.children ? flatNav(item.children) : item;
     })
     .flat();
+}
+
+export function getMdPath(path: string) {
+  if (path === '/') {
+    return `${history.basePath}/README.md`;
+  } else {
+    return `${history.basePath}${path}.md`;
+  }
 }
