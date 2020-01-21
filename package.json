@@ -21,6 +21,7 @@
   "scripts": {
     "lint": "tsc --noEmit && eslint --ext .ts --fix src/",
     "clean": "node -e \"fs.readdirSync('src').map(dir => require('rimraf').sync(dir))\"",
+    "watch": "tsc --watch",
     "build:module": "npm run clean && tsc",
     "build:dist": "rimraf dist && webpack --config webpack.config.dist.js",
     "build": "npm run build:module && npm run build:dist",
@@ -32,7 +33,7 @@
   "author": "mantou132",
   "license": "ISC",
   "dependencies": {
-    "@mantou/gem": "^0.3.8",
+    "@mantou/gem": "^0.3.10",
     "marked": "^0.8.0",
     "prismjs": "^1.19.0"
   },

@@ -10,15 +10,16 @@ export function capitalize(s: string) {
 export function flatNav(nav: NavItem[]): NavItem[] {
   return nav
     .map((item: NavItem) => {
-      return item.children ? flatNav(item.children) : item;
+      return item.link ? item : item.children ? flatNav(item.children) : [];
     })
     .flat();
 }
 
-export function getMdPath(path: string) {
-  if (path === '/') {
+export function getMdPath(link: string) {
+  const { pathname } = new URL(link, location.origin);
+  if (pathname === '/') {
     return `${history.basePath}/README.md`;
   } else {
-    return `${history.basePath}${path}.md`;
+    return `${history.basePath}${pathname}.md`;
   }
 }

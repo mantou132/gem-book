@@ -13,31 +13,28 @@ export class RelLink extends GemElement {
     const prev = this.links[index - 1];
     const next = this.links[index + 1];
     return html`
-      ${prev || next
-        ? html`
-            <style>
-              :host {
-                padding: 2rem 0;
-                display: flex;
-                justify-content: space-between;
-                grid-area: auto / content;
-                border-block-start: 1px solid gray;
-              }
-              gem-link {
-                color: green;
-                text-decoration: none;
-              }
-              gem-link:hover {
-                text-decoration: underline;
-              }
-            </style>
-          `
-        : null}
+      <style>
+        :host {
+          padding: 2rem 0;
+          display: flex;
+          justify-content: space-between;
+          grid-area: auto / content;
+          border-block-start: 1px solid var(--border-color);
+        }
+        gem-link {
+          color: var(--link-color);
+          text-decoration: none;
+        }
+        gem-link:hover {
+          text-decoration: underline;
+        }
+      </style>
       ${prev
         ? html`
             <gem-link path=${prev.link}>${prev.title}</gem-link>
           `
         : null}
+      <div></div>
       ${next
         ? html`
             <gem-link path=${next.link}>${next.title}</gem-link>

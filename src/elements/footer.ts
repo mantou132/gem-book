@@ -9,10 +9,10 @@ export class Footer extends GemElement {
           grid-area: auto / content;
           padding: 2rem 0;
           margin-block-start: 6rem;
-          border-block-start: 1px solid gray;
+          border-block-start: 1px solid var(--border-color);
         }
         gem-link {
-          color: green;
+          color: var(--link-color);
           text-decoration: none;
         }
         gem-link:hover {

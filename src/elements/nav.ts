@@ -2,6 +2,10 @@ import { html, GemElement, customElement, attribute, property } from '@mantou/ge
 
 import '@mantou/gem/elements/link';
 
+/**
+ * @attr tl
+ * @attr github
+ */
 @customElement('gem-book-nav')
 export class Nav extends GemElement {
   @attribute tl: string;
@@ -11,7 +15,7 @@ export class Nav extends GemElement {
   renderItem = ({ title, link }: NavItem) => {
     if (link) {
       return html`
-        <gem-active-link path=${link}>${title}</gem-active-link>
+        <gem-active-link href=${link}>${title}</gem-active-link>
       `;
     }
   };
@@ -26,7 +30,8 @@ export class Nav extends GemElement {
           line-height: 54px;
           font-size: 1.2rem;
           display: flex;
-          grid-area: auto / aside / auto / content;
+          grid-area: 1 / aside / 1 / content;
+          color: var(--header-text-color);
         }
         .title {
           flex-grow: 1;
@@ -41,7 +46,7 @@ export class Nav extends GemElement {
           margin-inline-start: 1rem;
         }
         gem-active-link.active {
-          color: green;
+          color: var(--link-color);
         }
         gem-active-link.active::after {
           position: absolute;

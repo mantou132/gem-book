@@ -1,6 +1,6 @@
 ## <gem-book>
 
-Declaratively configured runtime rendering documentation
+[Docute](https://github.com/egoist/docute) gem implementation
 
 ## develop
 

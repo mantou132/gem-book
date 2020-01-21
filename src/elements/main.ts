@@ -16,10 +16,23 @@ marked.setOptions({
   },
 });
 
+const renderer = new marked.Renderer();
+renderer.heading = function(text, level) {
+  const tag = `h${level}`;
+  return `<${tag} class="markdown-header" id="${text}">
+  <a class="header-anchor" href="#${text}">
+    <svg class="anchor-icon" viewBox="0 0 16 16" version="1.1" width="16" height="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>
+  </a>
+  ${text}</${tag}>`;
+};
+
 interface State {
   content: Element[] | null;
 }
 
+/**
+ * @attr link
+ */
 @customElement('gem-book-main')
 export class Main extends GemElement<State> {
   @attribute link: string;
@@ -32,14 +45,28 @@ export class Main extends GemElement<State> {
     const { path } = history.getParams();
     const mdPath = getMdPath(path);
     const md = await (await fetch(mdPath)).text();
-    const elements = [...parser.parseFromString(marked.parse(md), 'text/html').body.children];
+    const elements = [...parser.parseFromString(marked.parse(md, { renderer }), 'text/html').body.children];
     this.setState({
       content: elements,
     });
+    queueMicrotask(this.hashChangeHandle);
+  };
+
+  hashChangeHandle = () => {
+    const { hash } = location;
+    const ele = hash && this.shadowRoot?.querySelector(hash);
+    if (ele) {
+      ele.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
   };
 
   mounted() {
     this.fetchData();
+    window.addEventListener('hashchange', this.hashChangeHandle);
+    return () => window.removeEventListener('hashchange', this.hashChangeHandle);
   }
 
   render() {
@@ -48,12 +75,17 @@ export class Main extends GemElement<State> {
         :host {
           grid-area: 2 / content / content / auto;
         }
+        a,
+        gem-link {
+          color: var(--link-color);
+          text-decoration: none;
+        }
         /* https://github.com/egoist/docute/blob/master/src/css/page-content.css */
         :host > :first-child {
-          margin-top: 0;
+          margin-block-start: 0;
         }
         :host > h2:first-child {
-          margin-top: 7rem;
+          margin-block-start: 7rem;
         }
         h1,
         h2,
@@ -71,7 +103,7 @@ export class Main extends GemElement<State> {
         h2 {
           font-size: 2rem;
           border-bottom: 1px solid var(--border-color);
-          margin-top: 7rem;
+          margin-block-start: 7rem;
           padding-bottom: 5px;
         }
         h3 {
@@ -220,7 +252,7 @@ export class Main extends GemElement<State> {
           margin: 15px 0 0;
         }
         blockquote > :first-child {
-          margin-top: 0;
+          margin-block-start: 0;
         }
         hr {
           height: 1px;
@@ -348,6 +380,7 @@ export class Main extends GemElement<State> {
   }
 
   attributeChanged() {
+    // link change
     this.fetchData();
   }
 }

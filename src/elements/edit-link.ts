@@ -3,6 +3,9 @@ import { html, GemElement, customElement, attribute, history, connectStore } fro
 import '@mantou/gem/elements/link';
 import { getMdPath } from '../lib/utils';
 
+/**
+ * @attr github
+ */
 @customElement('gem-book-edit-link')
 @connectStore(history.store)
 export class EditLink extends GemElement {
@@ -19,7 +22,7 @@ export class EditLink extends GemElement {
           grid-area: auto / content;
         }
         gem-link {
-          color: green;
+          color: var(--link-color);
           text-decoration: none;
         }
         gem-link:hover {

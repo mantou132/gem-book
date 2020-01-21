@@ -20,11 +20,26 @@ const config: BookConfig = {
       children: [
         {
           title: 'Getting Started',
-          link: '/introduction',
+          children: [
+            {
+              title: 'Started',
+              link: '/introduction',
+            },
+          ],
         },
         {
           title: 'Installation',
           link: '/installation',
+          children: [
+            {
+              title: '#dep1',
+              link: '/installation#dep1',
+            },
+            {
+              title: '#dep2',
+              link: '/installation#dep2',
+            },
+          ],
         },
       ],
     },
