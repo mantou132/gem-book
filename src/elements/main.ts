@@ -58,7 +58,7 @@ export class Main extends GemElement<State> {
     if (ele) {
       ele.scrollIntoView({
         behavior: 'smooth',
-        block: 'center',
+        block: 'start',
       });
     }
   };
@@ -95,6 +95,7 @@ export class Main extends GemElement<State> {
         h6 {
           font-weight: 300;
           line-height: 1.2;
+          scroll-margin: var(--header-height);
         }
         h1 {
           font-size: 3rem;
@@ -381,6 +382,7 @@ export class Main extends GemElement<State> {
 
   attributeChanged() {
     // link change
+    scrollTo(0, 0);
     this.fetchData();
   }
 }

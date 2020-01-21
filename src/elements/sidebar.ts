@@ -1,5 +1,8 @@
 import { html, GemElement, customElement, property, TemplateResult, history, connectStore } from '@mantou/gem';
 import '@mantou/gem/elements/link';
+import '@mantou/gem/elements/use';
+
+import { container } from './icons';
 
 @customElement('gem-book-sidebar')
 @connectStore(history.store)
@@ -14,8 +17,12 @@ export class SideBar extends GemElement {
   renderItem = ({ link, title, children }: NavItem, isTop = false): TemplateResult => {
     if (link) {
       return html`
-        <gem-active-link class="item" pattern=${children ? new URL(link, location.origin).pathname : link} href=${link}>
-          ${isTop ? '*' : ''}${title}
+        <gem-active-link
+          class="item ${isTop ? 'single' : ''}"
+          pattern=${children ? new URL(link, location.origin).pathname : link}
+          href=${link}
+        >
+          ${title}
         </gem-active-link>
         ${children
           ? html`
@@ -28,7 +35,10 @@ export class SideBar extends GemElement {
     }
     if (children) {
       return html`
-        <div class="item" @click=${this.toggleLinks}>x${title}</div>
+        <div class="item" @click=${this.toggleLinks}>
+          <gem-use selector="#arrow" .root=${container}></gem-use>
+          ${title}
+        </div>
         <div class="links item">
           ${children.map(item => this.renderItem(item))}
         </div>
@@ -46,7 +56,6 @@ export class SideBar extends GemElement {
           height: 100vh;
           box-sizing: border-box;
           padding-block-start: calc(3rem + 54px);
-          margin-inline-end: 3rem;
           position: sticky;
           top: 0;
         }
@@ -80,6 +89,25 @@ export class SideBar extends GemElement {
         }
         .item {
           cursor: pointer;
+        }
+        .single {
+          display: flex;
+          align-items: center;
+        }
+        .single::before {
+          content: '';
+          display: block;
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background-color: var(--sidebar-link-arrow-color);
+          margin-right: 8px;
+        }
+        .item gem-use {
+          transform: rotate(90deg);
+        }
+        .item.close gem-use {
+          transform: rotate(0deg);
         }
         .item .item {
           margin-inline-start: 1rem;

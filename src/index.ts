@@ -74,11 +74,13 @@ export class Book extends GemElement {
           --search-focus-border-color: #ccc;
           --search-focus-icon-color: #333;
           --search-result-hover-background: #f9f9f9;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
-            'Helvetica Neue', sans-serif;
+          text-rendering: optimizeLegibility;
+          font: 16px/1.7 -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
+            Droid Sans, Helvetica Neue, sans-serif;
           display: grid;
           grid-template-areas: 'left aside content right';
-          grid-template-columns: auto 280px 900px auto;
+          grid-template-columns: auto 250px 800px auto;
+          grid-column-gap: 1.5rem;
           color: var(--text-color);
         }
         .nav-shadow {

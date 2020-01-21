@@ -31,13 +31,13 @@ export class RelLink extends GemElement {
       </style>
       ${prev
         ? html`
-            <gem-link path=${prev.link}>${prev.title}</gem-link>
+            <gem-link path=${prev.link}>← ${prev.title}</gem-link>
           `
         : null}
       <div></div>
       ${next
         ? html`
-            <gem-link path=${next.link}>${next.title}</gem-link>
+            <gem-link path=${next.link}>${next.title} →</gem-link>
           `
         : null}
     `;
