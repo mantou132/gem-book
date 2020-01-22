@@ -1,7 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const express = require('express');
-
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const hello = 'hello';
 const example = process.env.NAME || hello;
 const tip = '使用 `NAME=[example-name] npm run example` 指定用例';
@@ -30,6 +29,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin(),
+    new CopyWebpackPlugin([{ from: './src/examples/hello/docs', to: './' }]),
     {
       apply(compiler) {
         compiler.hooks.done.tapAsync('MyCustomPlugin', function(_compiler, callback) {
@@ -42,9 +42,6 @@ module.exports = {
   devServer: {
     contentBase: path.join('./build', example),
     historyApiFallback: true,
-    before: function(app) {
-      app.use(express.static('./src/examples/hello/docs'));
-    },
   },
   devtool: 'source-map',
 };
