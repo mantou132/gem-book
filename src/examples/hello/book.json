@@ -1,10 +1,10 @@
 {
   "sourceDir": "/src/examples/hello/docs",
+  "title": "gem-book",
   "github": "https://github.com/mantou132/gem-book",
-  "title": "Home",
   "sidebar": [
     {
-      "title": "Home",
+      "title": "Introduction",
       "link": "/"
     },
     {
@@ -15,22 +15,22 @@
       "title": "guide",
       "children": [
         {
+          "title": "test",
+          "link": "/guide/"
+        },
+        {
           "title": "Installation",
           "link": "/guide/installation",
           "children": [
             {
-              "title": "dep1",
-              "link": "#dep1"
+              "title": "lit-html",
+              "link": "#lit-html"
             },
             {
-              "title": "dep2",
-              "link": "#dep2"
+              "title": "vanilla js",
+              "link": "#vanilla-js"
             }
           ]
-        },
-        {
-          "title": "Introduction",
-          "link": "/guide/introduction"
         }
       ]
     }

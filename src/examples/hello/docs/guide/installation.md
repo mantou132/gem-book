@@ -4,6 +4,20 @@
 npm install gem-book
 ```
 
-## dep1
+## lit-html
 
-## dep2
+```js
+import 'gem-book';
+import config from './book.json';
+html`
+  <gem-book .config=${config}></gem-book>
+`;
+```
+
+## vanilla js
+
+```js
+import { Book } from 'gem-book';
+import config from './book.json';
+document.body.append(new Book(config));
+```

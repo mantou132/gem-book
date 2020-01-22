@@ -1,7 +1,3 @@
-# Home
+# Introduction
 
-```js
-html`
-  <gem-book .config=${config}></gem-book>
-`;
-```
+Let me introduce `<gem-book>` to you..
