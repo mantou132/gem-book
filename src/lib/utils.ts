@@ -17,8 +17,8 @@ export function flatNav(nav: NavItem[]): NavItem[] {
 
 export function getMdPath(link: string) {
   const { pathname } = new URL(link, location.origin);
-  if (pathname === '/') {
-    return `${history.basePath}/README.md`;
+  if (pathname.endsWith('/')) {
+    return `${history.basePath}${pathname}README.md`;
   } else {
     return `${history.basePath}${pathname}.md`;
   }

@@ -1,51 +1,6 @@
 import { render, html } from '@mantou/gem';
+import config from './book.json';
 import '../../';
-
-const config: BookConfig = {
-  title: '<gem-book>',
-  github: 'https://github.com/mantou132/gem-book',
-  srouceDir: '/src/examples/hello/docs',
-  nav: [
-    {
-      title: 'Home',
-      link: '/',
-    },
-  ],
-  sidebar: [
-    {
-      title: 'Home',
-      link: '/',
-    },
-    {
-      title: 'Guide',
-      children: [
-        {
-          title: 'Getting Started',
-          children: [
-            {
-              title: 'Started',
-              link: '/introduction',
-            },
-          ],
-        },
-        {
-          title: 'Installation',
-          link: '/installation',
-          children: [
-            {
-              title: '#dep1',
-              link: '/installation#dep1',
-            },
-            {
-              title: '#dep2',
-              link: '/installation#dep2',
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
 
 render(
   html`

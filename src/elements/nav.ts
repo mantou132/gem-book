@@ -21,7 +21,7 @@ export class Nav extends GemElement {
   };
 
   render() {
-    const githubLink = this.github && this.renderItem({ title: 'github', link: this.github });
+    const githubLink = this.github && this.renderItem({ title: 'Github', link: this.github });
 
     return html`
       <style>
@@ -59,7 +59,7 @@ export class Nav extends GemElement {
         }
       </style>
       <div class="title">${this.tl}</div>
-      ${this.nav.map(this.renderItem)} ${githubLink}
+      ${this.nav ? this.nav.map(this.renderItem) : null} ${githubLink}
     `;
   }
 }

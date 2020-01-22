@@ -2,6 +2,6 @@
 
 ```js
 html`
-  <gem-book .data=${data}></gem-book>
+  <gem-book .config=${config}></gem-book>
 `;
 ```
