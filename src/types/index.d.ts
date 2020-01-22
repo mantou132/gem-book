@@ -9,4 +9,5 @@ interface BookConfig {
   sidebar: NavItem[];
   nav?: NavItem[];
   github?: string;
+  srouceDir?: string;
 }

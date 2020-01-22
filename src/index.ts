@@ -21,7 +21,7 @@ export class Book extends GemElement {
   }
 
   render() {
-    const { sidebar, nav, github = '', title } = this.config;
+    const { sidebar, nav, github = '', srouceDir = '', title } = this.config;
 
     const links = flatNav(sidebar);
 
@@ -105,7 +105,7 @@ export class Book extends GemElement {
       <gem-route .routes=${routes}></gem-route>
       ${github
         ? html`
-            <gem-book-edit-link github=${github}></gem-book-edit-link>
+            <gem-book-edit-link github=${github} srouce-dir=${srouceDir}></gem-book-edit-link>
           `
         : null}
       <gem-book-rel-link .links=${links}></gem-book-rel-link>

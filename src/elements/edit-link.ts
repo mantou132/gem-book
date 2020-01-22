@@ -8,11 +8,13 @@ import { getMdPath } from '../lib/utils';
 
 /**
  * @attr github
+ * @attr srouce-dir
  */
 @customElement('gem-book-edit-link')
 @connectStore(history.store)
 export class EditLink extends GemElement {
   @attribute github: string;
+  @attribute srouceDir: string;
 
   render() {
     const { path } = history.getParams();
@@ -39,7 +41,7 @@ export class EditLink extends GemElement {
           margin-right: 10px;
         }
       </style>
-      <gem-link href=${`${this.github}/blob/master${mdPath}`}>
+      <gem-link href=${`${this.github}/blob/master${this.srouceDir}${mdPath}`}>
         <gem-use selector="#compose" .root=${container}></gem-use>
         <span>Edit this page on GitHub</span>
       </gem-link>

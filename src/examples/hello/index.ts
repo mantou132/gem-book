@@ -4,6 +4,7 @@ import '../../';
 const config: BookConfig = {
   title: '<gem-book>',
   github: 'https://github.com/mantou132/gem-book',
+  srouceDir: '/src/examples/hello/docs',
   nav: [
     {
       title: 'Home',
