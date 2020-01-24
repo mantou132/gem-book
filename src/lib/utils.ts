@@ -1,7 +1,4 @@
 import { history } from '@mantou/gem';
-export default function add(a: number, b: number) {
-  return a + b;
-}
 
 export function capitalize(s: string) {
   return s.replace(/^\w/, (s: string) => s.toUpperCase());

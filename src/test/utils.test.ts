@@ -1,8 +1,25 @@
 import { expect } from '@open-wc/testing';
-import add from '../lib/utils';
+import { capitalize, flatNav, getMdPath } from '../lib/utils';
 
 describe('utils 测试', () => {
-  it('2 add 3 = 5', () => {
-    expect(add(2, 3)).to.equal(5);
+  it('capitalize', () => {
+    expect(capitalize('abc')).to.equal('Abc');
+    expect(capitalize('abc d')).to.equal('Abc d');
+  });
+  it('flatNav', () => {
+    expect(
+      flatNav([
+        { title: 'title', children: [{ title: 'home', link: '/' }] },
+        { title: 'about', link: '/about' },
+      ]),
+    ).to.deep.equal([
+      { title: 'home', link: '/' },
+      { title: 'about', link: '/about' },
+    ]);
+  });
+  it('getMdPath', () => {
+    expect(getMdPath('/')).to.equal('/README.md');
+    expect(getMdPath('/a')).to.equal('/a.md');
+    expect(getMdPath('/a/')).to.equal('/a/README.md');
   });
 });
