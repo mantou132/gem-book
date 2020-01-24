@@ -34,6 +34,18 @@ import config from './book.json';
 document.body.append(new Book(config));
 ```
 
+or
+
+```html
+<srcipt src=https://unpkg.com/gem-book></script>
+```
+
+```js
+const book = document.createElement('gem-book');
+book.config = {...};
+document.body.append(new Book(config));
+```
+
 ## sort
 
 `<gem-book>` just add the priority number to the document folder name and file name, e.g:
@@ -50,10 +62,10 @@ src/examples/hello/docs/
 output:
 
 ```
-├── Introduction
+├── <README.md h1>
 ├── Guide
-│   ├── Test
-│   └──  Installation
+│   ├── <README.md h1>
+│   └── Installation
 └── About
 ```
 
@@ -70,4 +82,4 @@ npm run example
 
 ## TODO
 
-- mobile
+- mobile style
