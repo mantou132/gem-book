@@ -24,6 +24,7 @@ export class RelLink extends GemElement {
         gem-link {
           color: var(--link-color);
           text-decoration: none;
+          text-transform: capitalize;
         }
         gem-link:hover {
           text-decoration: underline;

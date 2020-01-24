@@ -42,5 +42,4 @@ npm run example
 
 ## TODO
 
-- order
 - mobile

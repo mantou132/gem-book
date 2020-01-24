@@ -98,6 +98,7 @@ export class Main extends GemElement<State> {
           font-weight: 300;
           line-height: 1.2;
           scroll-margin: var(--header-height);
+          text-transform: capitalize;
         }
         h1 {
           font-size: 3rem;

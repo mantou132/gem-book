@@ -9,7 +9,7 @@ import './elements/main';
 import './elements/footer';
 import './elements/edit-link';
 import './elements/rel-link';
-import { flatNav } from './lib/utils';
+import { flatNav, capitalize } from './lib/utils';
 
 @customElement('gem-book')
 export class Book extends GemElement {
@@ -27,7 +27,7 @@ export class Book extends GemElement {
     const links = flatNav(sidebar);
 
     const routes = links.map(({ title: pageTitle, link }) => ({
-      title: `${pageTitle} - ${title}`,
+      title: `${capitalize(pageTitle)} - ${title}`,
       pattern: new URL(link as string, location.origin).pathname,
       content: html`
         <gem-book-main link=${link}></gem-book-main>

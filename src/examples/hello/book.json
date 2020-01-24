@@ -8,19 +8,15 @@
       "link": "/"
     },
     {
-      "title": "About",
-      "link": "/about"
-    },
-    {
       "title": "guide",
       "children": [
         {
           "title": "test",
-          "link": "/guide/"
+          "link": "/002.guide/"
         },
         {
           "title": "Installation",
-          "link": "/guide/installation",
+          "link": "/002.guide/installation",
           "children": [
             {
               "title": "lit-html",
@@ -33,6 +29,10 @@
           ]
         }
       ]
+    },
+    {
+      "title": "About",
+      "link": "/003.about"
     }
   ]
 }

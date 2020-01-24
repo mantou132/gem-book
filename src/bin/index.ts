@@ -24,24 +24,31 @@ const bookConfig: Partial<BookConfig> = {};
 
 function readDir(dir: string, link = '/'): NavItem[] | undefined {
   const result: NavItem[] = [];
-  fs.readdirSync(dir).forEach(file => {
-    const item: NavItem = { title: '' };
-    const fullPath = path.join(dir, file);
-    if (fs.statSync(fullPath).isFile()) {
-      if (path.extname(fullPath) === '.md') {
-        const filename = getFilename(fullPath);
-        item.title = getTitle(fullPath) as string;
-        item.link = `${link}${filename === 'README' ? '' : filename}`;
-        const titles = getHeading(fullPath);
-        if (titles.length) item.children = titles;
+  fs.readdirSync(dir)
+    .sort((file1, file2) => {
+      const [, rank1] = file1.match(/^(\d*\.)?(.*)/) as RegExpMatchArray;
+      const [, rank2] = file2.match(/^(\d*\.)?(.*)/) as RegExpMatchArray;
+      if (parseInt(rank1) > parseInt(rank2) || !rank2) return 1;
+      return -1;
+    })
+    .forEach(file => {
+      const item: NavItem = { title: '' };
+      const fullPath = path.join(dir, file);
+      if (fs.statSync(fullPath).isFile()) {
+        if (path.extname(fullPath) === '.md') {
+          const filename = getFilename(fullPath);
+          item.title = getTitle(fullPath) as string;
+          item.link = `${link}${filename === 'README' ? '' : filename}`;
+          const titles = getHeading(fullPath);
+          if (titles.length) item.children = titles;
+          result.push(item);
+        }
+      } else {
+        item.title = file.replace(/^\d*\./, '');
+        item.children = readDir(fullPath, path.join(link, file) + '/');
         result.push(item);
       }
-    } else {
-      item.title = file;
-      item.children = readDir(fullPath, path.join(link, file) + '/');
-      result.push(item);
-    }
-  });
+    });
   if (result.length) {
     return result;
   } else {

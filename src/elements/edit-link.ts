@@ -31,6 +31,7 @@ export class EditLink extends GemElement {
           text-decoration: none;
           display: inline-flex;
           align-items: center;
+          text-transform: capitalize;
         }
         gem-link:hover {
           text-decoration: underline;
