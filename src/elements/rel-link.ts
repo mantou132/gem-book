@@ -1,6 +1,7 @@
 import { html, GemElement, customElement, history, connectStore, property } from '@mantou/gem';
 
 import '@mantou/gem/elements/link';
+import { capitalize } from '../lib/utils';
 
 @customElement('gem-book-rel-link')
 @connectStore(history.store)
@@ -24,7 +25,6 @@ export class RelLink extends GemElement {
         gem-link {
           color: var(--link-color);
           text-decoration: none;
-          text-transform: capitalize;
         }
         gem-link:hover {
           text-decoration: underline;
@@ -32,13 +32,13 @@ export class RelLink extends GemElement {
       </style>
       ${prev
         ? html`
-            <gem-link path=${prev.link}>← ${prev.title}</gem-link>
+            <gem-link path=${prev.link}>← ${capitalize(prev.title)}</gem-link>
           `
         : null}
       <div></div>
       ${next
         ? html`
-            <gem-link path=${next.link}>${next.title} →</gem-link>
+            <gem-link path=${next.link}>${capitalize(next.title)} →</gem-link>
           `
         : null}
     `;

@@ -3,6 +3,7 @@ import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
 
 import { container } from './icons';
+import { capitalize } from '../lib/utils';
 
 @customElement('gem-book-sidebar')
 @connectStore(history.store)
@@ -22,7 +23,7 @@ export class SideBar extends GemElement {
           pattern=${children ? new URL(link, location.origin).pathname : link}
           href=${link}
         >
-          ${title}
+          ${capitalize(title)}
         </gem-active-link>
         ${children
           ? html`
@@ -37,7 +38,7 @@ export class SideBar extends GemElement {
       return html`
         <div class="item" @click=${this.toggleLinks}>
           <gem-use selector="#arrow" .root=${container}></gem-use>
-          ${title}
+          ${capitalize(title)}
         </div>
         <div class="links item">
           ${children.map(item => this.renderItem(item))}
@@ -58,6 +59,8 @@ export class SideBar extends GemElement {
           padding-block-start: calc(3rem + 54px);
           position: sticky;
           top: 0;
+          padding-inline: 1rem;
+          margin-inline: -1rem;
         }
         :host::after {
           content: '';
@@ -89,7 +92,6 @@ export class SideBar extends GemElement {
         }
         .item {
           cursor: pointer;
-          text-transform: capitalize;
         }
         .single {
           display: flex;
