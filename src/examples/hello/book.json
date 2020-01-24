@@ -12,11 +12,11 @@
       "children": [
         {
           "title": "test",
-          "link": "/002.guide/"
+          "link": "/002-guide/"
         },
         {
           "title": "Installation",
-          "link": "/002.guide/installation",
+          "link": "/002-guide/installation",
           "children": [
             {
               "title": "lit-html",
@@ -32,7 +32,7 @@
     },
     {
       "title": "About",
-      "link": "/003.about"
+      "link": "/003-about"
     }
   ]
 }

@@ -26,8 +26,8 @@ function readDir(dir: string, link = '/'): NavItem[] | undefined {
   const result: NavItem[] = [];
   fs.readdirSync(dir)
     .sort((file1, file2) => {
-      const [, rank1] = file1.match(/^(\d*\.)?(.*)/) as RegExpMatchArray;
-      const [, rank2] = file2.match(/^(\d*\.)?(.*)/) as RegExpMatchArray;
+      const [, rank1] = file1.match(/^(\d*-)?(.*)/) as RegExpMatchArray;
+      const [, rank2] = file2.match(/^(\d*-)?(.*)/) as RegExpMatchArray;
       if (parseInt(rank1) > parseInt(rank2) || !rank2) return 1;
       return -1;
     })
@@ -44,7 +44,7 @@ function readDir(dir: string, link = '/'): NavItem[] | undefined {
           result.push(item);
         }
       } else {
-        item.title = file.replace(/^\d*\./, '');
+        item.title = file.replace(/^\d*-/, '');
         item.children = readDir(fullPath, path.join(link, file) + '/');
         result.push(item);
       }
