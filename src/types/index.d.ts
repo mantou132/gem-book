@@ -10,4 +10,5 @@ interface BookConfig {
   nav?: NavItem[];
   github?: string;
   sourceDir?: string;
+  sourceBranch?: string;
 }

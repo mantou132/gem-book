@@ -1,7 +1,8 @@
 {
-  "sourceDir": "/src/examples/hello/docs",
   "title": "<gem-book>",
   "github": "https://github.com/mantou132/gem-book",
+  "sourceDir": "src/examples/hello/docs",
+  "sourceBranch": "master",
   "sidebar": [
     {
       "title": "Introduction",
@@ -10,10 +11,6 @@
     {
       "title": "guide",
       "children": [
-        {
-          "title": "test",
-          "link": "/002-guide/"
-        },
         {
           "title": "Installation",
           "link": "/002-guide/installation",
@@ -27,6 +24,10 @@
               "link": "#vanilla-js"
             }
           ]
+        },
+        {
+          "title": "test",
+          "link": "/002-guide/"
         }
       ]
     },

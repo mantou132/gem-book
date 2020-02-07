@@ -14,6 +14,7 @@ import path from 'path';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import gitRemoteOriginUrl from 'git-remote-origin-url';
+import getRepoInfo from 'git-repo-info';
 import { getGitUrl, getTitle, getFilename, getHeading } from './utils';
 
 program.version(require(path.resolve(__dirname, '../package.json')).version || '', '-v, --version');
@@ -70,6 +71,9 @@ program
   .option('-d, --source-dir <source dir>', 'github source dir', (sourceDir: string) => {
     bookConfig.sourceDir = sourceDir;
   })
+  .option('-b, --source-branch <source branch>', 'github source branch', (sourceBranch: string) => {
+    bookConfig.sourceBranch = sourceBranch;
+  })
   .option('--debug', 'enabled debug mode', () => {
     debug = true;
   })
@@ -92,6 +96,11 @@ program
     // default sourceDir
     if (bookConfig.sourceDir === undefined) {
       bookConfig.sourceDir = dir;
+    }
+
+    // default sourceBranch
+    if (bookConfig.sourceBranch === undefined) {
+      bookConfig.sourceBranch = getRepoInfo().branch;
     }
 
     // recursive scan dir

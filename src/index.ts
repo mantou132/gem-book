@@ -23,7 +23,7 @@ export class Book extends GemElement {
 
   render() {
     if (!this.config) return null;
-    const { sidebar, nav, github = '', sourceDir = '', title } = this.config;
+    const { sidebar, nav, github = '', sourceBranch = 'master', sourceDir = '', title } = this.config;
 
     const links = flatNav(sidebar);
 
@@ -31,7 +31,7 @@ export class Book extends GemElement {
       title: `${capitalize(pageTitle)} - ${title}`,
       pattern: new URL(link as string, location.origin).pathname,
       content: html`
-        <gem-book-main link=${link}></gem-book-main>
+        <gem-book-main link=${link as string}></gem-book-main>
       `,
     }));
 
@@ -115,7 +115,11 @@ export class Book extends GemElement {
       <gem-route .routes=${routes}></gem-route>
       ${github
         ? html`
-            <gem-book-edit-link github=${github} srouce-dir=${sourceDir}></gem-book-edit-link>
+            <gem-book-edit-link
+              github=${github}
+              source-branch=${sourceBranch}
+              srouce-dir=${sourceDir}
+            ></gem-book-edit-link>
           `
         : null}
       <gem-book-rel-link .links=${links}></gem-book-rel-link>
