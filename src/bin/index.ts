@@ -37,7 +37,7 @@ function readDir(dir: string, link = '/'): NavItem[] | undefined {
       if (fs.statSync(fullPath).isFile()) {
         if (path.extname(fullPath) === '.md') {
           const filename = getFilename(fullPath);
-          item.title = getTitle(fullPath) as string;
+          item.title = (getTitle(fullPath) as string).replace(/^\d*-/, '');
           item.link = `${link}${filename === 'README' ? '' : filename}`;
           const titles = getHeading(fullPath);
           if (titles.length) item.children = titles;
