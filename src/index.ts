@@ -2,6 +2,7 @@ import { html, GemElement, customElement, property } from '@mantou/gem';
 
 import '@mantou/gem/elements/title';
 import '@mantou/gem/elements/route';
+import { RouteItem } from '@mantou/gem/elements/route';
 
 import './elements/nav';
 import './elements/sidebar';
@@ -26,13 +27,21 @@ export class Book extends GemElement {
 
     const links = flatNav(sidebar);
 
-    const routes = links.map(({ title: pageTitle, link }) => ({
+    const routes: RouteItem[] = links.map(({ title: pageTitle, link }) => ({
       title: `${capitalize(pageTitle)} - ${title}`,
       pattern: new URL(link as string, location.origin).pathname,
       content: html`
         <gem-book-main link=${link}></gem-book-main>
       `,
     }));
+
+    if (!routes.some(({ pattern }) => pattern === '/')) {
+      const firstRoutePath = routes[0].pattern;
+      routes.unshift({
+        pattern: '/',
+        redirect: firstRoutePath,
+      });
+    }
 
     return html`
       <style>
