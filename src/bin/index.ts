@@ -19,7 +19,7 @@ import { getGitUrl, getTitle, getFilename, getHeading } from './utils';
 program.version(require(path.resolve(__dirname, '../package.json')).version || '', '-v, --version');
 
 let debug = false;
-let output = 'book.json';
+let output = '';
 const bookConfig: Partial<BookConfig> = {};
 
 function readDir(dir: string, link = '/'): NavItem[] | undefined {
@@ -74,11 +74,7 @@ program
     debug = true;
   })
   .option('-o, --output <ouput file>', `ouput json file, default \`${output}\``, (out: string) => {
-    if (out.endsWith('.json')) {
-      output = out;
-    } else {
-      output = path.join(out, output);
-    }
+    output = out;
   })
   .arguments('<dir>')
   .action(async (dir: string) => {
@@ -88,8 +84,14 @@ program
 
     const fullDir = path.join(process.cwd(), dir);
 
-    if (!bookConfig.title) {
+    // default title
+    if (bookConfig.title === undefined) {
       bookConfig.title = getTitle(fullDir);
+    }
+
+    // default sourceDir
+    if (bookConfig.sourceDir === undefined) {
+      bookConfig.sourceDir = dir;
     }
 
     // recursive scan dir
@@ -97,7 +99,9 @@ program
     bookConfig.sidebar = readDir(fullDir);
 
     // create file
-    const fullPath = path.join(process.cwd(), output);
+    const out = output || dir; // default dir
+    const outputFile = out.endsWith('.json') ? out : path.join(out, 'book.json'); // default filename
+    const fullPath = path.join(process.cwd(), outputFile);
     mkdirp.sync(path.dirname(fullPath));
     const configStr = JSON.stringify(bookConfig, null, 2) + '\n';
     if (debug) console.log(configStr);

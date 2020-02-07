@@ -19,6 +19,7 @@ export class EditLink extends GemElement {
   render() {
     const { path } = history.getParams();
     const mdPath = getMdPath(path);
+    const sroucePath = this.srouceDir ? `/${this.srouceDir}` : '';
 
     return html`
       <style>
@@ -41,7 +42,7 @@ export class EditLink extends GemElement {
           margin-right: 10px;
         }
       </style>
-      <gem-link href=${`${this.github}/blob/master${this.srouceDir}${mdPath}`}>
+      <gem-link href=${`${this.github}/blob/master${sroucePath}${mdPath}`}>
         <gem-use selector="#compose" .root=${container}></gem-use>
         <span>Edit this page on GitHub</span>
       </gem-link>
