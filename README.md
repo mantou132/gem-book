@@ -43,7 +43,7 @@ or
 ```js
 const book = document.createElement('gem-book');
 book.config = {...};
-document.body.append(new Book(config));
+document.body.append(book);
 ```
 
 ## sort
