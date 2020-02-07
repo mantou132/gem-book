@@ -56,7 +56,7 @@ export class Main extends GemElement<State> {
 
   hashChangeHandle = () => {
     const { hash } = location;
-    const ele = hash && this.shadowRoot?.querySelector(hash);
+    const ele = hash && this.shadowRoot?.querySelector(decodeURIComponent(hash));
     if (ele) {
       ele.scrollIntoView({
         behavior: 'smooth',
