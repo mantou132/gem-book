@@ -123,6 +123,7 @@ export class Main extends GemElement<State> {
           margin: 15px 0;
         }
         table {
+          margin: 2rem 0;
           width: 100%;
           border-spacing: 0;
           border-collapse: separate;
