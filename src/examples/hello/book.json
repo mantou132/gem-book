@@ -27,7 +27,17 @@
         },
         {
           "title": "test",
-          "link": "/002-guide/"
+          "link": "/002-guide/",
+          "children": [
+            {
+              "title": "Title",
+              "link": "#title"
+            },
+            {
+              "title": "标题",
+              "link": "#标题"
+            }
+          ]
         }
       ]
     },
