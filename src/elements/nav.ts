@@ -40,7 +40,7 @@ export class Nav extends GemElement {
           text-decoration: none;
           color: inherit;
         }
-        gem-link {
+        .title {
           flex-grow: 1;
           font-size: 1.2rem;
         }
@@ -60,7 +60,7 @@ export class Nav extends GemElement {
           width: 100%;
         }
       </style>
-      <gem-link path="/">${this.tl}</gem-link>
+      <div class="title"><gem-link path="/">${this.tl}</gem-link></div>
       ${this.nav ? this.nav.map(this.renderItem) : null} ${githubLink}
     `;
   }
