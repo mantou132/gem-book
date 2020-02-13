@@ -83,3 +83,4 @@ npm run example
 ## TODO
 
 - mobile style
+- support l10n
