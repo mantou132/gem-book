@@ -9,7 +9,7 @@ const parser = new DOMParser();
 marked.setOptions({
   highlight: function(code, lang) {
     if (Prism.languages[lang]) {
-      return Prism.highlight(code, Prism.languages[lang], lang);
+      return `<i class="code-lang-name">${lang}</i>${Prism.highlight(code, Prism.languages[lang], lang)}`;
     } else {
       return code;
     }
@@ -75,6 +75,7 @@ export class Main extends GemElement<State> {
     return html`
       <style>
         :host {
+          z-index: 1;
           grid-area: 2 / content / content / auto;
         }
         a,
@@ -158,8 +159,7 @@ export class Main extends GemElement<State> {
           background: var(--code-block-background);
           box-shadow: inset 0 0 0 var(--code-block-shadow-width) var(--code-block-shadow-color);
         }
-        pre::before {
-          content: attr(data-lang);
+        pre .code-lang-name {
           position: absolute;
           top: 5px;
           right: 10px;
@@ -169,16 +169,13 @@ export class Main extends GemElement<State> {
         pre code {
           color: var(--code-block-text-color);
         }
-        .code-mask,
         pre {
           overflow: auto;
           position: relative;
-          margin: 0;
           z-index: 2;
           font-family: var(--code-font);
           white-space: pre;
         }
-        .code-mask code,
         pre code {
           box-shadow: none;
           margin: 0;
@@ -188,7 +185,6 @@ export class Main extends GemElement<State> {
           background: transparent;
         }
         @media print {
-          .code-mask,
           pre {
             white-space: pre-wrap;
             word-break: break-word;
@@ -196,34 +192,6 @@ export class Main extends GemElement<State> {
         }
         pre {
           padding: 20px;
-        }
-        .code-mask {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          z-index: 1;
-          padding-top: 20px;
-          border: none;
-          color: transparent;
-        }
-        .code-line {
-          display: block;
-          padding: 0 20px;
-        }
-        .code-line.highlighted {
-          background: var(--highlighted-line-background);
-          position: relative;
-        }
-        .code-line.highlighted:before {
-          content: '';
-          display: block;
-          width: 3px;
-          top: 0;
-          left: 0;
-          bottom: 0;
-          background: var(--highlighted-line-border-color);
-          position: absolute;
         }
         code {
           font-family: var(--code-font);
