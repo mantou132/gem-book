@@ -29,6 +29,7 @@ renderer.heading = function(text, level, raw, slugger) {
 };
 
 interface State {
+  fetching: boolean;
   content: Element[] | null;
 }
 
@@ -40,15 +41,20 @@ export class Main extends GemElement<State> {
   @attribute link: string;
 
   state = {
+    fetching: false,
     content: null,
   };
 
   fetchData = async () => {
+    this.setState({
+      fetching: true,
+    });
     const { path } = history.getParams();
     const mdPath = getMdPath(path);
     const md = await (await fetch(mdPath)).text();
     const elements = [...parser.parseFromString(marked.parse(md, { renderer }), 'text/html').body.children];
     this.setState({
+      fetching: false,
       content: elements,
     });
     queueMicrotask(this.hashChangeHandle);
@@ -72,11 +78,15 @@ export class Main extends GemElement<State> {
   }
 
   render() {
+    const { fetching, content } = this.state;
     return html`
+      ${content}
       <style>
         :host {
           z-index: 1;
           grid-area: 2 / content / content / auto;
+          padding-block-start: 3rem;
+          opacity: ${fetching ? 0.3 : 1};
         }
         a,
         gem-link {
@@ -347,7 +357,6 @@ export class Main extends GemElement<State> {
           font-style: italic;
         }
       </style>
-      ${this.state.content}
     `;
   }
 
