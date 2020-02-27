@@ -54,13 +54,14 @@ export class SideBar extends GemElement {
         :host {
           grid-area: 1 / aside / 111 / aside;
           overflow: auto;
-          height: 100vh;
+          height: calc(100vh - var(--header-height));
           box-sizing: border-box;
-          padding-block-start: calc(3rem + 54px);
+          padding-block-start: 3rem;
           position: sticky;
-          top: 0;
+          top: var(--header-height);
           padding-inline: 1rem;
           margin-inline: -1rem;
+          overscroll-behavior: contain;
         }
         :host::after {
           content: '';

@@ -52,11 +52,12 @@ export class Book extends GemElement {
           --header-text-color: var(--text-color);
           --text-color: #000;
           --link-color: var(--accent-color);
-          --sidebar-width: 280px;
+          --sidebar-width: 230px;
           --sidebar-background: var(--page-background);
           --sidebar-link-color: #444;
           --sidebar-link-active-color: #000;
           --sidebar-link-arrow-color: #999;
+          --main-width: 780px;
           --main-background: var(--page-background);
           --border-color: #eaeaea;
           --header-height: 55px;
@@ -89,8 +90,8 @@ export class Book extends GemElement {
             Droid Sans, Helvetica Neue, sans-serif;
           display: grid;
           grid-template-areas: 'left aside content right';
-          grid-template-columns: auto 250px 800px auto;
-          grid-column-gap: 1.5rem;
+          grid-template-columns: auto var(--sidebar-width) var(--main-width) auto;
+          grid-column-gap: 3rem;
           color: var(--text-color);
         }
         .nav-shadow {
@@ -103,6 +104,9 @@ export class Book extends GemElement {
           position: sticky;
           top: 0;
           z-index: 3;
+        }
+        gem-book-sidebar {
+          scrollbar-width: thin;
         }
       </style>
       ${nav || github
