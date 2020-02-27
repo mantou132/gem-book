@@ -57,8 +57,7 @@ export class SideBar extends GemElement {
           height: calc(100vh - var(--header-height));
           box-sizing: border-box;
           padding-block-start: 3rem;
-          position: sticky;
-          top: var(--header-height);
+          margin-block-start: var(--header-height);
           padding-inline: 1rem;
           margin-inline: -1rem;
           overscroll-behavior: contain;
