@@ -29,6 +29,7 @@ function readDir(dir: string, link = '/'): NavItem[] | undefined {
     .sort((file1, file2) => {
       const [, rank1] = file1.match(/^(\d*-)?(.*)/) as RegExpMatchArray;
       const [, rank2] = file2.match(/^(\d*-)?(.*)/) as RegExpMatchArray;
+      if (file1 === 'README.md') return -1;
       if (parseInt(rank1) > parseInt(rank2) || !rank2) return 1;
       return -1;
     })

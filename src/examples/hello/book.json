@@ -12,20 +12,6 @@
       "title": "guide",
       "children": [
         {
-          "title": "Installation",
-          "link": "/002-guide/installation",
-          "children": [
-            {
-              "title": "lit-html",
-              "link": "#lit-html"
-            },
-            {
-              "title": "vanilla js",
-              "link": "#vanilla-js"
-            }
-          ]
-        },
-        {
           "title": "test",
           "link": "/002-guide/",
           "children": [
@@ -36,6 +22,24 @@
             {
               "title": "标题",
               "link": "#标题"
+            }
+          ]
+        },
+        {
+          "title": "Installation",
+          "link": "/002-guide/installation",
+          "children": [
+            {
+              "title": "lit-html",
+              "link": "#lit-html"
+            },
+            {
+              "title": "vanilla js",
+              "link": "#vanilla-js"
+            },
+            {
+              "title": "unpkg",
+              "link": "#unpkg"
             }
           ]
         }
