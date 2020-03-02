@@ -16,7 +16,7 @@ export class Nav extends GemElement {
   renderItem = ({ title, link }: NavItem) => {
     if (link) {
       return html`
-        <gem-active-link href=${link}>${capitalize(title)}</gem-active-link>
+        <gem-active-link href=${link} pattern=${`${link}*`}>${capitalize(title)}</gem-active-link>
       `;
     }
   };
