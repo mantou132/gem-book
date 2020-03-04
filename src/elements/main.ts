@@ -2,6 +2,9 @@ import { html, GemElement, customElement, history, attribute, raw } from '@manto
 import marked from 'marked';
 import Prism from 'prismjs';
 
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-typescript';
+
 import { getMdPath, isSameOrigin } from '../lib/utils';
 import { anchor, link } from './icons';
 
