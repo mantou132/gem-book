@@ -1,8 +1,9 @@
-import { html, GemElement, customElement, history, attribute } from '@mantou/gem';
+import { html, GemElement, customElement, history, attribute, raw } from '@mantou/gem';
 import marked from 'marked';
 import Prism from 'prismjs';
 
-import { getMdPath } from '../lib/utils';
+import { getMdPath, isSameOrigin } from '../lib/utils';
+import { anchor, link } from './icons';
 
 const parser = new DOMParser();
 
@@ -18,14 +19,24 @@ marked.setOptions({
 
 const renderer = new marked.Renderer();
 // https://github.com/markedjs/marked/blob/ed18cd58218ed4ab98d3457bec2872ba1f71230e/lib/marked.esm.js#L986
-renderer.heading = function(text, level, raw, slugger) {
+renderer.heading = function(text, level, r, slugger) {
   const tag = `h${level}`;
-  const id = `${this.options.headerPrefix}${slugger.slug(raw)}`;
-  return `<${tag} class="markdown-header" id="${id}">
-  <a class="header-anchor" href="#${id}">
-    <svg class="anchor-icon" viewBox="0 0 16 16" version="1.1" width="16" height="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>
-  </a>
-  ${text}</${tag}>`;
+  const id = `${this.options.headerPrefix}${slugger.slug(r)}`;
+  return raw`
+    <${tag} class="markdown-header" id="${id}">
+      <a class="header-anchor" href="#${id}">${anchor}</a>
+      ${text}
+    </${tag}>
+  `;
+};
+
+renderer.link = function(href, title, text) {
+  return raw`
+    <a target=${isSameOrigin(href) ? '_self' : '_blank'} href=${href} title=${title}>
+      ${text}
+      ${link}
+    </a>
+  `;
 };
 
 interface State {
@@ -256,7 +267,7 @@ export class Main extends GemElement<State> {
           opacity: 1;
           border-bottom: none;
         }
-        .header-anchor .anchor-icon {
+        .header-anchor svg {
           vertical-align: middle;
           fill: currentColor;
         }

@@ -1,7 +1,10 @@
 import { html, GemElement, customElement, attribute, property } from '@mantou/gem';
 
 import '@mantou/gem/elements/link';
-import { capitalize } from '../lib/utils';
+import '@mantou/gem/elements/use';
+
+import { capitalize, isSameOrigin } from '../lib/utils';
+import { container } from './icons';
 
 /**
  * @attr tl
@@ -18,7 +21,14 @@ export class Nav extends GemElement {
   renderItem = ({ title, link }: NavItem) => {
     if (link) {
       return html`
-        <gem-active-link href=${link} pattern=${`${link}*`}>${capitalize(title)}</gem-active-link>
+        <gem-active-link href=${link} pattern=${`${link}*`}>
+          ${capitalize(title)}
+          ${isSameOrigin(link)
+            ? null
+            : html`
+                <gem-use .root=${container} selector="#link"></gem-use>
+              `}
+        </gem-active-link>
       `;
     }
   };
@@ -51,7 +61,7 @@ export class Nav extends GemElement {
           align-items: center;
         }
         .title img {
-          height: 80%;
+          height: calc(0.8 * var(--header-height));
           transform: translateX(-10%);
         }
         gem-active-link + gem-active-link {
@@ -68,6 +78,10 @@ export class Nav extends GemElement {
           background: currentColor;
           content: '';
           width: 100%;
+        }
+        gem-use {
+          width: 15px;
+          height: 15px;
         }
       </style>
       <div class="title">

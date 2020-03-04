@@ -20,3 +20,8 @@ export function getMdPath(link: string) {
     return `${history.basePath}${pathname}.md`;
   }
 }
+
+export function isSameOrigin(link: string) {
+  const { origin } = new URL(link, location.origin);
+  return origin === location.origin;
+}
