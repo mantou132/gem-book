@@ -23,7 +23,7 @@ export class Book extends GemElement {
 
   render() {
     if (!this.config) return null;
-    const { icon, sidebar, nav, github = '', sourceBranch = 'master', sourceDir = '', title } = this.config;
+    const { icon = '', sidebar, nav, github = '', sourceBranch = 'master', sourceDir = '', title } = this.config;
 
     const links = flatNav(sidebar);
 
