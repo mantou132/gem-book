@@ -22,7 +22,7 @@
     "lint": "tsc --noEmit && eslint --ext .ts --fix src/",
     "clean": "node -e \"fs.readdirSync('src').map(dir => require('rimraf').sync(dir))\"",
     "watch": "tsc --watch",
-    "docs": "node ./bin src/examples/hello/docs -o src/examples/hello --debug -t \"<gem-book>\"",
+    "docs": "node ./bin src/examples/hello/docs -o src/examples/hello --debug -t Gem-book -i https://img.icons8.com/ios-glyphs/344/ios-application-placeholder.png",
     "build:module": "npm run clean && tsc",
     "build:dist": "rimraf dist && webpack --config webpack.config.dist.js",
     "build": "npm run build:module && npm run build:dist",

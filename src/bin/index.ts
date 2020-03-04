@@ -69,6 +69,9 @@ program
   .option('-t, --title <title>', 'document title', (title: string) => {
     bookConfig.title = title;
   })
+  .option('-i, --icon <icon>', 'project icon', (icon: string) => {
+    bookConfig.icon = icon;
+  })
   .option('-d, --source-dir <source dir>', 'github source dir', (sourceDir: string) => {
     bookConfig.sourceDir = sourceDir;
   })

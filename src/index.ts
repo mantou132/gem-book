@@ -23,7 +23,7 @@ export class Book extends GemElement {
 
   render() {
     if (!this.config) return null;
-    const { sidebar, nav, github = '', sourceBranch = 'master', sourceDir = '', title } = this.config;
+    const { icon, sidebar, nav, github = '', sourceBranch = 'master', sourceDir = '', title } = this.config;
 
     const links = flatNav(sidebar);
 
@@ -112,7 +112,7 @@ export class Book extends GemElement {
       ${nav || github
         ? html`
             <div class="nav-shadow"></div>
-            <gem-book-nav tl=${title} .nav=${nav} github=${github}></gem-book-nav>
+            <gem-book-nav tl=${title} .nav=${nav} icon=${icon} github=${github}></gem-book-nav>
           `
         : null}
       <gem-book-sidebar .sidebar=${sidebar}></gem-book-sidebar>

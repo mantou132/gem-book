@@ -5,12 +5,14 @@ import { capitalize } from '../lib/utils';
 
 /**
  * @attr tl
+ * @attr icon
  * @attr github
  */
 @customElement('gem-book-nav')
 export class Nav extends GemElement {
   @attribute tl: string;
   @attribute github: string;
+  @attribute icon: string;
   @property nav: NavItem[];
 
   renderItem = ({ title, link }: NavItem) => {
@@ -36,13 +38,21 @@ export class Nav extends GemElement {
         gem-link,
         gem-active-link {
           position: relative;
-          font-size: 1rem;
           text-decoration: none;
           color: inherit;
         }
         .title {
           flex-grow: 1;
+          display: flex;
+        }
+        .title gem-link {
+          display: flex;
           font-size: 1.2rem;
+          align-items: center;
+        }
+        .title img {
+          height: 80%;
+          transform: translateX(-10%);
         }
         gem-active-link + gem-active-link {
           margin-left: 1rem;
@@ -60,7 +70,15 @@ export class Nav extends GemElement {
           width: 100%;
         }
       </style>
-      <div class="title"><gem-link path="/">${this.tl}</gem-link></div>
+      <div class="title">
+        <gem-link path="/">
+          ${this.icon
+            ? html`
+                <img alt=${this.tl} src=${this.icon} />
+              `
+            : null}${this.tl}</gem-link
+        >
+      </div>
       ${this.nav ? this.nav.map(this.renderItem) : null} ${githubLink}
     `;
   }

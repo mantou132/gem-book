@@ -5,6 +5,7 @@ interface NavItem {
 }
 
 interface BookConfig {
+  icon: string;
   title: string;
   sidebar: NavItem[];
   nav?: NavItem[];
