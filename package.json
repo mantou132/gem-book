@@ -34,7 +34,7 @@
   "author": "mantou132",
   "license": "ISC",
   "dependencies": {
-    "@mantou/gem": "^0.3.14",
+    "@mantou/gem": "^0.3.16",
     "colors": "^1.4.0",
     "commander": "^4.1.0",
     "git-remote-origin-url": "^3.0.0",

@@ -45,7 +45,7 @@ export class Nav extends GemElement {
           font-size: 1.2rem;
         }
         gem-active-link + gem-active-link {
-          margin-inline-start: 1rem;
+          margin-left: 1rem;
         }
         gem-active-link.active {
           color: var(--link-color);

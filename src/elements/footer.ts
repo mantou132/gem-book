@@ -1,4 +1,5 @@
 import { html, GemElement, customElement } from '@mantou/gem';
+import '@mantou/gem/elements/link';
 
 @customElement('gem-book-footer')
 export class Footer extends GemElement {
@@ -8,8 +9,8 @@ export class Footer extends GemElement {
         :host {
           grid-area: auto / content;
           padding: 2rem 0;
-          margin-block-start: 6rem;
-          border-block-start: 1px solid var(--border-color);
+          margin-top: 6rem;
+          border-top: 1px solid var(--border-color);
         }
         gem-link {
           color: var(--link-color);

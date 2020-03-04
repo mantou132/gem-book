@@ -97,7 +97,7 @@ export class Book extends GemElement {
         .nav-shadow {
           grid-area: 1 / left / 1 / right;
           background: white;
-          border-block-end: 1px solid var(--border-color);
+          border-bottom: 1px solid var(--border-color);
         }
         .nav-shadow,
         gem-book-nav {

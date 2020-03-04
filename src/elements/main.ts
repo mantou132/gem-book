@@ -64,6 +64,7 @@ export class Main extends GemElement<State> {
     const { hash } = location;
     const ele = hash && this.shadowRoot?.querySelector(decodeURIComponent(hash));
     if (ele) {
+      // webkit bug: https://bugs.webkit.org/show_bug.cgi?id=208110
       ele.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
@@ -85,7 +86,7 @@ export class Main extends GemElement<State> {
         :host {
           z-index: 1;
           grid-area: 2 / content / content / auto;
-          padding-block-start: 3rem;
+          padding-top: 3rem;
           opacity: ${fetching ? 0.3 : 1};
         }
         a,
@@ -95,10 +96,10 @@ export class Main extends GemElement<State> {
         }
         /* https://github.com/egoist/docute/blob/master/src/css/page-content.css */
         :host > :first-child {
-          margin-block-start: 0;
+          margin-top: 0;
         }
         :host > h2:first-child {
-          margin-block-start: 7rem;
+          margin-top: 7rem;
         }
         h1,
         h2,
@@ -117,7 +118,7 @@ export class Main extends GemElement<State> {
         h2 {
           font-size: 2rem;
           border-bottom: 1px solid var(--border-color);
-          margin-block-start: 7rem;
+          margin-top: 7rem;
           padding-bottom: 5px;
         }
         h3 {
@@ -234,7 +235,7 @@ export class Main extends GemElement<State> {
           margin: 15px 0 0;
         }
         blockquote > :first-child {
-          margin-block-start: 0;
+          margin-top: 0;
         }
         hr {
           height: 1px;

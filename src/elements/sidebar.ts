@@ -59,10 +59,8 @@ export class SideBar extends GemElement {
           box-sizing: border-box;
           position: sticky;
           top: var(--header-height);
-          padding-block-start: 3rem;
-          margin-block-start: var(--header-height);
-          padding-inline: 1rem;
-          margin-inline: -1rem;
+          padding: 3rem 1rem 0;
+          margin: var(--header-height) -1rem 0;
         }
         :host::after {
           content: '';
@@ -83,11 +81,15 @@ export class SideBar extends GemElement {
         gem-active-link.active + .hash {
           display: block;
         }
+        gem-use {
+          width: 6px;
+          height: 10px;
+        }
         .close + .links {
           display: none;
         }
         .links {
-          border-inline-start: 1px solid var(--border-color);
+          border-left: 1px solid var(--border-color);
         }
         .hash {
           display: none;
@@ -115,10 +117,10 @@ export class SideBar extends GemElement {
           transform: rotate(0deg);
         }
         .item .item {
-          margin-inline-start: 1rem;
+          margin-left: 1rem;
         }
         .item + .item {
-          margin-block-start: 0.5rem;
+          margin-top: 0.5rem;
         }
       </style>
       ${this.sidebar.map(item => this.renderItem(item, true))}

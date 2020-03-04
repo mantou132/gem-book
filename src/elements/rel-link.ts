@@ -20,7 +20,7 @@ export class RelLink extends GemElement {
           display: flex;
           justify-content: space-between;
           grid-area: auto / content;
-          border-block-start: 1px solid var(--border-color);
+          border-top: 1px solid var(--border-color);
         }
         gem-link {
           color: var(--link-color);
