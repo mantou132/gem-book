@@ -27,7 +27,9 @@ export class Book extends GemElement {
 
   render() {
     if (!this.config) return null;
-    const { icon = '', sidebar, nav, github = '', sourceBranch = 'master', sourceDir = '', title } = this.config;
+    const { icon = '', sidebar, nav, github = '', sourceBranch = 'master', sourceDir = '', title = '' } = this.config;
+
+    const hasNavbar = icon || title || nav;
 
     const links = flatNav(sidebar);
 
@@ -89,13 +91,15 @@ export class Book extends GemElement {
           --search-focus-border-color: #ccc;
           --search-focus-icon-color: #333;
           --search-result-hover-background: #f9f9f9;
-          text-rendering: optimizeLegibility;
-          font: 16px/1.7 -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
-            Droid Sans, Helvetica Neue, sans-serif;
+        }
+        :host {
           display: grid;
           grid-template-areas: 'left aside content right';
           grid-template-columns: auto var(--sidebar-width) var(--main-width) auto;
           grid-column-gap: 3rem;
+          text-rendering: optimizeLegibility;
+          font: 16px/1.7 -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
+            Droid Sans, Helvetica Neue, sans-serif;
           color: var(--text-color);
         }
         .nav-shadow {
@@ -109,16 +113,17 @@ export class Book extends GemElement {
           top: 0;
           z-index: 3;
         }
-        gem-book-sidebar {
-          scrollbar-width: thin;
+        .nav-shadow ~ gem-book-sidebar {
+          margin-top: var(--header-height);
+          top: var(--header-height);
         }
       </style>
-      ${nav || github
+      ${hasNavbar
         ? html`
             <div class="nav-shadow"></div>
-            <gem-book-nav tl=${title} .nav=${nav} icon=${icon} github=${github}></gem-book-nav>
           `
         : null}
+      <gem-book-nav tl=${title} .nav=${nav} icon=${icon} github=${github}></gem-book-nav>
       <gem-book-sidebar .sidebar=${sidebar}></gem-book-sidebar>
       <gem-route .routes=${routes}></gem-route>
       ${github

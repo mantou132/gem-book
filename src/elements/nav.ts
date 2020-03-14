@@ -39,7 +39,6 @@ export class Nav extends GemElement {
     return html`
       <style>
         :host {
-          height: var(--header-height);
           line-height: var(--header-height);
           display: flex;
           grid-area: 1 / aside / 1 / content;

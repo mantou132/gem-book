@@ -78,6 +78,9 @@ program
   .option('-b, --source-branch <source branch>', 'github source branch', (sourceBranch: string) => {
     bookConfig.sourceBranch = sourceBranch;
   })
+  .option('--github', 'github link', (link: string) => {
+    bookConfig.sourceBranch = link;
+  })
   .option('--debug', 'enabled debug mode', () => {
     debug = true;
   })
@@ -87,8 +90,10 @@ program
   .arguments('<dir>')
   .action(async (dir: string) => {
     // read github info
-    const git = await gitRemoteOriginUrl(dir);
-    bookConfig.github = getGitUrl(git);
+    if (bookConfig.github === undefined) {
+      const git = await gitRemoteOriginUrl(dir);
+      bookConfig.github = getGitUrl(git);
+    }
 
     const fullDir = path.join(process.cwd(), dir);
 
