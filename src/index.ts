@@ -12,6 +12,10 @@ import './elements/edit-link';
 import './elements/rel-link';
 import { flatNav, capitalize } from './lib/utils';
 
+/**
+ * @custom-element gem-book
+ * @prop {BookConfig} config
+ */
 @customElement('gem-book')
 export class Book extends GemElement {
   @property config: BookConfig;

@@ -4,7 +4,7 @@ export function capitalize(s: string) {
   return s.replace(/^\w/, (s: string) => s.toUpperCase());
 }
 
-export function flatNav(nav: NavItem[]): NavItem[] {
+export function flatNav(nav: NavItem[]): (NavItem & { link: string })[] {
   return nav
     .map((item: NavItem) => {
       return item.link ? item : item.children ? flatNav(item.children) : [];

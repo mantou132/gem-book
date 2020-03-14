@@ -16,7 +16,7 @@ export class Nav extends GemElement {
   @attribute tl: string;
   @attribute github: string;
   @attribute icon: string;
-  @property nav: NavItem[];
+  @property nav: NavItem[] | undefined;
 
   renderItem = ({ title, link }: NavItem) => {
     if (link) {
