@@ -1,4 +1,4 @@
-import { html, GemElement, customElement, property } from '@mantou/gem';
+import { html, GemElement, customElement, property, attribute } from '@mantou/gem';
 
 import '@mantou/gem/elements/title';
 import '@mantou/gem/elements/route';
@@ -12,13 +12,21 @@ import './elements/edit-link';
 import './elements/rel-link';
 import { flatNav, capitalize } from './lib/utils';
 
+type State = { config: BookConfig | undefined };
+
 /**
  * @custom-element gem-book
  * @prop {BookConfig} config
+ * @attr src
  */
 @customElement('gem-book')
-export class Book extends GemElement {
-  @property config: BookConfig;
+export class Book extends GemElement<State> {
+  @property config: BookConfig | undefined;
+  @attribute src: string;
+
+  state: State = {
+    config: undefined, // `src` generate
+  };
 
   constructor(config: BookConfig) {
     super();
@@ -26,8 +34,9 @@ export class Book extends GemElement {
   }
 
   render() {
-    if (!this.config) return null;
-    const { icon = '', sidebar, nav, github = '', sourceBranch = 'master', sourceDir = '', title = '' } = this.config;
+    const config = this.config || this.state.config;
+    if (!config) return null;
+    const { icon = '', sidebar, nav, github = '', sourceBranch = 'master', sourceDir = '', title = '' } = config;
 
     const hasNavbar = icon || title || nav;
 
@@ -138,5 +147,17 @@ export class Book extends GemElement {
       <gem-book-rel-link .links=${links}></gem-book-rel-link>
       <gem-book-footer></gem-book-footer>
     `;
+  }
+
+  mounted() {
+    this.effect(
+      async () => {
+        if (this.src && !this.config) {
+          const res = await fetch(this.src);
+          this.setState({ config: await res.json() });
+        }
+      },
+      () => [this.src],
+    );
   }
 }

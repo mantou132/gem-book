@@ -87,7 +87,14 @@ export class Main extends GemElement<State> {
   };
 
   mounted() {
-    this.fetchData();
+    this.effect(
+      () => {
+        // link change
+        scrollTo(0, 0);
+        this.fetchData();
+      },
+      () => [this.link],
+    );
     window.addEventListener('hashchange', this.hashChangeHandle);
     return () => window.removeEventListener('hashchange', this.hashChangeHandle);
   }
@@ -373,11 +380,5 @@ export class Main extends GemElement<State> {
         }
       </style>
     `;
-  }
-
-  attributeChanged() {
-    // link change
-    scrollTo(0, 0);
-    this.fetchData();
   }
 }
