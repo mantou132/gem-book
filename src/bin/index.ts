@@ -20,6 +20,7 @@ import { getGitUrl, getTitle, getFilename, getHeading } from './utils';
 program.version(require(path.resolve(__dirname, '../package.json')).version || '', '-v, --version');
 
 let debug = false;
+let watch = false;
 let output = '';
 const bookConfig: Partial<BookConfig> = {};
 
@@ -58,6 +59,44 @@ function readDir(dir: string, link = '/'): NavItem[] | undefined {
   }
 }
 
+async function command(dir: string) {
+  // read github info
+  if (bookConfig.github === undefined) {
+    const git = await gitRemoteOriginUrl(dir);
+    bookConfig.github = getGitUrl(git);
+  }
+
+  const fullDir = path.join(process.cwd(), dir);
+
+  // default title
+  if (bookConfig.title === undefined) {
+    bookConfig.title = getTitle(fullDir);
+  }
+
+  // default sourceDir
+  if (bookConfig.sourceDir === undefined) {
+    bookConfig.sourceDir = dir;
+  }
+
+  // default sourceBranch
+  if (bookConfig.sourceBranch === undefined) {
+    bookConfig.sourceBranch = getRepoInfo().branch;
+  }
+
+  // recursive scan dir
+  // fill sidebar
+  bookConfig.sidebar = readDir(fullDir);
+
+  // create file
+  const out = output || dir; // default dir
+  const outputFile = out.endsWith('.json') ? out : path.join(out, 'book.json'); // default filename
+  const fullPath = path.join(process.cwd(), outputFile);
+  mkdirp.sync(path.dirname(fullPath));
+  const configStr = JSON.stringify(bookConfig, null, 2) + '\n';
+  if (debug) console.log(configStr);
+  fs.writeFileSync(fullPath, configStr);
+}
+
 program
   .option('-c, --config <config file>', 'specify config file', (configPath: string) => {
     try {
@@ -84,46 +123,19 @@ program
   .option('--debug', 'enabled debug mode', () => {
     debug = true;
   })
+  .option('--watch', 'watch mode', () => {
+    watch = true;
+  })
   .option('-o, --output <ouput file>', `ouput json file, default \`${output}\``, (out: string) => {
     output = out;
   })
   .arguments('<dir>')
-  .action(async (dir: string) => {
-    // read github info
-    if (bookConfig.github === undefined) {
-      const git = await gitRemoteOriginUrl(dir);
-      bookConfig.github = getGitUrl(git);
+  .action((dir: string) => {
+    if (watch) {
+      fs.watch(dir, { recursive: true }, () => command(dir));
+    } else {
+      command(dir);
     }
-
-    const fullDir = path.join(process.cwd(), dir);
-
-    // default title
-    if (bookConfig.title === undefined) {
-      bookConfig.title = getTitle(fullDir);
-    }
-
-    // default sourceDir
-    if (bookConfig.sourceDir === undefined) {
-      bookConfig.sourceDir = dir;
-    }
-
-    // default sourceBranch
-    if (bookConfig.sourceBranch === undefined) {
-      bookConfig.sourceBranch = getRepoInfo().branch;
-    }
-
-    // recursive scan dir
-    // fill sidebar
-    bookConfig.sidebar = readDir(fullDir);
-
-    // create file
-    const out = output || dir; // default dir
-    const outputFile = out.endsWith('.json') ? out : path.join(out, 'book.json'); // default filename
-    const fullPath = path.join(process.cwd(), outputFile);
-    mkdirp.sync(path.dirname(fullPath));
-    const configStr = JSON.stringify(bookConfig, null, 2) + '\n';
-    if (debug) console.log(configStr);
-    fs.writeFileSync(fullPath, configStr);
   });
 
 program.parse(process.argv);
