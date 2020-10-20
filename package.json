@@ -22,7 +22,7 @@
     "lint": "tsc --noEmit && eslint --ext .ts --fix src/",
     "clean": "node -e \"fs.readdirSync('src').map(dir => require('rimraf').sync(dir))\"",
     "watch": "tsc --watch",
-    "docs": "node ./bin src/examples/hello/docs -o src/examples/hello --watch --debug -t Gem-book -i /logo.png",
+    "docs": "node ./bin src/examples/hello/docs -o src/examples/hello --i18n --watch --debug -t Gem-book -i /logo.png",
     "build:module": "npm run clean && tsc",
     "build:dist": "rimraf dist && webpack --config webpack.config.dist.js",
     "build": "npm run build:module && npm run build:dist",
@@ -34,7 +34,7 @@
   "author": "mantou132",
   "license": "ISC",
   "dependencies": {
-    "@mantou/gem": "^0.4.2",
+    "@mantou/gem": "^0.4.8",
     "colors": "^1.4.0",
     "commander": "^4.1.0",
     "git-remote-origin-url": "^3.0.0",

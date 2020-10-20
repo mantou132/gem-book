@@ -16,6 +16,7 @@ import mkdirp from 'mkdirp';
 import gitRemoteOriginUrl from 'git-remote-origin-url';
 import getRepoInfo from 'git-repo-info';
 import { getGitUrl, getTitle, getFilename, getHeading } from './utils';
+import lang from './lang.json';
 
 program.version(require(path.resolve(__dirname, '../package.json')).version || '', '-v, --version');
 
@@ -24,7 +25,7 @@ let watch = false;
 let output = '';
 const bookConfig: Partial<BookConfig> = {};
 
-function readDir(dir: string, link = '/'): NavItem[] | undefined {
+function readDir(dir: string, link = '/') {
   const result: NavItem[] = [];
   fs.readdirSync(dir)
     .sort((file1, file2) => {
@@ -52,11 +53,7 @@ function readDir(dir: string, link = '/'): NavItem[] | undefined {
         result.push(item);
       }
     });
-  if (result.length) {
-    return result;
-  } else {
-    return;
-  }
+  return result;
 }
 
 async function command(dir: string) {
@@ -83,9 +80,20 @@ async function command(dir: string) {
     bookConfig.sourceBranch = getRepoInfo().branch;
   }
 
-  // recursive scan dir
-  // fill sidebar
-  bookConfig.sidebar = readDir(fullDir);
+  if (bookConfig.i18n) {
+    const sidebarConfig: SidebarConfig = {};
+    fs.readdirSync(fullDir).forEach(code => {
+      sidebarConfig[code] = {
+        data: readDir(path.join(fullDir, code)),
+        name: code in lang ? lang[code as keyof typeof lang] : code,
+      };
+    });
+    bookConfig.sidebar = sidebarConfig;
+  } else {
+    // recursive scan dir
+    // fill sidebar
+    bookConfig.sidebar = readDir(fullDir);
+  }
 
   // create file
   const out = output || dir; // default dir
@@ -119,6 +127,9 @@ program
   })
   .option('--github', 'github link', (link: string) => {
     bookConfig.sourceBranch = link;
+  })
+  .option('--i18n', 'enabled i18n', () => {
+    bookConfig.i18n = true;
   })
   .option('--debug', 'enabled debug mode', () => {
     debug = true;

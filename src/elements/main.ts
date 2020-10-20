@@ -53,6 +53,7 @@ interface State {
 @customElement('gem-book-main')
 export class Main extends GemElement<State> {
   @attribute link: string;
+  @attribute lang: string;
 
   state = {
     fetching: false,
@@ -64,7 +65,7 @@ export class Main extends GemElement<State> {
       fetching: true,
     });
     const { path } = history.getParams();
-    const mdPath = getMdPath(path);
+    const mdPath = getMdPath(path, this.lang);
     const md = await (await fetch(mdPath)).text();
     const elements = [...parser.parseFromString(marked.parse(md, { renderer }), 'text/html').body.children];
     this.setState({
@@ -93,7 +94,7 @@ export class Main extends GemElement<State> {
         scrollTo(0, 0);
         this.fetchData();
       },
-      () => [this.link],
+      () => [this.link, this.lang],
     );
     window.addEventListener('hashchange', this.hashChangeHandle);
     return () => window.removeEventListener('hashchange', this.hashChangeHandle);

@@ -4,12 +4,15 @@ interface NavItem {
   children?: NavItem[]; // dropdown menu
 }
 
+type SidebarConfig = NavItem[] | { [lang: string]: { name: string; data: NavItem[] } };
+
 interface BookConfig {
   icon: string;
   title: string;
-  sidebar: NavItem[];
+  sidebar: SidebarConfig;
   nav?: NavItem[];
   github?: string;
   sourceDir?: string;
   sourceBranch?: string;
+  i18n?: boolean;
 }

@@ -85,5 +85,4 @@ npm run docs
 ## TODO
 
 - mobile style
-- support i18n
 - docs

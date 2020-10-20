@@ -1,54 +1,106 @@
 {
+  "i18n": true,
   "title": "Gem-book",
   "icon": "/logo.png",
   "github": "https://github.com/mantou132/gem-book",
   "sourceDir": "src/examples/hello/docs",
   "sourceBranch": "master",
-  "sidebar": [
-    {
-      "title": "Introduction",
-      "link": "/"
-    },
-    {
-      "title": "guide",
-      "children": [
+  "sidebar": {
+    "en": {
+      "data": [
         {
-          "title": "test",
-          "link": "/002-guide/",
+          "title": "Introduction",
+          "link": "/"
+        },
+        {
+          "title": "guide",
           "children": [
             {
-              "title": "Title",
-              "link": "#title"
+              "title": "test",
+              "link": "/002-guide/",
+              "children": [
+                {
+                  "title": "Title",
+                  "link": "#title"
+                },
+                {
+                  "title": "标题",
+                  "link": "#标题"
+                }
+              ]
             },
             {
-              "title": "标题",
-              "link": "#标题"
+              "title": "Installation",
+              "link": "/002-guide/installation",
+              "children": [
+                {
+                  "title": "lit-html",
+                  "link": "#lit-html"
+                },
+                {
+                  "title": "vanilla js",
+                  "link": "#vanilla-js"
+                },
+                {
+                  "title": "unpkg",
+                  "link": "#unpkg"
+                }
+              ]
             }
           ]
         },
         {
-          "title": "Installation",
-          "link": "/002-guide/installation",
+          "title": "About",
+          "link": "/003-about"
+        }
+      ],
+      "name": "English"
+    },
+    "zh": {
+      "data": [
+        {
+          "title": "简介",
+          "link": "/"
+        },
+        {
+          "title": "guide",
           "children": [
             {
-              "title": "lit-html",
-              "link": "#lit-html"
+              "title": "测试",
+              "link": "/002-guide/",
+              "children": [
+                {
+                  "title": "Title",
+                  "link": "#title"
+                },
+                {
+                  "title": "标题",
+                  "link": "#标题"
+                }
+              ]
             },
             {
-              "title": "vanilla js",
-              "link": "#vanilla-js"
-            },
-            {
-              "title": "unpkg",
-              "link": "#unpkg"
+              "title": "安装",
+              "link": "/002-guide/installation",
+              "children": [
+                {
+                  "title": "lit-html",
+                  "link": "#lit-html"
+                },
+                {
+                  "title": "vanilla js",
+                  "link": "#vanilla-js"
+                },
+                {
+                  "title": "unpkg",
+                  "link": "#unpkg"
+                }
+              ]
             }
           ]
         }
-      ]
-    },
-    {
-      "title": "About",
-      "link": "/003-about"
+      ],
+      "name": "中文 (Zhōngwén), 汉语, 漢語"
     }
-  ]
+  }
 }

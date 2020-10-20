@@ -1,4 +1,15 @@
-import { html, GemElement, customElement, property, TemplateResult, history, connectStore } from '@mantou/gem';
+import {
+  html,
+  GemElement,
+  customElement,
+  property,
+  TemplateResult,
+  history,
+  connectStore,
+  attribute,
+  Emitter,
+  emitter,
+} from '@mantou/gem';
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
 
@@ -8,7 +19,11 @@ import { capitalize } from '../lib/utils';
 @customElement('gem-book-sidebar')
 @connectStore(history.store)
 export class SideBar extends GemElement {
+  @attribute lang: string;
+
+  @property langlist: { code: string; name: string }[];
   @property sidebar: NavItem[];
+  @emitter languagechange: Emitter<string>;
 
   toggleLinks = (e: MouseEvent) => {
     const ele = e.target as HTMLDivElement;
@@ -68,6 +83,30 @@ export class SideBar extends GemElement {
           display: block;
           height: 2rem;
         }
+        .langselect {
+          display: flex;
+          align-items: center;
+          border: 1px solid var(--border-color);
+          border-radius: 5px;
+          margin-bottom: 0.5em;
+          user-select: none;
+        }
+        .dropdown {
+          margin: 0;
+          width: 2em;
+          transform: rotate(90deg);
+        }
+        select {
+          background: none;
+          appearance: none;
+          border: none;
+          height: var(--docute-select-height);
+          outline: none;
+          font-size: 14px;
+          flex-grow: 1;
+          width: 0;
+          padding: 0 1em;
+        }
         gem-active-link {
           display: block;
           color: inherit;
@@ -85,6 +124,7 @@ export class SideBar extends GemElement {
         gem-use {
           width: 6px;
           height: 10px;
+          margin-right: calc(1em - 6px);
         }
         .close + .links {
           display: none;
@@ -98,6 +138,10 @@ export class SideBar extends GemElement {
         .item {
           cursor: pointer;
         }
+        .item:not(.links) {
+          display: flex;
+          align-items: center;
+        }
         .single {
           display: flex;
           align-items: center;
@@ -109,7 +153,7 @@ export class SideBar extends GemElement {
           height: 4px;
           border-radius: 50%;
           background-color: var(--sidebar-link-arrow-color);
-          margin-right: 8px;
+          margin-right: calc(1em - 4px);
         }
         .item gem-use {
           transform: rotate(90deg);
@@ -124,6 +168,20 @@ export class SideBar extends GemElement {
           margin-top: 0.5rem;
         }
       </style>
+      ${this.lang &&
+        html`
+          <div class="langselect">
+            <select @change=${(e: any) => this.languagechange(e.target.value)}>
+              ${this.langlist.map(
+                ({ name, code }) =>
+                  html`
+                    <option value=${code} ?selected=${code === this.lang}>${name}</option>
+                  `,
+              )}
+            </select>
+            <gem-use class="dropdown" .root=${container} selector="#arrow"></gem-use>
+          </div>
+        `}
       ${this.sidebar.map(item => this.renderItem(item, true))}
     `;
   }

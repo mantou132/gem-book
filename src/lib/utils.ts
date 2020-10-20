@@ -7,17 +7,20 @@ export function capitalize(s: string) {
 export function flatNav(nav: NavItem[]): (NavItem & { link: string })[] {
   return nav
     .map((item: NavItem) => {
-      return item.link ? item : item.children ? flatNav(item.children) : [];
+      if (item.link) return item as NavItem & { link: string };
+      if (item.children) return flatNav(item.children);
+      return [];
     })
     .flat();
 }
 
-export function getMdPath(link: string) {
+export function getMdPath(link: string, lang?: string) {
   const { pathname } = new URL(link, location.origin);
+  const langPath = lang ? `/${lang}` : '';
   if (pathname.endsWith('/')) {
-    return `${history.basePath}${pathname}README.md`;
+    return `${history.basePath}${langPath}${pathname}README.md`;
   } else {
-    return `${history.basePath}${pathname}.md`;
+    return `${history.basePath}${langPath}${pathname}.md`;
   }
 }
 

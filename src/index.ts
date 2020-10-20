@@ -3,6 +3,7 @@ import { html, GemElement, customElement, property, attribute } from '@mantou/ge
 import '@mantou/gem/elements/title';
 import '@mantou/gem/elements/route';
 import { RouteItem } from '@mantou/gem/elements/route';
+import { I18n } from '@mantou/gem/helper/i18n';
 
 import './elements/nav';
 import './elements/sidebar';
@@ -36,17 +37,35 @@ export class Book extends GemElement<State> {
   render() {
     const config = this.config || this.state.config;
     if (!config) return null;
-    const { icon = '', sidebar, nav, github = '', sourceBranch = 'master', sourceDir = '', title = '' } = config;
+    const { icon = '', nav, github = '', sourceBranch = 'master', sourceDir = '', title = '' } = config;
 
     const hasNavbar = icon || title || nav;
+
+    let sidebar: NavItem[] = [];
+    let lang = '';
+    let langlist: { code: string; name: string }[] = [];
+    let languagechangeHandle = (_evt: CustomEvent<string>) => {};
+    if (config.sidebar instanceof Array) {
+      sidebar = config.sidebar;
+    } else {
+      const sidebarConfig = config.sidebar;
+      langlist = Object.keys(config.sidebar).map(code => ({ code, name: sidebarConfig[code].name }));
+      const i18n = new I18n<any>({ fallbackLanguage: langlist[0].code, resources: sidebarConfig, cache: true });
+      lang = i18n.currentLanguage;
+      sidebar = sidebarConfig[lang].data;
+      languagechangeHandle = async (evt: CustomEvent<string>) => {
+        await i18n.setLanguage(evt.detail);
+        this.update();
+      };
+    }
 
     const links = flatNav(sidebar);
 
     const routes: RouteItem[] = links.map(({ title: pageTitle, link }) => ({
       title: `${capitalize(pageTitle)} - ${title}`,
-      pattern: new URL(link as string, location.origin).pathname,
+      pattern: new URL(link, location.origin).pathname,
       content: html`
-        <gem-book-main link=${link as string}></gem-book-main>
+        <gem-book-main lang=${lang} link=${link}></gem-book-main>
       `,
     }));
 
@@ -57,6 +76,11 @@ export class Book extends GemElement<State> {
         redirect: firstRoutePath,
       });
     }
+
+    routes.push({
+      pattern: '*',
+      redirect: '/',
+    });
 
     return html`
       <style>
@@ -133,8 +157,13 @@ export class Book extends GemElement<State> {
           `
         : null}
       <gem-book-nav tl=${title} .nav=${nav} icon=${icon} github=${github}></gem-book-nav>
-      <gem-book-sidebar .sidebar=${sidebar}></gem-book-sidebar>
-      <gem-route .routes=${routes}></gem-route>
+      <gem-book-sidebar
+        @languagechange=${languagechangeHandle}
+        lang=${lang}
+        .langlist=${langlist}
+        .sidebar=${sidebar}
+      ></gem-book-sidebar>
+      <gem-route .key=${lang} .routes=${routes}></gem-route>
       ${github
         ? html`
             <gem-book-edit-link
