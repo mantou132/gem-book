@@ -1,6 +1,6 @@
 {
   "title": "Gem-book",
-  "icon": "https://img.icons8.com/ios-glyphs/344/ios-application-placeholder.png",
+  "icon": "/logo.png",
   "github": "https://github.com/mantou132/gem-book",
   "sourceDir": "src/examples/hello/docs",
   "sourceBranch": "master",

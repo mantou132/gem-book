@@ -78,9 +78,12 @@ npm link
 npm run watch
 # development `<gem-book>`
 npm run example
+# write docs
+npm run docs
 ```
 
 ## TODO
 
 - mobile style
-- support l10n
+- support i18n
+- docs

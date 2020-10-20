@@ -131,10 +131,9 @@ program
   })
   .arguments('<dir>')
   .action((dir: string) => {
+    command(dir);
     if (watch) {
       fs.watch(dir, { recursive: true }, () => command(dir));
-    } else {
-      command(dir);
     }
   });
 

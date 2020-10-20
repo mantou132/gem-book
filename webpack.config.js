@@ -28,7 +28,9 @@ module.exports = {
     path: path.resolve(__dirname, 'build', example),
   },
   plugins: [
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      favicon: './src/examples/hello/logo.png',
+    }),
     new CopyWebpackPlugin([{ from: './src/examples/hello/docs', to: './' }]),
     {
       apply(compiler) {
