@@ -147,7 +147,11 @@ program
   .action((dir: string) => {
     command(dir);
     if (watch) {
-      fs.watch(dir, { recursive: true }, () => command(dir));
+      fs.watch(dir, { recursive: true }, (_type, filename) => {
+        if (path.extname(filename) === '.md') {
+          command(dir);
+        }
+      });
     }
   });
 
