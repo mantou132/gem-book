@@ -52,7 +52,7 @@ export class SideBar extends GemElement {
     if (children) {
       return html`
         <div class="item" @click=${this.toggleLinks}>
-          <gem-use selector="#arrow" .root=${container}></gem-use>
+          <gem-use class="arrow" selector="#arrow" .root=${container}></gem-use>
           ${capitalize(title)}
         </div>
         <div class="links item">
@@ -84,15 +84,23 @@ export class SideBar extends GemElement {
           height: 2rem;
         }
         .langselect {
+          user-select: none;
           display: flex;
           align-items: center;
           border: 1px solid var(--border-color);
           border-radius: 5px;
-          margin-bottom: 0.5em;
-          user-select: none;
+          margin-bottom: 1em;
+        }
+        .langselect:hover {
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+          border-color: #ddd;
         }
         .dropdown {
-          margin: 0;
+          border-bottom: 1px solid var(--border-color);
+          box-sizing: border-box;
+          padding: 0.8em;
+          pointer-events: none;
+          margin-left: -2em;
           width: 2em;
           transform: rotate(90deg);
         }
@@ -103,9 +111,8 @@ export class SideBar extends GemElement {
           height: var(--docute-select-height);
           outline: none;
           font-size: 14px;
-          flex-grow: 1;
-          width: 0;
-          padding: 0 1em;
+          width: 100%;
+          padding: 0 3em 0 1em;
         }
         gem-active-link {
           display: block;
@@ -121,7 +128,7 @@ export class SideBar extends GemElement {
         gem-active-link.active + .hash {
           display: block;
         }
-        gem-use {
+        .arrow {
           width: 6px;
           height: 10px;
           margin-right: calc(1em - 6px);
