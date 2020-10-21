@@ -1,6 +1,7 @@
 import { html, GemElement, customElement, history, attribute, raw } from '@mantou/gem';
 import marked from 'marked';
 import Prism from 'prismjs';
+import fm from 'front-matter';
 
 import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-typescript';
@@ -67,7 +68,7 @@ export class Main extends GemElement<State> {
     const { path } = history.getParams();
     const mdPath = getMdPath(path, this.lang);
     const md = await (await fetch(mdPath)).text();
-    const elements = [...parser.parseFromString(marked.parse(md, { renderer }), 'text/html').body.children];
+    const elements = [...parser.parseFromString(marked.parse(fm(md).body, { renderer }), 'text/html').body.children];
     this.setState({
       fetching: false,
       content: elements,

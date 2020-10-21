@@ -69,6 +69,25 @@ output:
 └── About
 ```
 
+## i18n
+
+put the documents in the folder of the language code
+
+```
+src/examples/hello/docs/
+├── en
+│   ├── 002-guide
+│   │   ├── README.md
+│   │   └── installation.md
+│   ├── 003-about.md
+│   └── README.md
+└── zh
+    ├── 002-guide
+    │   ├── README.md
+    │   └── installation.md
+    └── README.md
+```
+
 ## develop
 
 ```bash

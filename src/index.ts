@@ -37,9 +37,7 @@ export class Book extends GemElement<State> {
   render() {
     const config = this.config || this.state.config;
     if (!config) return null;
-    const { icon = '', nav, github = '', sourceBranch = 'master', sourceDir = '', title = '' } = config;
-
-    const hasNavbar = icon || title || nav;
+    const { icon = '', github = '', sourceBranch = 'master', sourceDir = '', title = '' } = config;
 
     let sidebar: NavItem[] = [];
     let lang = '';
@@ -58,6 +56,19 @@ export class Book extends GemElement<State> {
         this.update();
       };
     }
+
+    const nav = config.nav || [];
+    const traverseSidebar = (items: NavItem[]) => {
+      items.forEach(item => {
+        if (item.isNav) {
+          nav.push(item);
+        } else if (item.children) {
+          traverseSidebar(item.children);
+        }
+      });
+    };
+    traverseSidebar(sidebar);
+    const hasNavbar = icon || title || nav?.length;
 
     const links = flatNav(sidebar);
 

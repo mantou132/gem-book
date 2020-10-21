@@ -18,11 +18,11 @@ export class Nav extends GemElement {
   @attribute icon: string;
   @property nav: NavItem[] | undefined;
 
-  renderItem = ({ title, link }: NavItem) => {
+  renderItem = ({ navTitle, title, link }: NavItem) => {
     if (link) {
       return html`
         <gem-active-link href=${link} pattern=${`${link}*`}>
-          ${capitalize(title)}
+          ${capitalize(navTitle || title)}
           ${isSameOrigin(link)
             ? null
             : html`

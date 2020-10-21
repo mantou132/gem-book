@@ -1,6 +1,8 @@
 interface NavItem {
   title: string;
   link?: string;
+  isNav?: boolean;
+  navTitle?: string;
   children?: NavItem[]; // dropdown menu
 }
 

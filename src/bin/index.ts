@@ -8,7 +8,6 @@
  * gem-book -t documentTitle src/docs
  */
 
-import YAML from 'yaml';
 import program from 'commander';
 import colors from 'colors';
 import path from 'path';
@@ -16,7 +15,8 @@ import fs from 'fs';
 import mkdirp from 'mkdirp';
 import gitRemoteOriginUrl from 'git-remote-origin-url';
 import getRepoInfo from 'git-repo-info';
-import { getGitUrl, getTitle, getFilename, getHeading } from './utils';
+import startCase from 'lodash/startCase';
+import { getGitUrl, getFilename, getMetadata } from './utils';
 import lang from './lang.json';
 
 program.version(require(path.resolve(__dirname, '../package.json')).version || '', '-v, --version');
@@ -42,20 +42,19 @@ function readDir(dir: string, link = '/') {
       if (fs.statSync(fullPath).isFile()) {
         if (path.extname(fullPath) === '.md') {
           const filename = getFilename(fullPath);
-          item.title = (getTitle(fullPath) as string).replace(/^\d*-/, '');
           item.link = `${link}${filename === 'README' ? '' : filename}`;
-          const titles = getHeading(fullPath);
-          if (titles.length) item.children = titles;
+          const { title, headings, isNav, navTitle } = getMetadata(fullPath);
+          item.title = title;
+          item.isNav = isNav;
+          item.navTitle = navTitle;
+          item.children = headings;
           result.push(item);
         }
       } else {
-        item.title = itemname.replace(/^\d*-/, '');
         item.children = readDir(fullPath, path.join(link, itemname) + '/');
-        try {
-          const str = fs.readFileSync(path.join(fullPath, 'config.yml'), 'utf8');
-          // dir support i18n title
-          Object.assign(item, YAML.parse(str));
-        } catch {}
+        const { title, isNav } = getMetadata(fullPath);
+        item.title = title;
+        item.isNav = isNav;
         result.push(item);
       }
     });
@@ -73,7 +72,7 @@ async function command(dir: string) {
 
   // default title
   if (bookConfig.title === undefined) {
-    bookConfig.title = getTitle(fullDir);
+    bookConfig.title = startCase(path.basename(process.cwd()));
   }
 
   // default sourceDir

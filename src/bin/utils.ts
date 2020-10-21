@@ -2,6 +2,8 @@ import path from 'path';
 import fs from 'fs';
 import { JSDOM } from 'jsdom';
 import marked from 'marked';
+import fm from 'front-matter';
+import YAML from 'yaml';
 
 export function getGitUrl(git = '') {
   const matchResult = git.match(/^git@(.*):(.*)\/(.*)\.git/);
@@ -18,49 +20,51 @@ export function getFilename(fullPath: string) {
   return basename.replace(extname, '');
 }
 
-export function getMdTitle(fullPath: string) {
-  // markdown h1
-  const content = fs.readFileSync(fullPath, { encoding: 'utf8' });
-  const html = marked(content);
-  const dom = new JSDOM(html);
-  const h1 = dom.window.document.querySelector('h1');
-  if (h1?.textContent) {
-    return h1.textContent;
-  }
-  return '';
+interface FileMetadata {
+  title: string;
+  isNav?: boolean;
+  navTitle?: string;
+  headings?: NavItem[];
 }
 
-export function getHeading(mdPath: string): NavItem[] {
-  const content = fs.readFileSync(mdPath, { encoding: 'utf8' });
-  const html = marked(content);
-  const dom = new JSDOM(html);
-  const titles = dom.window.document.querySelectorAll('h2');
-  return [...titles].map(heading => ({
-    title: heading.textContent as string,
-    link: `#${heading.id}`,
-  }));
-}
+export function getMetadata(fullPath: string): FileMetadata {
+  const getTitle = (p: string) => getFilename(p).replace(/^\d*-/, '');
+  const parseMd = (fullPath: string) => {
+    const md = fs.readFileSync(fullPath, 'utf8');
+    const { attributes, body } = fm<FileMetadata>(md);
+    const html = marked(body);
+    const { window } = new JSDOM(html);
+    const h1 = window.document.querySelector('h1');
+    const h2s = window.document.querySelectorAll('h2');
+    return {
+      ...(attributes as FileMetadata),
+      title: attributes.title || h1?.textContent || getTitle(fullPath),
+      headings: h2s.length
+        ? [...h2s].map(heading => ({
+            title: heading.textContent as string,
+            link: `#${heading.id}`,
+          }))
+        : undefined,
+    };
+  };
 
-// only support /README.md & *.md
-export function getTitle(fullPath: string) {
   if (fs.statSync(fullPath).isDirectory()) {
     const files = fs.readdirSync(fullPath);
-    if (files.includes('README.md')) {
-      const title = getMdTitle(path.join(fullPath, 'README.md'));
-      if (title) {
-        return title;
-      } else {
-        return path.basename(path.dirname(fullPath));
-      }
+    const result = {
+      title: getTitle(fullPath),
+    };
+    if (files.includes('config.yml')) {
+      return {
+        ...result,
+        ...YAML.parse(fs.readFileSync(path.join(fullPath, 'config.yml'), 'utf-8')),
+      };
+    } else {
+      return result;
     }
   } else {
     if (path.extname(fullPath) === '.md') {
-      const title = getMdTitle(fullPath);
-      if (title) {
-        return title;
-      } else {
-        return getFilename(fullPath);
-      }
+      return parseMd(fullPath);
     }
   }
+  return { title: '' };
 }
