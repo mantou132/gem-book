@@ -2,6 +2,12 @@
   "i18n": true,
   "title": "Gem-book",
   "icon": "/logo.png",
+  "nav": [
+    {
+      "title": "Self",
+      "link": "/"
+    }
+  ],
   "github": "https://github.com/mantou132/gem-book",
   "sourceDir": "src/examples/hello/docs",
   "sourceBranch": "master",

@@ -108,6 +108,13 @@ async function command(dir: string) {
   fs.writeFileSync(fullPath, configStr);
 }
 
+function addNavItem(item: string) {
+  bookConfig.nav = bookConfig.nav || [];
+  const [title, link] = item.split(',');
+  if (!link) throw new Error('nav options error');
+  bookConfig.nav.push({ title, link });
+}
+
 program
   .option('-c, --config <config file>', 'specify config file', (configPath: string) => {
     try {
@@ -122,26 +129,29 @@ program
   .option('-i, --icon <icon>', 'project icon', (icon: string) => {
     bookConfig.icon = icon;
   })
+  .option('-o, --output <ouput file>', `ouput json file, default \`${output}\``, (out: string) => {
+    output = out;
+  })
   .option('-d, --source-dir <source dir>', 'github source dir', (sourceDir: string) => {
     bookConfig.sourceDir = sourceDir;
   })
   .option('-b, --source-branch <source branch>', 'github source branch', (sourceBranch: string) => {
     bookConfig.sourceBranch = sourceBranch;
   })
-  .option('--github', 'github link', (link: string) => {
+  .option('--github <link>', 'github link', (link: string) => {
     bookConfig.sourceBranch = link;
   })
   .option('--i18n', 'enabled i18n', () => {
     bookConfig.i18n = true;
   })
+  .option('--nav1 <title,link>', 'attach a nav item', addNavItem)
+  .option('--nav2 <title,link>', 'attach a nav item', addNavItem)
+  .option('--nav3 <title,link>', 'attach a nav item', addNavItem)
   .option('--debug', 'enabled debug mode', () => {
     debug = true;
   })
   .option('--watch', 'watch mode', () => {
     watch = true;
-  })
-  .option('-o, --output <ouput file>', `ouput json file, default \`${output}\``, (out: string) => {
-    output = out;
   })
   .arguments('<dir>')
   .action((dir: string) => {
