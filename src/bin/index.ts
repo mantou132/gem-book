@@ -83,10 +83,13 @@ async function command(dir: string) {
   if (bookConfig.i18n) {
     const sidebarConfig: SidebarConfig = {};
     fs.readdirSync(fullDir).forEach(code => {
-      sidebarConfig[code] = {
-        data: readDir(path.join(fullDir, code)),
-        name: code in lang ? lang[code as keyof typeof lang] : code,
-      };
+      const fullPath = path.join(fullDir, code);
+      if (fs.statSync(fullPath).isDirectory()) {
+        sidebarConfig[code] = {
+          data: readDir(path.join(fullDir, code)),
+          name: code in lang ? lang[code as keyof typeof lang] : code,
+        };
+      }
     });
     bookConfig.sidebar = sidebarConfig;
   } else {
