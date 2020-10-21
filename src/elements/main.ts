@@ -111,6 +111,9 @@ export class Main extends GemElement<State> {
           padding-top: 3rem;
           opacity: ${fetching ? 0.3 : 1};
         }
+        a > img + svg {
+          display: none;
+        }
         a,
         gem-link {
           color: var(--link-color);
