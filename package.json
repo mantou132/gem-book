@@ -42,7 +42,8 @@
     "jsdom": "^16.0.1",
     "marked": "^0.8.0",
     "mkdirp": "^0.5.1",
-    "prismjs": "^1.19.0"
+    "prismjs": "^1.19.0",
+    "yaml": "^1.10.0"
   },
   "devDependencies": {
     "@open-wc/testing": "^2.4.2",

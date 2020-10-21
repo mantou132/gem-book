@@ -8,6 +8,7 @@
  * gem-book -t documentTitle src/docs
  */
 
+import YAML from 'yaml';
 import program from 'commander';
 import colors from 'colors';
 import path from 'path';
@@ -35,9 +36,9 @@ function readDir(dir: string, link = '/') {
       if (parseInt(rank1) > parseInt(rank2) || !rank2) return 1;
       return -1;
     })
-    .forEach(file => {
+    .forEach(itemname => {
       const item: NavItem = { title: '' };
-      const fullPath = path.join(dir, file);
+      const fullPath = path.join(dir, itemname);
       if (fs.statSync(fullPath).isFile()) {
         if (path.extname(fullPath) === '.md') {
           const filename = getFilename(fullPath);
@@ -48,8 +49,13 @@ function readDir(dir: string, link = '/') {
           result.push(item);
         }
       } else {
-        item.title = file.replace(/^\d*-/, '');
-        item.children = readDir(fullPath, path.join(link, file) + '/');
+        item.title = itemname.replace(/^\d*-/, '');
+        item.children = readDir(fullPath, path.join(link, itemname) + '/');
+        try {
+          const str = fs.readFileSync(path.join(fullPath, 'config.yml'), 'utf8');
+          // dir support i18n title
+          Object.assign(item, YAML.parse(str));
+        } catch {}
         result.push(item);
       }
     });
@@ -118,7 +124,7 @@ function addNavItem(item: string) {
 program
   .option('-c, --config <config file>', 'specify config file', (configPath: string) => {
     try {
-      Object.assign(bookConfig, fs.readFileSync(configPath, { encoding: 'utf8' }));
+      Object.assign(bookConfig, fs.readFileSync(configPath, 'utf8'));
     } catch {
       console.log(colors.red('config file read fail'));
     }
