@@ -17,11 +17,13 @@ export class EditLink extends GemElement {
   @attribute github: string;
   @attribute srouceDir: string;
   @attribute sourceBranch: string;
+  @attribute lang: string;
 
   render() {
     const { path } = history.getParams();
     const mdPath = getMdPath(path);
     const sroucePath = this.srouceDir ? `/${this.srouceDir}` : '';
+    const langPath = this.lang ? `/${this.lang}` : '';
 
     return html`
       <style>
@@ -44,7 +46,7 @@ export class EditLink extends GemElement {
           margin-right: 10px;
         }
       </style>
-      <gem-link href=${`${this.github}/blob/${this.sourceBranch}${sroucePath}${mdPath}`}>
+      <gem-link href=${`${this.github}/blob/${this.sourceBranch}${sroucePath}${langPath}${mdPath}`}>
         <gem-use selector="#compose" .root=${container}></gem-use>
         <span>Edit this page on GitHub</span>
       </gem-link>

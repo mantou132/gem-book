@@ -42,12 +42,14 @@ export class Book extends GemElement<State> {
     let sidebar: NavItem[] = [];
     let lang = '';
     let langlist: { code: string; name: string }[] = [];
-    let languagechangeHandle = (_evt: CustomEvent<string>) => {};
+    let languagechangeHandle = (_evt: CustomEvent<string>) => {
+      //
+    };
     if (config.sidebar instanceof Array) {
       sidebar = config.sidebar;
     } else {
       const sidebarConfig = config.sidebar;
-      langlist = Object.keys(config.sidebar).map(code => ({ code, name: sidebarConfig[code].name }));
+      langlist = Object.keys(config.sidebar).map((code) => ({ code, name: sidebarConfig[code].name }));
       const i18n = new I18n<any>({ fallbackLanguage: langlist[0].code, resources: sidebarConfig, cache: true });
       lang = i18n.currentLanguage;
       sidebar = sidebarConfig[lang].data;
@@ -59,7 +61,7 @@ export class Book extends GemElement<State> {
 
     const nav = config.nav || [];
     const traverseSidebar = (items: NavItem[]) => {
-      items.forEach(item => {
+      items.forEach((item) => {
         if (item.isNav) {
           nav.push(item);
         } else if (item.children) {
@@ -75,9 +77,7 @@ export class Book extends GemElement<State> {
     const routes: RouteItem[] = links.map(({ title: pageTitle, link }) => ({
       title: `${capitalize(pageTitle)} - ${title}`,
       pattern: new URL(link, location.origin).pathname,
-      content: html`
-        <gem-book-main lang=${lang} link=${link}></gem-book-main>
-      `,
+      content: html`<gem-book-main lang=${lang} link=${link}></gem-book-main>`,
     }));
 
     if (!routes.some(({ pattern }) => pattern === '/')) {
@@ -162,11 +162,7 @@ export class Book extends GemElement<State> {
           top: var(--header-height);
         }
       </style>
-      ${hasNavbar
-        ? html`
-            <div class="nav-shadow"></div>
-          `
-        : null}
+      ${hasNavbar ? html`<div class="nav-shadow"></div>` : null}
       <gem-book-nav tl=${title} .nav=${nav} icon=${icon} github=${github}></gem-book-nav>
       <gem-book-sidebar
         @languagechange=${languagechangeHandle}
@@ -181,6 +177,7 @@ export class Book extends GemElement<State> {
               github=${github}
               source-branch=${sourceBranch}
               srouce-dir=${sourceDir}
+              lang=${lang}
             ></gem-book-edit-link>
           `
         : null}
