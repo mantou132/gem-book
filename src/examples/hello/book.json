@@ -10,7 +10,8 @@
       "data": [
         {
           "title": "Introduction",
-          "link": "/"
+          "link": "/",
+          "sidebarIgnore": true
         },
         {
           "title": "guide",
@@ -53,7 +54,7 @@
           "title": "About",
           "link": "/003-about",
           "isNav": true,
-          "navTitle": "Test"
+          "navTitle": "NavTitle"
         }
       ],
       "name": "English"

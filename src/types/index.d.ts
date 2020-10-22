@@ -1,9 +1,10 @@
 interface NavItem {
   title: string;
   link?: string;
+  children?: NavItem[]; // dropdown menu
   isNav?: boolean;
   navTitle?: string;
-  children?: NavItem[]; // dropdown menu
+  sidebarIgnore?: boolean;
 }
 
 type SidebarConfig = NavItem[] | { [lang: string]: { name: string; data: NavItem[] } };

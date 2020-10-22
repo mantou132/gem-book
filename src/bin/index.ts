@@ -43,18 +43,14 @@ function readDir(dir: string, link = '/') {
         if (path.extname(fullPath) === '.md') {
           const filename = getFilename(fullPath);
           item.link = `${link}${filename === 'README' ? '' : filename}`;
-          const { title, headings, isNav, navTitle } = getMetadata(fullPath);
-          item.title = title;
-          item.isNav = isNav;
-          item.navTitle = navTitle;
-          item.children = headings;
+          const { title, headings: children, isNav, navTitle, sidebarIgnore } = getMetadata(fullPath);
+          Object.assign(item, { title, children, isNav, navTitle, sidebarIgnore });
           result.push(item);
         }
       } else {
         item.children = readDir(fullPath, path.join(link, itemname) + '/');
-        const { title, isNav } = getMetadata(fullPath);
-        item.title = title;
-        item.isNav = isNav;
+        const { title, isNav, navTitle, sidebarIgnore } = getMetadata(fullPath);
+        Object.assign(item, { title, isNav, navTitle, sidebarIgnore });
         result.push(item);
       }
     });

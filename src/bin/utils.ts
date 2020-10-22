@@ -21,10 +21,11 @@ export function getFilename(fullPath: string) {
 }
 
 interface FileMetadata {
+  headings?: NavItem[];
   title: string;
   isNav?: boolean;
   navTitle?: string;
-  headings?: NavItem[];
+  sidebarIgnore?: boolean;
 }
 
 export function getMetadata(fullPath: string): FileMetadata {
@@ -54,9 +55,10 @@ export function getMetadata(fullPath: string): FileMetadata {
       title: getTitle(fullPath),
     };
     if (files.includes('config.yml')) {
+      const config = YAML.parse(fs.readFileSync(path.join(fullPath, 'config.yml'), 'utf-8'));
       return {
         ...result,
-        ...YAML.parse(fs.readFileSync(path.join(fullPath, 'config.yml'), 'utf-8')),
+        ...config,
       };
     } else {
       return result;

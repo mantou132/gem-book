@@ -30,7 +30,8 @@ export class SideBar extends GemElement {
     ele.classList.toggle('close');
   };
 
-  renderItem = ({ link, title, children }: NavItem, isTop = false): TemplateResult => {
+  renderItem = ({ link, title, children, sidebarIgnore }: NavItem, isTop = false): TemplateResult | null => {
+    if (sidebarIgnore) return null;
     if (link) {
       return html`
         <gem-active-link
@@ -60,7 +61,7 @@ export class SideBar extends GemElement {
         </div>
       `;
     }
-    return html``;
+    return null;
   };
 
   render() {
