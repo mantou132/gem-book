@@ -3,6 +3,7 @@ import marked from 'marked';
 import Prism from 'prismjs';
 import fm from 'front-matter';
 
+import '@mantou/gem/elements/link';
 import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-typescript';
 
@@ -35,10 +36,17 @@ renderer.heading = function(text, level, r, slugger) {
 };
 
 renderer.link = function(href, title, text) {
+  // gem relative path
+  // if (href.startsWith('.')) {
+  //   return raw`
+  //     <gem-link path=${href} title=${title}>${text}</gem-link>
+  //   `;
+  // }
+  const internal = isSameOrigin(href);
   return raw`
-    <a target=${isSameOrigin(href) ? '_self' : '_blank'} href=${href} title=${title}>
+    <a target=${internal ? '_self' : '_blank'} href=${href} title=${title}>
       ${text}
-      ${link}
+      ${internal ? '' : link}
     </a>
   `;
 };
