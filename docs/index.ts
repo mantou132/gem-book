@@ -1,6 +1,6 @@
 import { render, html } from '@mantou/gem';
 import config from './book.json';
-import '../../';
+import '../src';
 
 render(
   html`

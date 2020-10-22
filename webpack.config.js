@@ -1,21 +1,25 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const hello = 'hello';
-const example = process.env.NAME || hello;
-const tip = '使用 `NAME=[example-name] npm run example` 指定用例';
 
 /**
  * @type {import('webpack/declarations/WebpackOptions').WebpackOptions}
  */
 module.exports = {
-  entry: `./src/examples/${example}/index.ts`,
+  entry: `./docs`,
   module: {
     rules: [
       {
         test: /\.ts$/,
-        use: 'ts-loader',
         exclude: /node_modules/,
+        use: {
+          loader: 'ts-loader',
+          options: {
+            compilerOptions: {
+              declaration: false,
+              declarationMap: false,
+            },
+          },
+        },
       },
     ],
   },
@@ -23,26 +27,17 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
+    path: path.resolve('./docs'),
     publicPath: '/',
-    filename: 'bundle.[contenthash].js',
-    path: path.resolve(__dirname, 'build', example),
+    filename: 'bundle.js?[contenthash]',
   },
   plugins: [
     new HtmlWebpackPlugin({
-      favicon: './src/examples/hello/logo.png',
+      favicon: './docs/logo.png',
     }),
-    new CopyWebpackPlugin([{ from: './src/examples/hello/docs', to: './' }]),
-    {
-      apply(compiler) {
-        compiler.hooks.done.tapAsync('MyCustomPlugin', function (_compiler, callback) {
-          if (!process.env.NAME) setTimeout(() => console.log(`\n${tip}`));
-          callback();
-        });
-      },
-    },
   ],
   devServer: {
-    contentBase: path.join('./build', example),
+    contentBase: './docs',
     historyApiFallback: true,
   },
   devtool: 'source-map',

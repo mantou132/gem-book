@@ -20,9 +20,7 @@ next use custom elements `<gem-book>`
 // use `lit-html`
 import 'gem-book';
 import config from './book.json';
-html`
-  <gem-book .config=${config}></gem-book>
-`;
+html`<gem-book .config=${config}></gem-book>`;
 ```
 
 or
@@ -91,17 +89,12 @@ src/examples/hello/docs/
 ## develop
 
 ```bash
-# install the cli locally
-npm link
 # development cli
 npm run watch
-# development `<gem-book>`
-npm run example
 # write docs
-npm run docs
+npm run docs:dev
+# development `<gem-book>`
+npm run decs:fe
+# install the cli locally
+npm link
 ```
-
-## TODO
-
-- mobile style
-- docs
