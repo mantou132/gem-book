@@ -13,10 +13,9 @@ import colors from 'colors';
 import path from 'path';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
-import gitRemoteOriginUrl from 'git-remote-origin-url';
 import getRepoInfo from 'git-repo-info';
 import startCase from 'lodash/startCase';
-import { getGitUrl, getFilename, getMetadata } from './utils';
+import { getFilename, getGithubUrl, getMetadata } from './utils';
 import lang from './lang.json';
 
 program.version(require(path.resolve(__dirname, '../package.json')).version || '', '-v, --version');
@@ -36,7 +35,7 @@ function readDir(dir: string, link = '/') {
       if (parseInt(rank1) > parseInt(rank2) || !rank2) return 1;
       return -1;
     })
-    .forEach(itemname => {
+    .forEach((itemname) => {
       const item: NavItem = { title: '' };
       const fullPath = path.join(dir, itemname);
       if (fs.statSync(fullPath).isFile()) {
@@ -58,32 +57,24 @@ function readDir(dir: string, link = '/') {
 }
 
 async function command(dir: string) {
-  // read github info
-  if (bookConfig.github === undefined) {
-    const git = await gitRemoteOriginUrl(dir);
-    bookConfig.github = getGitUrl(git);
-  }
-
   const fullDir = path.join(process.cwd(), dir);
 
+  // read github info
+  bookConfig.github ??= await getGithubUrl();
+
   // default title
-  if (bookConfig.title === undefined) {
-    bookConfig.title = startCase(path.basename(process.cwd()));
-  }
+  bookConfig.title ??= startCase(path.basename(process.cwd()));
 
   // default sourceDir
-  if (bookConfig.sourceDir === undefined) {
-    bookConfig.sourceDir = dir;
-  }
+  bookConfig.sourceDir ??= dir;
 
   // default sourceBranch
-  if (bookConfig.sourceBranch === undefined) {
-    bookConfig.sourceBranch = getRepoInfo().branch;
-  }
+  // CI not support
+  bookConfig.sourceBranch ??= getRepoInfo().branch || 'master';
 
   if (bookConfig.i18n) {
     const sidebarConfig: SidebarConfig = {};
-    fs.readdirSync(fullDir).forEach(code => {
+    fs.readdirSync(fullDir).forEach((code) => {
       const fullPath = path.join(fullDir, code);
       if (fs.statSync(fullPath).isDirectory()) {
         sidebarConfig[code] = {

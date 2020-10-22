@@ -23,18 +23,14 @@ export class Nav extends GemElement {
       return html`
         <gem-active-link href=${link} pattern=${`${link}*`}>
           ${capitalize(navTitle || title)}
-          ${isSameOrigin(link)
-            ? null
-            : html`
-                <gem-use .root=${container} selector="#link"></gem-use>
-              `}
+          ${isSameOrigin(link) ? null : html`<gem-use .root=${container} selector="#link"></gem-use>`}
         </gem-active-link>
       `;
     }
   };
 
   render() {
-    const githubLink = this.github && this.renderItem({ title: 'github', link: this.github });
+    const githubLink = this.github ? this.renderItem({ title: 'github', link: this.github }) : null;
 
     return html`
       <style>
@@ -84,13 +80,7 @@ export class Nav extends GemElement {
         }
       </style>
       <div class="title">
-        <gem-link path="/">
-          ${this.icon
-            ? html`
-                <img alt=${this.tl} src=${this.icon} />
-              `
-            : null}${this.tl}</gem-link
-        >
+        <gem-link path="/">${this.icon ? html`<img alt=${this.tl} src=${this.icon} />` : null}${this.tl}</gem-link>
       </div>
       ${this.nav ? this.nav.map(this.renderItem) : null} ${githubLink}
     `;

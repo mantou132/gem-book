@@ -30,17 +30,9 @@ export class RelLink extends GemElement {
           text-decoration: underline;
         }
       </style>
-      ${prev
-        ? html`
-            <gem-link path=${prev.link}>← ${capitalize(prev.title)}</gem-link>
-          `
-        : null}
+      ${prev ? html`<gem-link path=${prev.link}>← ${capitalize(prev.title)}</gem-link>` : null}
       <div></div>
-      ${next
-        ? html`
-            <gem-link path=${next.link}>${capitalize(next.title)} →</gem-link>
-          `
-        : null}
+      ${next ? html`<gem-link path=${next.link}>${capitalize(next.title)} →</gem-link>` : null}
     `;
   }
 }

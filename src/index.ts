@@ -37,7 +37,7 @@ export class Book extends GemElement<State> {
   render() {
     const config = this.config || this.state.config;
     if (!config) return null;
-    const { icon = '', github = '', sourceBranch = 'master', sourceDir = '', title = '' } = config;
+    const { icon = '', github = '', sourceBranch, sourceDir = '', title = '' } = config;
 
     let sidebar: NavItem[] = [];
     let lang = '';
@@ -171,7 +171,7 @@ export class Book extends GemElement<State> {
         .sidebar=${sidebar}
       ></gem-book-sidebar>
       <gem-route .key=${lang} .routes=${routes}></gem-route>
-      ${github
+      ${github && sourceBranch
         ? html`
             <gem-book-edit-link
               github=${github}

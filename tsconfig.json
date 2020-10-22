@@ -18,5 +18,5 @@
     "lib": ["es2020", "dom", "DOM.Iterable"]
   },
   "include": ["src"],
-  "exclude": []
+  "exclude": ["src/examples"]
 }

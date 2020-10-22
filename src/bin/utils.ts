@@ -1,17 +1,22 @@
 import path from 'path';
 import fs from 'fs';
+import gitRemoteOriginUrl from 'git-remote-origin-url';
+import parseGithub from 'parse-github-url';
 import { JSDOM } from 'jsdom';
 import marked from 'marked';
 import fm from 'front-matter';
 import YAML from 'yaml';
 
-export function getGitUrl(git = '') {
-  const matchResult = git.match(/^git@(.*):(.*)\/(.*)\.git/);
-  if (matchResult) {
-    const [, origin, user, repo] = matchResult;
-    return `https://${origin}/${user}/${repo}`;
-  }
-  return '';
+export async function getGithubUrl() {
+  const repoDir = process.cwd();
+  try {
+    const repoPkg = require(path.resolve(repoDir, './package.json'));
+    const git = repoPkg?.repository?.url || (await gitRemoteOriginUrl(repoDir));
+    const parsed = parseGithub(git);
+    if (parsed?.repository) {
+      return `https://github.com/${parsed.repository}`;
+    }
+  } catch {}
 }
 
 export function getFilename(fullPath: string) {
@@ -41,7 +46,7 @@ export function getMetadata(fullPath: string): FileMetadata {
       ...(attributes as FileMetadata),
       title: attributes.title || h1?.textContent || getTitle(fullPath),
       headings: h2s.length
-        ? [...h2s].map(heading => ({
+        ? [...h2s].map((heading) => ({
             title: heading.textContent as string,
             link: `#${heading.id}`,
           }))

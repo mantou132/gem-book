@@ -1,7 +1,7 @@
 import { expect } from '@open-wc/testing';
 import { capitalize, flatNav, getMdPath } from '../lib/utils';
 
-describe('utils 测试', () => {
+describe('lib/utils', () => {
   it('capitalize', () => {
     expect(capitalize('abc')).to.equal('Abc');
     expect(capitalize('abc d')).to.equal('Abc d');

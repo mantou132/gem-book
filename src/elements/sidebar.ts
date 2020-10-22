@@ -41,13 +41,7 @@ export class SideBar extends GemElement {
         >
           ${capitalize(title)}
         </gem-active-link>
-        ${children
-          ? html`
-              <div class="links item hash">
-                ${children.map(item => this.renderItem(item))}
-              </div>
-            `
-          : null}
+        ${children ? html` <div class="links item hash">${children.map((item) => this.renderItem(item))}</div> ` : null}
       `;
     }
     if (children) {
@@ -56,9 +50,7 @@ export class SideBar extends GemElement {
           <gem-use class="arrow" selector="#arrow" .root=${container}></gem-use>
           ${capitalize(title)}
         </div>
-        <div class="links item">
-          ${children.map(item => this.renderItem(item))}
-        </div>
+        <div class="links item">${children.map((item) => this.renderItem(item))}</div>
       `;
     }
     return null;
@@ -179,20 +171,17 @@ export class SideBar extends GemElement {
         }
       </style>
       ${this.lang &&
-        html`
-          <div class="langselect">
-            <select @change=${(e: any) => this.languagechange(e.target.value)}>
-              ${this.langlist.map(
-                ({ name, code }) =>
-                  html`
-                    <option value=${code} ?selected=${code === this.lang}>${name}</option>
-                  `,
-              )}
-            </select>
-            <gem-use class="dropdown" .root=${container} selector="#arrow"></gem-use>
-          </div>
-        `}
-      ${this.sidebar.map(item => this.renderItem(item, true))}
+      html`
+        <div class="langselect">
+          <select @change=${(e: any) => this.languagechange(e.target.value)}>
+            ${this.langlist.map(
+              ({ name, code }) => html` <option value=${code} ?selected=${code === this.lang}>${name}</option> `,
+            )}
+          </select>
+          <gem-use class="dropdown" .root=${container} selector="#arrow"></gem-use>
+        </div>
+      `}
+      ${this.sidebar.map((item) => this.renderItem(item, true))}
     `;
   }
 

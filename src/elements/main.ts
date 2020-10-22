@@ -13,7 +13,7 @@ import { anchor, link } from './icons';
 const parser = new DOMParser();
 
 marked.setOptions({
-  highlight: function(code, lang) {
+  highlight: function (code, lang) {
     if (Prism.languages[lang]) {
       return `<i class="code-lang-name">${lang}</i>${Prism.highlight(code, Prism.languages[lang], lang)}`;
     } else {
@@ -24,7 +24,7 @@ marked.setOptions({
 
 const renderer = new marked.Renderer();
 // https://github.com/markedjs/marked/blob/ed18cd58218ed4ab98d3457bec2872ba1f71230e/lib/marked.esm.js#L986
-renderer.heading = function(text, level, r, slugger) {
+renderer.heading = function (text, level, r, slugger) {
   const tag = `h${level}`;
   const id = `${this.options.headerPrefix}${slugger.slug(r)}`;
   return raw`
@@ -35,16 +35,16 @@ renderer.heading = function(text, level, r, slugger) {
   `;
 };
 
-renderer.link = function(href, title, text) {
+renderer.link = function (href, title, text) {
   // gem relative path
   // if (href.startsWith('.')) {
   //   return raw`
   //     <gem-link path=${href} title=${title}>${text}</gem-link>
   //   `;
   // }
-  const internal = isSameOrigin(href);
+  const internal = isSameOrigin(href || '');
   return raw`
-    <a target=${internal ? '_self' : '_blank'} href=${href} title=${title}>
+    <a target=${internal ? '_self' : '_blank'} href=${href || ''} title=${title || ''}>
       ${text}
       ${internal ? '' : link}
     </a>
