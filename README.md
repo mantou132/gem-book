@@ -86,15 +86,15 @@ src/examples/hello/docs/
     └── README.md
 ```
 
-## develop
+## development
 
 ```bash
-# development cli
+# start development
 npm run watch
-# write docs
-npm run docs:dev
+# development cli and watch docs
+npm run dev:docs
 # development `<gem-book>`
-npm run decs:fe
+npm run dev:website
 # install the cli locally
 npm link
 ```
