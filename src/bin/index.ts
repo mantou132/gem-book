@@ -10,6 +10,7 @@
 
 import program from 'commander';
 import path from 'path';
+import util from 'util';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import getRepoInfo from 'git-repo-info';
@@ -95,8 +96,8 @@ async function command(dir: string) {
   const fullPath = path.join(process.cwd(), outputFile);
   mkdirp.sync(path.dirname(fullPath));
   const configStr = JSON.stringify(bookConfig, null, 2) + '\n';
-  if (debug) console.log(configStr);
   fs.writeFileSync(fullPath, configStr);
+  if (debug) console.log(util.inspect(JSON.parse(configStr), { colors: true, depth: null }));
 }
 
 function addNavItem(item: string) {
