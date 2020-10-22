@@ -9,7 +9,6 @@
  */
 
 import program from 'commander';
-import colors from 'colors';
 import path from 'path';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
@@ -109,11 +108,7 @@ function addNavItem(item: string) {
 
 program
   .option('-c, --config <config file>', 'specify config file', (configPath: string) => {
-    try {
-      Object.assign(bookConfig, fs.readFileSync(configPath, 'utf8'));
-    } catch {
-      console.log(colors.red('config file read fail'));
-    }
+    Object.assign(bookConfig, require(path.resolve(process.cwd(), configPath)));
   })
   .option('-t, --title <title>', 'document title', (title: string) => {
     bookConfig.title = title;
