@@ -12,6 +12,7 @@ import './elements/footer';
 import './elements/edit-link';
 import './elements/rel-link';
 import { flatNav, capitalize } from './lib/utils';
+import { selfI18n } from './lib/i18n';
 
 type State = { config: BookConfig | undefined };
 
@@ -57,6 +58,10 @@ export class Book extends GemElement<State> {
         await i18n.setLanguage(evt.detail);
         this.update();
       };
+    }
+
+    if (lang) {
+      selfI18n.setLanguage(lang in selfI18n.resources ? lang : selfI18n.fallbackLanguage);
     }
 
     const nav = config.nav || [];

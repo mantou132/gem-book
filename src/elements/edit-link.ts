@@ -5,6 +5,7 @@ import '@mantou/gem/elements/use';
 
 import { container } from './icons';
 import { getMdPath } from '../lib/utils';
+import { selfI18n } from '../lib/i18n';
 
 /**
  * @attr github
@@ -13,6 +14,7 @@ import { getMdPath } from '../lib/utils';
  */
 @customElement('gem-book-edit-link')
 @connectStore(history.store)
+@connectStore(selfI18n.store)
 export class EditLink extends GemElement {
   @attribute github: string;
   @attribute srouceDir: string;
@@ -48,7 +50,7 @@ export class EditLink extends GemElement {
       </style>
       <gem-link href=${`${this.github}/blob/${this.sourceBranch}${sroucePath}${langPath}${mdPath}`}>
         <gem-use selector="#compose" .root=${container}></gem-use>
-        <span>Edit this page on GitHub</span>
+        <span>${selfI18n.get('editOnGithub')}</span>
       </gem-link>
     `;
   }
