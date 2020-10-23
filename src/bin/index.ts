@@ -146,7 +146,7 @@ program
     command(dir);
     if (watch) {
       fs.watch(dir, { recursive: true }, (_type, filename) => {
-        if (path.extname(filename) === '.md') {
+        if (filename === 'config.yml' || path.extname(filename) === '.md') {
           command(dir);
         }
       });
