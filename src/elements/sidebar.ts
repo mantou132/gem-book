@@ -99,6 +99,7 @@ export class SideBar extends GemElement {
         }
         select {
           background: none;
+          -webkit-appearance: none;
           appearance: none;
           border: none;
           height: var(--docute-select-height);
