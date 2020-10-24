@@ -12,7 +12,8 @@ import './elements/footer';
 import './elements/edit-link';
 import './elements/rel-link';
 import { flatNav, capitalize } from './lib/utils';
-import { selfI18n } from './lib/i18n';
+import { selfI18n } from './helper/i18n';
+import { theme, changeTheme, Theme } from './helper/theme';
 
 type State = { config: BookConfig | undefined };
 
@@ -23,48 +24,59 @@ type State = { config: BookConfig | undefined };
  */
 @customElement('gem-book')
 export class Book extends GemElement<State> {
-  @property config: BookConfig | undefined;
   @attribute src: string;
+
+  @property config: BookConfig | undefined;
+  @property theme: Partial<Theme> | undefined;
 
   state: State = {
     config: undefined, // `src` generate
   };
 
-  constructor(config: BookConfig) {
+  constructor(config: BookConfig, theme?: Partial<Theme>) {
     super();
     this.config = config;
+    this.theme = theme;
   }
 
-  render() {
-    const config = this.config || this.state.config;
-    if (!config) return null;
-    const { icon = '', github = '', sourceBranch, sourceDir = '', title = '' } = config;
+  private getConfig() {
+    return this.config || this.state.config;
+  }
 
+  private getI18nSidebar() {
+    const config = this.getConfig();
     let sidebar: NavItem[] = [];
     let lang = '';
     let langlist: { code: string; name: string }[] = [];
     let languagechangeHandle = (_evt: CustomEvent<string>) => {
       //
     };
-    if (config.sidebar instanceof Array) {
-      sidebar = config.sidebar;
-    } else {
-      const sidebarConfig = config.sidebar;
-      langlist = Object.keys(config.sidebar).map((code) => ({ code, name: sidebarConfig[code].name }));
-      const i18n = new I18n<any>({ fallbackLanguage: langlist[0].code, resources: sidebarConfig, cache: true });
-      lang = i18n.currentLanguage;
-      sidebar = sidebarConfig[lang].data;
-      languagechangeHandle = async (evt: CustomEvent<string>) => {
-        await i18n.setLanguage(evt.detail);
-        this.update();
-      };
+    if (config) {
+      if (config.sidebar instanceof Array) {
+        sidebar = config.sidebar;
+      } else {
+        const sidebarConfig = config.sidebar;
+        langlist = Object.keys(config.sidebar).map((code) => ({ code, name: sidebarConfig[code].name }));
+        const fallbackLanguage = langlist[0].code;
+        const i18n = new I18n<any>({ fallbackLanguage, resources: sidebarConfig, cache: true });
+        lang = i18n.currentLanguage;
+        sidebar = sidebarConfig[lang].data;
+        languagechangeHandle = async (evt: CustomEvent<string>) => {
+          await i18n.setLanguage(evt.detail);
+          this.update();
+        };
+      }
     }
 
     if (lang) {
       selfI18n.setLanguage(lang in selfI18n.resources ? lang : selfI18n.fallbackLanguage);
     }
+    return { sidebar, lang, langlist, languagechangeHandle };
+  }
 
-    const nav = config.nav || [];
+  private getNav(sidebar: NavItem[]) {
+    const config = this.getConfig();
+    const nav = config?.nav || [];
     const traverseSidebar = (items: NavItem[]) => {
       items.forEach((item) => {
         if (item.isNav) {
@@ -75,8 +87,18 @@ export class Book extends GemElement<State> {
       });
     };
     traverseSidebar(sidebar);
-    const hasNavbar = icon || title || nav?.length;
+    return nav;
+  }
 
+  changeTheme = changeTheme;
+
+  render() {
+    const config = this.getConfig();
+    if (!config) return null;
+    const { icon = '', github = '', sourceBranch, sourceDir = '', title = '' } = config;
+    const { sidebar, lang, langlist, languagechangeHandle } = this.getI18nSidebar();
+    const nav = this.getNav(sidebar);
+    const hasNavbar = icon || title || nav.length;
     const links = flatNav(sidebar);
 
     const routes: RouteItem[] = links.map(({ title: pageTitle, link }) => ({
@@ -101,60 +123,18 @@ export class Book extends GemElement<State> {
     return html`
       <style>
         :host {
-          --accent-color: #009688;
-          --page-background: #fff;
-          --header-background: #fff;
-          --header-text-color: var(--text-color);
-          --text-color: #000;
-          --link-color: var(--accent-color);
-          --sidebar-width: 230px;
-          --sidebar-background: var(--page-background);
-          --sidebar-link-color: #444;
-          --sidebar-link-active-color: #000;
-          --sidebar-link-arrow-color: #999;
-          --main-width: 780px;
-          --main-background: var(--page-background);
-          --border-color: #eaeaea;
-          --header-height: 55px;
-          --code-font: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
-          --tip-color: rgb(6, 125, 247);
-          --success-color: #42b983;
-          --warning-color: #ff9800;
-          --danger-color: rgb(255, 0, 31);
-          --nav-link-color: #2c3e50;
-          --nav-link-border-color: var(--accent-color);
-          --code-block-background: #011627;
-          --code-block-text-color: white;
-          --code-block-shadow-color: #333;
-          --code-block-shadow-width: 0px;
-          --highlighted-line-background: #022a4b;
-          --highlighted-line-border-color: #ffa7c4;
-          --inline-code-color: rgb(116, 66, 16);
-          --inline-code-background: rgb(254, 252, 191);
-          --loader-primary-color: #f3f3f3;
-          --loader-secondary-color: #ecebeb;
-          --table-header-background: #fafafa;
-          --table-header-color: #666;
-          --docute-select-height: 38px;
-          --search-icon-color: #999;
-          --search-focus-border-color: #ccc;
-          --search-focus-icon-color: #333;
-          --search-result-hover-background: #f9f9f9;
-        }
-        :host {
           display: grid;
           grid-template-areas: 'left aside content right';
-          grid-template-columns: auto var(--sidebar-width) var(--main-width) auto;
+          grid-template-columns: auto ${theme.sidebarWidth} ${theme.mainWidth} auto;
           grid-column-gap: 3rem;
           text-rendering: optimizeLegibility;
-          font: 16px/1.7 -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
-            Droid Sans, Helvetica Neue, sans-serif;
-          color: var(--text-color);
+          font: 16px/1.7 ${theme.font};
+          color: ${theme.textColor};
         }
         .nav-shadow {
           grid-area: 1 / left / 1 / right;
           background: white;
-          border-bottom: 1px solid var(--border-color);
+          border-bottom: 1px solid ${theme.borderColor};
         }
         .nav-shadow,
         gem-book-nav {
@@ -163,8 +143,8 @@ export class Book extends GemElement<State> {
           z-index: 3;
         }
         .nav-shadow ~ gem-book-sidebar {
-          margin-top: var(--header-height);
-          top: var(--header-height);
+          margin-top: ${theme.headerHeight};
+          top: ${theme.headerHeight};
         }
       </style>
       ${hasNavbar ? html`<div class="nav-shadow"></div>` : null}
@@ -200,6 +180,12 @@ export class Book extends GemElement<State> {
         }
       },
       () => [this.src],
+    );
+    this.effect(
+      () => {
+        this.changeTheme(this.theme);
+      },
+      () => [this.theme],
     );
   }
 }

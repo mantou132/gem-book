@@ -9,6 +9,7 @@ import 'prismjs/components/prism-typescript';
 
 import { getMdPath, isSameOrigin } from '../lib/utils';
 import { anchor, link } from './icons';
+import { theme } from '../helper/theme';
 
 const parser = new DOMParser();
 
@@ -87,7 +88,9 @@ export class Main extends GemElement<State> {
   hashChangeHandle = () => {
     const { hash } = location;
     const ele = hash && this.shadowRoot?.querySelector(decodeURIComponent(hash));
-    if (ele) {
+    if (!hash) {
+      scrollTo(0, 0);
+    } else if (ele) {
       // webkit bug: https://bugs.webkit.org/show_bug.cgi?id=208110
       ele.scrollIntoView({
         behavior: 'smooth',
@@ -125,7 +128,7 @@ export class Main extends GemElement<State> {
         }
         a,
         gem-link {
-          color: var(--link-color);
+          color: ${theme.linkColor};
           text-decoration: none;
         }
         /* https://github.com/egoist/docute/blob/master/src/css/page-content.css */
@@ -143,7 +146,7 @@ export class Main extends GemElement<State> {
         h6 {
           font-weight: 300;
           line-height: 1.2;
-          scroll-margin: var(--header-height);
+          scroll-margin: ${theme.headerHeight};
         }
         h1 {
           font-size: 3rem;
@@ -151,7 +154,7 @@ export class Main extends GemElement<State> {
         }
         h2 {
           font-size: 2rem;
-          border-bottom: 1px solid var(--border-color);
+          border-bottom: 1px solid ${theme.borderColor};
           margin-top: 7rem;
           padding-bottom: 5px;
         }
@@ -177,32 +180,31 @@ export class Main extends GemElement<State> {
         table td,
         table th {
           padding: 12px 10px;
-          border-bottom: 1px solid var(--border-color);
+          border-bottom: 1px solid ${theme.borderColor};
           text-align: left;
         }
         thead th {
-          color: var(--table-header-color);
-          background: var(--table-header-background);
-          border-bottom: 1px solid var(--border-color);
-          border-top: 1px solid var(--border-color);
+          color: ${theme.tableHeaderColor};
+          background: ${theme.tableHeaderBackground};
+          border-bottom: 1px solid ${theme.borderColor};
+          border-top: 1px solid ${theme.borderColor};
           font-weight: 400;
           font-size: 12px;
           padding: 10px;
         }
         thead th:first-child {
-          border-left: 1px solid var(--border-color);
+          border-left: 1px solid ${theme.borderColor};
           border-radius: 4px 0 0 4px;
         }
         thead th:last-child {
-          border-right: 1px solid var(--border-color);
+          border-right: 1px solid ${theme.borderColor};
           border-radius: 0 4px 4px 0;
         }
         pre {
           margin: 2rem 0;
           position: relative;
           border-radius: 4px;
-          background: var(--code-block-background);
-          box-shadow: inset 0 0 0 var(--code-block-shadow-width) var(--code-block-shadow-color);
+          background: ${theme.codeBlockBackground};
         }
         pre .code-lang-name {
           position: absolute;
@@ -212,13 +214,13 @@ export class Main extends GemElement<State> {
           color: #cacaca;
         }
         pre code {
-          color: var(--code-block-text-color);
+          color: ${theme.codeBlockTextColor};
         }
         pre {
           overflow: auto;
           position: relative;
           z-index: 2;
-          font-family: var(--code-font);
+          font-family: ${theme.codeFont};
           white-space: pre;
         }
         pre code {
@@ -239,12 +241,12 @@ export class Main extends GemElement<State> {
           padding: 20px;
         }
         code {
-          font-family: var(--code-font);
+          font-family: ${theme.codeFont};
           font-size: 90%;
-          background: var(--inline-code-background);
+          background: ${theme.inlineCodeBackground};
           border-radius: 4px;
           padding: 3px 5px;
-          color: var(--inline-code-color);
+          color: ${theme.inlineCodeColor};
         }
         :host > ol,
         :host > ul {

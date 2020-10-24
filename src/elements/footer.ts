@@ -1,7 +1,8 @@
 import { html, GemElement, customElement, connectStore } from '@mantou/gem';
 import '@mantou/gem/elements/link';
-import { selfI18n } from '../lib/i18n';
-escape;
+import { selfI18n } from '../helper/i18n';
+import { theme } from '../helper/theme';
+
 @customElement('gem-book-footer')
 @connectStore(selfI18n.store)
 export class Footer extends GemElement {
@@ -13,10 +14,10 @@ export class Footer extends GemElement {
           grid-area: auto / content;
           padding: 2rem 0;
           margin-top: 6rem;
-          border-top: 1px solid var(--border-color);
+          border-top: 1px solid ${theme.borderColor};
         }
         gem-link {
-          color: var(--link-color);
+          color: ${theme.linkColor};
           text-decoration: none;
         }
         gem-link:hover {

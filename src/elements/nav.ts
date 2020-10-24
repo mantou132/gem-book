@@ -2,7 +2,7 @@ import { html, GemElement, customElement, attribute, property } from '@mantou/ge
 
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
-
+import { theme } from '../helper/theme';
 import { capitalize, isSameOrigin } from '../lib/utils';
 import { container } from './icons';
 
@@ -35,10 +35,10 @@ export class Nav extends GemElement {
     return html`
       <style>
         :host {
-          line-height: var(--header-height);
+          line-height: ${theme.headerHeight};
           display: flex;
           grid-area: 1 / aside / 1 / content;
-          color: var(--header-text-color);
+          color: ${theme.textColor};
         }
         gem-link,
         gem-active-link {
@@ -56,14 +56,14 @@ export class Nav extends GemElement {
           align-items: center;
         }
         .title img {
-          height: calc(0.8 * var(--header-height));
+          height: calc(0.8 * ${theme.headerHeight});
           transform: translateX(-10%);
         }
         gem-active-link + gem-active-link {
           margin-left: 1rem;
         }
         gem-active-link.active {
-          color: var(--link-color);
+          color: ${theme.linkColor};
         }
         gem-active-link.active::after {
           position: absolute;

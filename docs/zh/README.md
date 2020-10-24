@@ -28,7 +28,7 @@ import config from './book.json';
 html`<gem-book .config=${config}></gem-book>`;
 ```
 
-or
+或者
 
 ```js
 // 使用 DOM API
@@ -37,7 +37,7 @@ import config from './book.json';
 document.body.append(new Book(config));
 ```
 
-or
+或者
 
 ```html
 <srcipt src=https://unpkg.com/gem-book></script>

@@ -1,6 +1,7 @@
 import { html, GemElement, customElement, history, connectStore, property } from '@mantou/gem';
 
 import '@mantou/gem/elements/link';
+import { theme } from '../helper/theme';
 import { capitalize } from '../lib/utils';
 
 @customElement('gem-book-rel-link')
@@ -20,10 +21,10 @@ export class RelLink extends GemElement {
           display: flex;
           justify-content: space-between;
           grid-area: auto / content;
-          border-top: 1px solid var(--border-color);
+          border-top: 1px solid ${theme.borderColor};
         }
         gem-link {
-          color: var(--link-color);
+          color: ${theme.linkColor};
           text-decoration: none;
         }
         gem-link:hover {

@@ -5,7 +5,8 @@ import '@mantou/gem/elements/use';
 
 import { container } from './icons';
 import { getMdPath } from '../lib/utils';
-import { selfI18n } from '../lib/i18n';
+import { selfI18n } from '../helper/i18n';
+import { theme } from '../helper/theme';
 
 /**
  * @attr github
@@ -34,7 +35,7 @@ export class EditLink extends GemElement {
           grid-area: auto / content;
         }
         gem-link {
-          color: var(--link-color);
+          color: ${theme.linkColor};
           text-decoration: none;
           display: inline-flex;
           align-items: center;

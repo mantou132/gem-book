@@ -29,7 +29,7 @@
     "build:dist": "rimraf dist && webpack --config webpack.config.dist.js",
     "build": "npm run build:module && npm run build:dist",
     "prepare": "npm run lint && npm run build",
-    "build:website": "npm run docs && webpack",
+    "build:website": "npm run build:module && npm run docs && webpack",
     "test": "npm run build && karma start --coverage",
     "test:bs": "npm run build &&  karma start karma.bs.config.js --coverage"
   },

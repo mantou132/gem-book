@@ -15,6 +15,7 @@ import '@mantou/gem/elements/use';
 
 import { container } from './icons';
 import { capitalize } from '../lib/utils';
+import { theme } from '../helper/theme';
 
 @customElement('gem-book-sidebar')
 @connectStore(history.store)
@@ -41,7 +42,7 @@ export class SideBar extends GemElement {
         >
           ${capitalize(title)}
         </gem-active-link>
-        ${children ? html` <div class="links item hash">${children.map((item) => this.renderItem(item))}</div> ` : null}
+        ${children ? html`<div class="links item hash">${children.map((item) => this.renderItem(item))}</div>` : null}
       `;
     }
     if (children) {
@@ -63,7 +64,7 @@ export class SideBar extends GemElement {
           grid-area: 1 / aside / 111 / aside;
           overflow: auto;
           overscroll-behavior: contain;
-          height: calc(100vh - var(--header-height));
+          height: calc(100vh - ${theme.headerHeight});
           box-sizing: border-box;
           position: sticky;
           top: 0;
@@ -80,7 +81,7 @@ export class SideBar extends GemElement {
           user-select: none;
           display: flex;
           align-items: center;
-          border: 1px solid var(--border-color);
+          border: 1px solid ${theme.borderColor};
           border-radius: 5px;
           margin-bottom: 1em;
         }
@@ -89,7 +90,7 @@ export class SideBar extends GemElement {
           border-color: #ddd;
         }
         .dropdown {
-          border-bottom: 1px solid var(--border-color);
+          border-bottom: 1px solid ${theme.borderColor};
           box-sizing: border-box;
           padding: 0.8em;
           pointer-events: none;
@@ -102,7 +103,7 @@ export class SideBar extends GemElement {
           -webkit-appearance: none;
           appearance: none;
           border: none;
-          height: var(--docute-select-height);
+          height: 2.7em;
           outline: none;
           font-size: 14px;
           width: 100%;
@@ -116,7 +117,7 @@ export class SideBar extends GemElement {
           padding: 0.3em 0;
         }
         gem-active-link.active {
-          color: var(--link-color);
+          color: ${theme.linkColor};
         }
         gem-active-link.active:not([pattern*='#']) {
           font-weight: bolder;
@@ -133,7 +134,7 @@ export class SideBar extends GemElement {
           display: none;
         }
         .links {
-          border-left: 1px solid var(--border-color);
+          border-left: 1px solid ${theme.borderColor};
         }
         .hash {
           display: none;
@@ -155,7 +156,7 @@ export class SideBar extends GemElement {
           width: 4px;
           height: 4px;
           border-radius: 50%;
-          background-color: var(--sidebar-link-arrow-color);
+          background-color: ${theme.sidebarLinkArrowColor};
           margin-right: calc(1em - 4px);
         }
         .item gem-use {
@@ -176,7 +177,7 @@ export class SideBar extends GemElement {
         <div class="langselect">
           <select @change=${(e: any) => this.languagechange(e.target.value)}>
             ${this.langlist.map(
-              ({ name, code }) => html` <option value=${code} ?selected=${code === this.lang}>${name}</option> `,
+              ({ name, code }) => html`<option value=${code} ?selected=${code === this.lang}>${name}</option>`,
             )}
           </select>
           <gem-use class="dropdown" .root=${container} selector="#arrow"></gem-use>
