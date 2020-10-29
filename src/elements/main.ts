@@ -4,7 +4,9 @@ import Prism from 'prismjs';
 import fm from 'front-matter';
 
 import '@mantou/gem/elements/link';
+import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-markdown';
 import 'prismjs/components/prism-typescript';
 
 import { getMdPath, isSameOrigin } from '../lib/utils';
@@ -115,13 +117,21 @@ export class Main extends GemElement<State> {
   render() {
     const { fetching, content } = this.state;
     return html`
-      ${content}
+      ${content || 'Loading...'}
       <style>
         :host {
           z-index: 1;
           grid-area: 2 / content / content / auto;
           padding-top: 3rem;
           opacity: ${fetching ? 0.3 : 1};
+          overflow: auto;
+          min-height: 10rem;
+        }
+        @media ${mediaQuery.PHONE} {
+          :host {
+            grid-area: 2 / content / content / auto;
+            padding-top: 1rem;
+          }
         }
         a > img + svg {
           display: none;
@@ -201,10 +211,13 @@ export class Main extends GemElement<State> {
           border-radius: 0 4px 4px 0;
         }
         pre {
-          margin: 2rem 0;
+          z-index: 2;
           position: relative;
+          margin: 2rem 0;
           border-radius: 4px;
           background: ${theme.codeBlockBackground};
+          font-family: ${theme.codeFont};
+          white-space: pre;
         }
         pre .code-lang-name {
           position: absolute;
@@ -214,19 +227,12 @@ export class Main extends GemElement<State> {
           color: #cacaca;
         }
         pre code {
-          color: ${theme.codeBlockTextColor};
-        }
-        pre {
-          overflow: auto;
-          position: relative;
-          z-index: 2;
-          font-family: ${theme.codeFont};
-          white-space: pre;
-        }
-        pre code {
-          box-shadow: none;
+          display: block;
           margin: 0;
           padding: 0;
+          overflow: auto;
+          color: ${theme.codeBlockTextColor};
+          box-shadow: none;
           border: none;
           font-size: 1em;
           background: transparent;

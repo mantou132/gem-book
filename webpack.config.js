@@ -33,6 +33,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      title: 'Gem-book',
       favicon: './docs/logo.png',
     }),
   ],

@@ -4,6 +4,7 @@ import '@mantou/gem/elements/title';
 import '@mantou/gem/elements/route';
 import { RouteItem } from '@mantou/gem/elements/route';
 import { I18n } from '@mantou/gem/helper/i18n';
+import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import './elements/nav';
 import './elements/sidebar';
@@ -125,14 +126,24 @@ export class Book extends GemElement<State> {
         :host {
           display: grid;
           grid-template-areas: 'left aside content right';
-          grid-template-columns: auto ${theme.sidebarWidth} ${theme.mainWidth} auto;
+          grid-template-columns: auto ${theme.sidebarWidth} minmax(auto, ${theme.mainWidth}) auto;
+          /* how to remove next line? */
+          grid-template-rows: repeat(4, auto) 1fr;
           grid-column-gap: 3rem;
           text-rendering: optimizeLegibility;
           font: 16px/1.7 ${theme.font};
           color: ${theme.textColor};
+          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+        @media ${mediaQuery.PHONE} {
+          :host {
+            grid-column-gap: 1rem;
+            grid-template-areas: 'left content right';
+            grid-template-columns: 0 1fr auto;
+          }
         }
         .nav-shadow {
-          grid-area: 1 / left / 1 / right;
+          grid-area: 1 / left / 2 / right;
           background: white;
           border-bottom: 1px solid ${theme.borderColor};
         }

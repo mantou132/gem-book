@@ -12,6 +12,7 @@ import {
 } from '@mantou/gem';
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
+import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { container } from './icons';
 import { capitalize } from '../lib/utils';
@@ -61,7 +62,8 @@ export class SideBar extends GemElement {
     return html`
       <style>
         :host {
-          grid-area: 1 / aside / 111 / aside;
+          /* how to span all row? */
+          grid-area: 1 / aside / 6 / aside;
           overflow: auto;
           overscroll-behavior: contain;
           height: calc(100vh - ${theme.headerHeight});
@@ -71,6 +73,17 @@ export class SideBar extends GemElement {
           padding: 3rem 1rem 0;
           margin: 0 -1rem;
           scrollbar-width: thin;
+        }
+        @media ${mediaQuery.PHONE} {
+          :host {
+            grid-area: auto / content;
+            position: static;
+            height: auto;
+            margin: 0;
+            padding: 0;
+            overflow: visible;
+            border-bottom: 1px solid ${theme.borderColor};
+          }
         }
         :host::after {
           content: '';
@@ -117,7 +130,7 @@ export class SideBar extends GemElement {
           padding: 0.3em 0;
         }
         gem-active-link.active {
-          color: ${theme.linkColor};
+          color: ${theme.textColor};
         }
         gem-active-link.active:not([pattern*='#']) {
           font-weight: bolder;

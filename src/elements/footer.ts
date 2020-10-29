@@ -1,5 +1,7 @@
 import { html, GemElement, customElement, connectStore } from '@mantou/gem';
 import '@mantou/gem/elements/link';
+import { mediaQuery } from '@mantou/gem/helper/mediaquery';
+
 import { selfI18n } from '../helper/i18n';
 import { theme } from '../helper/theme';
 
@@ -15,6 +17,12 @@ export class Footer extends GemElement {
           padding: 2rem 0;
           margin-top: 6rem;
           border-top: 1px solid ${theme.borderColor};
+          font-style: italic;
+        }
+        @media ${mediaQuery.PHONE} {
+          :host {
+            margin: 0;
+          }
         }
         gem-link {
           color: ${theme.linkColor};

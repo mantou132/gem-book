@@ -2,6 +2,7 @@ import { html, GemElement, customElement, attribute, property } from '@mantou/ge
 
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
+import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 import { theme } from '../helper/theme';
 import { capitalize, isSameOrigin } from '../lib/utils';
 import { container } from './icons';
@@ -37,8 +38,13 @@ export class Nav extends GemElement {
         :host {
           line-height: ${theme.headerHeight};
           display: flex;
-          grid-area: 1 / aside / 1 / content;
+          grid-area: 1 / aside / 2 / content;
           color: ${theme.textColor};
+        }
+        @media ${mediaQuery.PHONE} {
+          :host {
+            grid-area: 1 / content / 2 / content;
+          }
         }
         gem-link,
         gem-active-link {
@@ -56,7 +62,10 @@ export class Nav extends GemElement {
           align-items: center;
         }
         .title img {
-          height: calc(0.8 * ${theme.headerHeight});
+          --height: calc(0.8 * ${theme.headerHeight});
+          height: var(--height);
+          min-width: var(--height);
+          object-fit: contain;
           transform: translateX(-10%);
         }
         gem-active-link + gem-active-link {
