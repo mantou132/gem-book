@@ -158,8 +158,12 @@ export class Book extends GemElement<State> {
           top: ${theme.headerHeight};
         }
       </style>
-      ${hasNavbar ? html`<div class="nav-shadow"></div>` : null}
-      <gem-book-nav tl=${title} .nav=${nav} icon=${icon} github=${github}></gem-book-nav>
+      ${hasNavbar
+        ? html`
+            <div class="nav-shadow"></div>
+            <gem-book-nav tl=${title} .nav=${nav} icon=${icon} github=${github}></gem-book-nav>
+          `
+        : null}
       <gem-book-sidebar
         @languagechange=${languagechangeHandle}
         lang=${lang}

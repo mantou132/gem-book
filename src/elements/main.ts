@@ -138,15 +138,17 @@ export class Main extends GemElement<State> {
         :host {
           z-index: 1;
           grid-area: 2 / content / content / auto;
-          padding-top: 3rem;
           opacity: ${fetching ? 0.3 : 1};
-          overflow: auto;
           min-height: 10rem;
+          overflow: auto;
+          margin: 0 -3rem;
+          padding: 3rem 3rem 0;
         }
         @media ${mediaQuery.PHONE} {
           :host {
             grid-area: 2 / content / content / auto;
-            padding-top: 1rem;
+            margin: 0 -1rem;
+            padding: 1rem 1rem 0;
           }
         }
         a > img + svg {
@@ -230,10 +232,17 @@ export class Main extends GemElement<State> {
           z-index: 2;
           position: relative;
           margin: 2rem 0;
+          padding: 1rem;
           border-radius: 4px;
           background: ${theme.codeBlockBackground};
           font-family: ${theme.codeFont};
           white-space: pre;
+        }
+        @media ${mediaQuery.PHONE} {
+          pre {
+            margin: 1rem -1rem;
+            border-radius: 0;
+          }
         }
         pre .code-lang-name {
           position: absolute;
@@ -251,6 +260,7 @@ export class Main extends GemElement<State> {
           margin: 0;
           padding: 0;
           overflow: auto;
+          scrollbar-width: none;
           color: ${theme.codeBlockTextColor};
           box-shadow: none;
           border: none;
@@ -263,9 +273,6 @@ export class Main extends GemElement<State> {
             white-space: pre-wrap;
             word-break: break-word;
           }
-        }
-        pre {
-          padding: 20px;
         }
         code {
           font-family: ${theme.codeFont};

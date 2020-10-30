@@ -71,9 +71,6 @@ export class Nav extends GemElement {
         gem-active-link + gem-active-link {
           margin-left: 1rem;
         }
-        gem-active-link.active {
-          color: ${theme.linkColor};
-        }
         gem-active-link.active::after {
           position: absolute;
           left: 0;

@@ -147,7 +147,14 @@ export class SideBar extends GemElement {
           display: none;
         }
         .links {
+          position: relative;
+        }
+        .links::before {
+          position: absolute;
+          content: '';
+          height: 100%;
           border-left: 1px solid ${theme.borderColor};
+          transform: translateX(0.15em);
         }
         .hash {
           display: none;
