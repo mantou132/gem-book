@@ -91,6 +91,46 @@ export class Book extends GemElement<State> {
     return nav;
   }
 
+  private getRouter(links: (NavItem & { link: string })[], title: string, lang: string) {
+    const routes: RouteItem[] = [];
+    links.forEach(({ title: pageTitle, link }) => {
+      const route = {
+        title: `${capitalize(pageTitle)} - ${title}`,
+        pattern: new URL(link, location.origin).pathname,
+        content: html`<gem-book-main lang=${lang} link=${link}></gem-book-main>`,
+      };
+      routes.push(route);
+      if (route.pattern.endsWith('/')) {
+        routes.push({
+          pattern: `${route.pattern}README`,
+          redirect: route.pattern,
+        });
+      }
+    });
+
+    routes.forEach(({ pattern }) => {
+      routes.push({
+        pattern: pattern + 'md',
+        redirect: pattern,
+      });
+    });
+
+    if (!routes.some(({ pattern }) => pattern === '/')) {
+      const firstRoutePath = routes[0].pattern;
+      routes.push({
+        pattern: '/',
+        redirect: firstRoutePath,
+      });
+    }
+
+    routes.push({
+      pattern: '*',
+      redirect: '/',
+    });
+
+    return routes;
+  }
+
   changeTheme = changeTheme;
 
   render() {
@@ -101,25 +141,7 @@ export class Book extends GemElement<State> {
     const nav = this.getNav(sidebar);
     const hasNavbar = icon || title || nav.length;
     const links = flatNav(sidebar);
-
-    const routes: RouteItem[] = links.map(({ title: pageTitle, link }) => ({
-      title: `${capitalize(pageTitle)} - ${title}`,
-      pattern: new URL(link, location.origin).pathname,
-      content: html`<gem-book-main lang=${lang} link=${link}></gem-book-main>`,
-    }));
-
-    if (!routes.some(({ pattern }) => pattern === '/')) {
-      const firstRoutePath = routes[0].pattern;
-      routes.unshift({
-        pattern: '/',
-        redirect: firstRoutePath,
-      });
-    }
-
-    routes.push({
-      pattern: '*',
-      redirect: '/',
-    });
+    const routes = this.getRouter(links, title, lang);
 
     return html`
       <style>
