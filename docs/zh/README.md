@@ -2,7 +2,7 @@
 
 `<gem-book>` 是一个自定义元素，只需要在网页中插入该元素并指定配置文件即可，配置文件可以通过配套的命令行工具生成。
 
-_`<gem-book>` 是为 [Gem](https://github.com/mantou132/gem) 创建的文档生成工具，其本身也是使用 [Gem](https://github.com/mantou132/gem) 编写，和 [Gem](https://github.com/mantou132/gem) 是共生关系。_
+_`<gem-book>` 是为 [Gem](https://github.com/mantou132/gem) 创建的文档生成工具，其本身也是使用 Gem 编写，和 Gem 是共生关系。_
 
 ### 安装
 
@@ -17,9 +17,11 @@ npm install gem-book
 npx gem-book docs
 ```
 
-查看命令行[更多](./002-guide/003-cli)选项
+使用 `--watch` 能持续监听目录，自动生成配置文件。查看命令行[更多](./002-guide/003-cli)选项。
 
-### 插入网页
+### 使用 `<gem-book>`
+
+如果你使用类似 [Webpack](https://webpack.js.org/) 的工具来打包前端项目，那么你可以在项目中这样使用 `<gem-book>`：
 
 ```js
 // 使用 `lit-html`
@@ -37,16 +39,18 @@ import config from './book.json';
 document.body.append(new Book(config));
 ```
 
-或者
+如果你不需要集成一些其他的功能，那么你完全可以创建一个简单的 `html` 以使用 `<gem-book>`：
 
 ```html
 <srcipt src=https://unpkg.com/gem-book></script>
 <script>
   const book = document.createElement('gem-book');
-  book.config = {...};
+  book.src = '/book.json';
   document.body.append(book);
 </script>
 ```
+
+并启动本地静态资源服务器来进行预览，比如 `http-serve docs`。
 
 ### 渲染规则
 
