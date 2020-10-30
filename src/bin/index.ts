@@ -47,7 +47,7 @@ function readDir(dir: string, link = '/') {
           result.push(item);
         }
       } else {
-        item.children = readDir(fullPath, path.join(link, itemname) + '/');
+        item.children = readDir(fullPath, path.posix.join(link, itemname) + '/');
         const { title, isNav, navTitle, sidebarIgnore } = getMetadata(fullPath);
         Object.assign(item, { title, isNav, navTitle, sidebarIgnore });
         result.push(item);
