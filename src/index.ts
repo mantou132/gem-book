@@ -142,6 +142,7 @@ export class Book extends GemElement<State> {
     const hasNavbar = icon || title || nav.length;
     const links = flatNav(sidebar);
     const routes = this.getRouter(links, title, lang);
+    const refLinks = links.filter((e) => e.sidebarIgnore !== true);
 
     return html`
       <style>
@@ -203,7 +204,7 @@ export class Book extends GemElement<State> {
             ></gem-book-edit-link>
           `
         : null}
-      <gem-book-rel-link .links=${links}></gem-book-rel-link>
+      <gem-book-rel-link .links=${refLinks}></gem-book-rel-link>
       <gem-book-footer></gem-book-footer>
     `;
   }
