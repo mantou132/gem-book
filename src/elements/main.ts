@@ -87,6 +87,18 @@ export class Main extends GemElement<State> {
     queueMicrotask(this.hashChangeHandle);
   };
 
+  clickHandle = (e: Event) => {
+    const [ele] = e.composedPath();
+    if (ele instanceof HTMLPreElement) {
+      const range = document.createRange();
+      range.selectNode(ele);
+      const sel = getSelection();
+      if (!sel) return;
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  };
+
   hashChangeHandle = () => {
     const { hash } = location;
     const ele = hash && this.shadowRoot?.querySelector(decodeURIComponent(hash));
@@ -110,8 +122,12 @@ export class Main extends GemElement<State> {
       },
       () => [this.link, this.lang],
     );
+    this.addEventListener('click', this.clickHandle);
     window.addEventListener('hashchange', this.hashChangeHandle);
-    return () => window.removeEventListener('hashchange', this.hashChangeHandle);
+    return () => {
+      this.removeEventListener('click', this.clickHandle);
+      window.removeEventListener('hashchange', this.hashChangeHandle);
+    };
   }
 
   render() {
@@ -225,6 +241,10 @@ export class Main extends GemElement<State> {
           right: 10px;
           font-size: 12px;
           color: #cacaca;
+          user-select: none;
+        }
+        pre .code-lang-name::selection {
+          background: transparent;
         }
         pre code {
           display: block;
@@ -234,6 +254,7 @@ export class Main extends GemElement<State> {
           color: ${theme.codeBlockTextColor};
           box-shadow: none;
           border: none;
+          border-radius: 0;
           font-size: 1em;
           background: transparent;
         }
