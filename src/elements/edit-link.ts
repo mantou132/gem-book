@@ -30,6 +30,21 @@ export class EditLink extends GemElement<State> {
     lastUpdated: '',
   };
 
+  get lastUpdated() {
+    const { lastUpdated } = this.state;
+    return (
+      lastUpdated &&
+      new Intl.DateTimeFormat(this.lang || 'default', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+      }).format(new Date(lastUpdated))
+    );
+  }
+
   getMdFullPath = () => {
     const { path } = history.getParams();
     const mdPath = getMdPath(path);
@@ -39,7 +54,7 @@ export class EditLink extends GemElement<State> {
   };
 
   render() {
-    const { lastUpdated } = this.state;
+    const { lastUpdated } = this;
     return html`
       <style>
         :host {
@@ -97,20 +112,12 @@ export class EditLink extends GemElement<State> {
         });
         try {
           const [commit] = await (await fetch(`https://api.github.com/repos${repo}/commits?${query}`)).json();
-          const lastUpdated = new Intl.DateTimeFormat(this.lang || 'default', {
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-          }).format(new Date(commit.commit.committer.date));
-          this.setState({ lastUpdated });
+          this.setState({ lastUpdated: commit ? commit.commit.committer.date : '' });
         } catch {
           this.setState({ lastUpdated: '' });
         }
       },
-      () => [history.getParams().path, this.lang],
+      () => [history.getParams().path],
     );
   }
 }
