@@ -40,7 +40,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@mantou/gem": "^0.4.9",
+    "@mantou/gem": "^0.4.10",
     "commander": "^4.1.1",
     "front-matter": "^4.0.2",
     "git-remote-origin-url": "^3.1.0",

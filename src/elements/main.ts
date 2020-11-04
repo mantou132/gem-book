@@ -39,12 +39,11 @@ renderer.heading = function (text, level, r, slugger) {
 };
 
 renderer.link = function (href, title, text) {
-  // gem relative path
-  // if (href.startsWith('.')) {
-  //   return raw`
-  //     <gem-link path=${href} title=${title}>${text}</gem-link>
-  //   `;
-  // }
+  if (href?.startsWith('.')) {
+    return raw`
+      <gem-link path=${href} title=${title || ''}>${text}</gem-link>
+    `;
+  }
   const internal = isSameOrigin(href || '');
   return raw`
     <a target=${internal ? '_self' : '_blank'} href=${href || ''} title=${title || ''}>
