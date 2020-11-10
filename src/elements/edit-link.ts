@@ -10,6 +10,8 @@ import { theme } from '../helper/theme';
 
 interface State {
   lastUpdated: string;
+  message: string;
+  commitUrl: string;
 }
 
 /**
@@ -28,6 +30,8 @@ export class EditLink extends GemElement<State> {
 
   state = {
     lastUpdated: '',
+    message: '',
+    commitUrl: '',
   };
 
   get lastUpdated() {
@@ -55,6 +59,7 @@ export class EditLink extends GemElement<State> {
 
   render() {
     const { lastUpdated } = this;
+    const { message, commitUrl } = this.state;
     return html`
       <style>
         :host {
@@ -79,7 +84,6 @@ export class EditLink extends GemElement<State> {
         .last-updated {
           flex-grow: 1;
           text-align: right;
-          color: ${theme.linkColor};
         }
         .last-updated span {
           opacity: 0.5;
@@ -91,10 +95,12 @@ export class EditLink extends GemElement<State> {
         <span>${selfI18n.get('editOnGithub')}</span>
       </gem-link>
       ${lastUpdated &&
-      html`<div class="last-updated">
-        ${selfI18n.get('lastUpdated')}:
-        <span>${lastUpdated}</span>
-      </div>`}
+      html`
+        <div class="last-updated">
+          <gem-link class="edit" href=${commitUrl} title=${message}>${selfI18n.get('lastUpdated')}:</gem-link>
+          <span>${lastUpdated}</span>
+        </div>
+      `}
     `;
   }
 
@@ -111,8 +117,14 @@ export class EditLink extends GemElement<State> {
           sha: this.sourceBranch,
         });
         try {
-          const [commit] = await (await fetch(`https://api.github.com/repos${repo}/commits?${query}`)).json();
-          this.setState({ lastUpdated: commit ? commit.commit.committer.date : '' });
+          const api = `https://api.github.com/repos${repo}/commits?${query}`;
+          const [commit] = await (await fetch(api)).json();
+          const date = commit?.commit?.committer?.date;
+          this.setState({
+            lastUpdated: date || '',
+            message: date ? commit.commit.message : '',
+            commitUrl: date ? commit.html_url : '',
+          });
         } catch {
           this.setState({ lastUpdated: '' });
         }
