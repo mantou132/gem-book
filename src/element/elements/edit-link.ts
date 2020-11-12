@@ -1,10 +1,10 @@
-import { html, GemElement, customElement, attribute, history, connectStore } from '@mantou/gem';
+import { html, GemElement, customElement, attribute, history, connectStore, property } from '@mantou/gem';
 
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
 
 import { container } from './icons';
-import { getMdPath } from '../lib/utils';
+import { getMdPath, NavItemWithLink } from '../lib/utils';
 import { selfI18n } from '../helper/i18n';
 import { theme } from '../helper/theme';
 
@@ -27,6 +27,8 @@ export class EditLink extends GemElement<State> {
   @attribute srouceDir: string;
   @attribute sourceBranch: string;
   @attribute lang: string;
+
+  @property links: NavItemWithLink[];
 
   state = {
     lastUpdated: '',
@@ -51,7 +53,9 @@ export class EditLink extends GemElement<State> {
 
   getMdFullPath = () => {
     const { path } = history.getParams();
-    const mdPath = getMdPath(path);
+    const link = this.links.find(({ link }) => link === path);
+    if (!link) throw new Error('not found link');
+    const mdPath = getMdPath(link.originLink);
     const sroucePath = this.srouceDir ? `/${this.srouceDir}` : '';
     const langPath = this.lang ? `/${this.lang}` : '';
     return `${sroucePath}${langPath}${mdPath}`;

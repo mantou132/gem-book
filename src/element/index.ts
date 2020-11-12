@@ -219,6 +219,7 @@ export class Book extends GemElement<State> {
               source-branch=${sourceBranch}
               srouce-dir=${sourceDir}
               lang=${lang}
+              .links=${links}
             ></gem-book-edit-link>
           `
         : null}
