@@ -7,10 +7,10 @@ module.exports = (config) => {
       coverageIstanbulReporter: {
         thresholds: {
           global: {
-            statements: 60,
-            branches: 60,
-            functions: 60,
-            lines: 60,
+            statements: 0,
+            branches: 0,
+            functions: 0,
+            lines: 0,
           },
         },
       },
@@ -21,7 +21,7 @@ module.exports = (config) => {
         //
         // npm run test -- --grep test/foo/bar.test.js
         // npm run test -- --grep test/bar/*
-        { pattern: config.grep ? config.grep : 'test/**/*.test.js', type: 'module' },
+        { pattern: config.grep ? config.grep : 'element/test/**/*.test.js', type: 'module' },
       ],
 
       esm: {
