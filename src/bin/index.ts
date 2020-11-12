@@ -12,7 +12,7 @@ import util from 'util';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import getRepoInfo from 'git-repo-info';
-import startCase from 'lodash/startCase';
+import { startCase, debounce } from 'lodash';
 
 import { version } from '../../package.json';
 import { BookConfig, NavItem, SidebarConfig } from '../common/config';
@@ -110,6 +110,8 @@ async function command(dir: string) {
   if (debug) console.log(util.inspect(JSON.parse(configStr), { colors: true, depth: null }));
 }
 
+const debounceCommand = debounce(command, 300);
+
 function addNavItem(item: string) {
   bookConfig.nav = bookConfig.nav || [];
   const [title, link] = item.split(',');
@@ -158,9 +160,9 @@ program
   .action((dir: string) => {
     command(dir);
     if (watch) {
-      fs.watch(dir, { recursive: true }, (_type, filename) => {
-        if (filename === 'config.yml' || path.extname(filename) === '.md') {
-          command(dir);
+      fs.watch(dir, { recursive: true }, (type, filePath) => {
+        if (type === 'rename' || path.basename(filePath) === 'config.yml' || path.extname(filePath) === '.md') {
+          debounceCommand(dir);
         }
       });
     }
