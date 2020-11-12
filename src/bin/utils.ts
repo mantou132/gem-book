@@ -7,10 +7,17 @@ import marked from 'marked';
 import fm from 'front-matter';
 import YAML from 'yaml';
 
+import { NavItem } from '../common/config';
+
+// https://github.com/webpack/webpack/issues/4175#issuecomment-277232067
+declare global {
+  let __non_webpack_require__: (mod: string) => any;
+}
+
 export async function getGithubUrl() {
   const repoDir = process.cwd();
   try {
-    const repoPkg = require(path.resolve(repoDir, './package.json'));
+    const repoPkg = __non_webpack_require__(path.resolve(repoDir, './package.json'));
     const git = repoPkg?.repository?.url || (await gitRemoteOriginUrl(repoDir));
     const parsed = parseGithub(git);
     if (parsed?.repository) {

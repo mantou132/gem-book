@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "module": "ES2015"
+  },
+  "include": ["src/element", "src/common"]
+}

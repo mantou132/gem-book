@@ -1,6 +1,8 @@
 import { html, GemElement, customElement, history, connectStore, property } from '@mantou/gem';
 
 import '@mantou/gem/elements/link';
+
+import { NavItem } from '../../common/config';
 import { theme } from '../helper/theme';
 import { capitalize } from '../lib/utils';
 

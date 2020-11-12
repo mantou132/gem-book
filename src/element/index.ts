@@ -6,13 +6,14 @@ import { RouteItem } from '@mantou/gem/elements/route';
 import { I18n } from '@mantou/gem/helper/i18n';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
+import { NavItem, BookConfig } from '../common/config';
 import './elements/nav';
 import './elements/sidebar';
 import './elements/main';
 import './elements/footer';
 import './elements/edit-link';
 import './elements/rel-link';
-import { flatNav, capitalize } from './lib/utils';
+import { flatNav, capitalize, removeLinkRank, NavItemWithOriginLink, NavItemWithLink } from './lib/utils';
 import { selfI18n } from './helper/i18n';
 import { theme, changeTheme, Theme } from './helper/theme';
 
@@ -91,28 +92,30 @@ export class Book extends GemElement<State> {
     return nav;
   }
 
-  private getRouter(links: (NavItem & { link: string })[], title: string, lang: string) {
+  private getRouter(links: NavItemWithLink[], title: string, lang: string) {
+    const config = this.getConfig();
     const routes: RouteItem[] = [];
-    links.forEach(({ title: pageTitle, link }) => {
+    links.forEach(({ title: pageTitle, link, originLink }) => {
       const route = {
         title: `${capitalize(pageTitle)} - ${title}`,
-        pattern: new URL(link, location.origin).pathname,
-        content: html`<gem-book-main lang=${lang} link=${link}></gem-book-main>`,
+        pattern: link,
+        content: html`
+          <gem-book-main lang=${lang} link=${originLink} ?display-rank=${config?.displayRank}></gem-book-main>
+        `,
       };
       routes.push(route);
+      if (link !== originLink) {
+        routes.push({
+          pattern: originLink,
+          redirect: link,
+        });
+      }
       if (route.pattern.endsWith('/')) {
         routes.push({
           pattern: `${route.pattern}README`,
           redirect: route.pattern,
         });
       }
-    });
-
-    routes.forEach(({ pattern }) => {
-      routes.push({
-        pattern: pattern + 'md',
-        redirect: pattern,
-      });
     });
 
     if (!routes.some(({ pattern }) => pattern === '/')) {
@@ -131,16 +134,31 @@ export class Book extends GemElement<State> {
     return routes;
   }
 
+  private processSidebar(sidebar: NavItem[]) {
+    const config = this.getConfig();
+    const process = (item: NavItem): NavItemWithOriginLink => {
+      return {
+        ...item,
+        link: config?.displayRank ? item.link : item.link && removeLinkRank(item.link),
+        originLink: item.link,
+        children: item.children?.map(process),
+      };
+    };
+    return sidebar.map(process);
+  }
+
   changeTheme = changeTheme;
 
   render() {
     const config = this.getConfig();
     if (!config) return null;
+
     const { icon = '', github = '', sourceBranch, sourceDir = '', title = '' } = config;
     const { sidebar, lang, langlist, languagechangeHandle } = this.getI18nSidebar();
-    const nav = this.getNav(sidebar);
+    const sidebarResult = this.processSidebar(sidebar);
+    const nav = this.getNav(sidebarResult);
     const hasNavbar = icon || title || nav.length;
-    const links = flatNav(sidebar);
+    const links = flatNav(sidebarResult);
     const routes = this.getRouter(links, title, lang);
     const refLinks = links.filter((e) => e.sidebarIgnore !== true);
 
@@ -191,7 +209,7 @@ export class Book extends GemElement<State> {
         @languagechange=${languagechangeHandle}
         lang=${lang}
         .langlist=${langlist}
-        .sidebar=${sidebar}
+        .sidebar=${sidebarResult}
       ></gem-book-sidebar>
       <gem-route .key=${lang} .routes=${routes}></gem-route>
       ${github && sourceBranch

@@ -1,9 +1,20 @@
 const { createDefaultConfig } = require('@open-wc/testing-karma');
 const merge = require('webpack-merge');
 
-module.exports = config => {
+module.exports = (config) => {
   config.set(
     merge(createDefaultConfig(config), {
+      coverageIstanbulReporter: {
+        thresholds: {
+          global: {
+            statements: 60,
+            branches: 60,
+            functions: 60,
+            lines: 60,
+          },
+        },
+      },
+
       files: [
         // runs all files ending with .test in the test folder,
         // can be overwritten by passing a --grep flag. examples:

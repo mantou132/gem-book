@@ -1,6 +1,5 @@
 import { render, html } from '@mantou/gem';
-import config from './book.json';
-import '../src';
+import '../element';
 
 render(
   html`
@@ -9,7 +8,7 @@ render(
         margin: 0;
       }
     </style>
-    <gem-book .config=${config}></gem-book>
+    <gem-book src="/book.json"></gem-book>
   `,
   document.body,
 );

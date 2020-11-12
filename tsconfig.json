@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "outDir": "./",
-    "declaration": true,
-    "declarationMap": true,
+    "declaration": false,
+    "declarationMap": false,
     "alwaysStrict": true,
     "noImplicitThis": true,
     "noImplicitAny": true,

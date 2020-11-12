@@ -5,21 +5,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
  * @type {import('webpack/declarations/WebpackOptions').WebpackOptions}
  */
 module.exports = {
-  entry: `./docs`,
+  entry: `./src/website`,
   module: {
     rules: [
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'ts-loader',
-          options: {
-            compilerOptions: {
-              declaration: false,
-              declarationMap: false,
-            },
-          },
-        },
+        use: 'ts-loader',
       },
     ],
   },

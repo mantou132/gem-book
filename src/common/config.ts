@@ -1,4 +1,4 @@
-interface NavItem {
+export interface NavItem {
   title: string;
   link?: string;
   children?: NavItem[]; // dropdown menu
@@ -7,9 +7,9 @@ interface NavItem {
   sidebarIgnore?: boolean;
 }
 
-type SidebarConfig = NavItem[] | { [lang: string]: { name: string; data: NavItem[] } };
+export type SidebarConfig = NavItem[] | { [lang: string]: { name: string; data: NavItem[] } };
 
-interface BookConfig {
+export interface BookConfig {
   icon: string;
   title: string;
   sidebar: SidebarConfig;
@@ -18,4 +18,5 @@ interface BookConfig {
   sourceDir?: string;
   sourceBranch?: string;
   i18n?: boolean;
+  displayRank?: boolean;
 }

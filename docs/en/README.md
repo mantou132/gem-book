@@ -17,7 +17,7 @@ npm install gem-book
 npx gem-book docs
 ```
 
-Use `--watch` to continuously monitor the directory and automatically generate configuration files. See the command line [more](./002-guide/003-cli) options.
+Use `--watch` to continuously monitor the directory and automatically generate configuration files. See the command line [more](./002-guide/003-cli.md) options.
 
 ### Use `<gem-book>`
 

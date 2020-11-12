@@ -1,4 +1,4 @@
-import { html, GemElement, customElement, history, attribute, raw } from '@mantou/gem';
+import { html, GemElement, customElement, attribute, raw, boolattribute } from '@mantou/gem';
 import marked from 'marked';
 import Prism from 'prismjs';
 import fm from 'front-matter';
@@ -9,7 +9,7 @@ import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-markdown';
 import 'prismjs/components/prism-typescript';
 
-import { getMdPath, isSameOrigin } from '../lib/utils';
+import { getMdPath, isSameOrigin, removeLinkRank } from '../lib/utils';
 import { anchor, link } from './icons';
 import { theme } from '../helper/theme';
 
@@ -25,34 +25,6 @@ marked.setOptions({
   },
 });
 
-const renderer = new marked.Renderer();
-// https://github.com/markedjs/marked/blob/ed18cd58218ed4ab98d3457bec2872ba1f71230e/lib/marked.esm.js#L986
-renderer.heading = function (text, level, r, slugger) {
-  const tag = `h${level}`;
-  const id = `${this.options.headerPrefix}${slugger.slug(r)}`;
-  return raw`
-    <${tag} class="markdown-header" id="${id}">
-      <a class="header-anchor" href="#${id}">${anchor}</a>
-      ${text}
-    </${tag}>
-  `;
-};
-
-renderer.link = function (href, title, text) {
-  if (href?.startsWith('.')) {
-    return raw`
-      <gem-link path=${href} title=${title || ''}>${text}</gem-link>
-    `;
-  }
-  const internal = isSameOrigin(href || '');
-  return raw`
-    <a target=${internal ? '_self' : '_blank'} href=${href || ''} title=${title || ''}>
-      ${text}
-      ${internal ? '' : link}
-    </a>
-  `;
-};
-
 interface State {
   fetching: boolean;
   content: Element[] | null;
@@ -60,25 +32,65 @@ interface State {
 
 /**
  * @attr link
+ * @attr lang
+ * @attr display-rank
  */
 @customElement('gem-book-main')
 export class Main extends GemElement<State> {
   @attribute link: string;
   @attribute lang: string;
+  @boolattribute displayRank: boolean;
 
   state = {
     fetching: false,
     content: null,
   };
 
+  mdRenderer = this.getMdRenderer();
+
+  getMdRenderer() {
+    const renderer = new marked.Renderer();
+    // https://github.com/markedjs/marked/blob/ed18cd58218ed4ab98d3457bec2872ba1f71230e/lib/marked.esm.js#L986
+    renderer.heading = function (text, level, r, slugger) {
+      const tag = `h${level}`;
+      const id = `${this.options.headerPrefix}${slugger.slug(r)}`;
+      return raw`
+        <${tag} class="markdown-header" id="${id}">
+          <a class="header-anchor" href="#${id}">${anchor}</a>
+          ${text}
+        </${tag}>
+      `;
+    };
+
+    const { displayRank } = this;
+    renderer.link = function (href, title, text) {
+      if (href?.startsWith('.')) {
+        const hrefWithoutMdExtensionName = href.replace(/\.md$/i, '');
+        const path = displayRank ? hrefWithoutMdExtensionName : removeLinkRank(hrefWithoutMdExtensionName);
+        return raw`
+          <gem-link path=${path} title=${title || ''}>${text}</gem-link>
+        `;
+      }
+      const internal = isSameOrigin(href || '');
+      return raw`
+        <a target=${internal ? '_self' : '_blank'} href=${href || ''} title=${title || ''}>
+          ${text}
+          ${internal ? '' : link}
+        </a>
+      `;
+    };
+    return renderer;
+  }
+
   fetchData = async () => {
     this.setState({
       fetching: true,
     });
-    const { path } = history.getParams();
-    const mdPath = getMdPath(path, this.lang);
+    const mdPath = getMdPath(this.link, this.lang);
     const md = await (await fetch(mdPath)).text();
-    const elements = [...parser.parseFromString(marked.parse(fm(md).body, { renderer }), 'text/html').body.children];
+    const elements = [
+      ...parser.parseFromString(marked.parse(fm(md).body, { renderer: this.mdRenderer }), 'text/html').body.children,
+    ];
     this.setState({
       fetching: false,
       content: elements,
@@ -113,6 +125,12 @@ export class Main extends GemElement<State> {
   };
 
   mounted() {
+    this.effect(
+      () => {
+        this.mdRenderer = this.getMdRenderer();
+      },
+      () => [this.displayRank],
+    );
     this.effect(
       () => {
         // link change
@@ -233,6 +251,7 @@ export class Main extends GemElement<State> {
           margin: 2rem 0;
           padding: 1rem;
           border-radius: 4px;
+          color: ${theme.codeBlockTextColor};
           background: ${theme.codeBlockBackground};
           font-family: ${theme.codeFont};
           white-space: pre;

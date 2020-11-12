@@ -14,6 +14,7 @@ import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
+import { NavItem } from '../../common/config';
 import { container } from './icons';
 import { capitalize } from '../lib/utils';
 import { theme } from '../helper/theme';

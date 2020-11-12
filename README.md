@@ -9,9 +9,9 @@ _The current style comes from [Docute](https://github.com/egoist/docute)_
 ## Development
 
 ```bash
-# start development
-npm run watch
-# development cli and watch docs
+# development cli
+npm run dev:cli
+# watch docs
 npm run dev:docs
 # development `<gem-book>`
 npm run dev:website

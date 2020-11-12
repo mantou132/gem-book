@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * Automatically generate configuration from directory
  *
@@ -15,10 +13,14 @@ import fs from 'fs';
 import mkdirp from 'mkdirp';
 import getRepoInfo from 'git-repo-info';
 import startCase from 'lodash/startCase';
+
+import { version } from '../../package.json';
+import { BookConfig, NavItem, SidebarConfig } from '../common/config';
+import { parseFilename } from '../common/utils';
 import { getFilename, getGithubUrl, getMetadata } from './utils';
 import lang from './lang.json';
 
-program.version(require(path.resolve(__dirname, '../package.json')).version || '', '-v, --version');
+program.version(version, '-v, --version');
 
 let debug = false;
 let watch = false;
@@ -27,11 +29,19 @@ const bookConfig: Partial<BookConfig> = {};
 
 function readDir(dir: string, link = '/') {
   const result: NavItem[] = [];
-  fs.readdirSync(dir)
-    .sort((file1, file2) => {
-      const [, rank1] = file1.match(/^(\d*-)?(.*)/) as RegExpMatchArray;
-      const [, rank2] = file2.match(/^(\d*-)?(.*)/) as RegExpMatchArray;
-      if (file1 === 'README.md') return -1;
+  const filenames = fs.readdirSync(dir);
+  const filenameWithoutRankNumberList = filenames.map((filename) => {
+    const { title } = parseFilename(filename);
+    return title;
+  });
+  if (!bookConfig.displayRank && new Set(filenameWithoutRankNumberList).size !== filenames.length) {
+    throw new Error('After removing the rank number, duplicate file names are found, use `--display-rank`');
+  }
+  filenames
+    .sort((filename1, filename2) => {
+      const { rank: rank1 } = parseFilename(filename1);
+      const { rank: rank2 } = parseFilename(filename2);
+      if (filename1 === 'README.md') return -1;
       if (parseInt(rank1) > parseInt(rank2) || !rank2) return 1;
       return -1;
     })
@@ -109,7 +119,7 @@ function addNavItem(item: string) {
 
 program
   .option('-c, --config <config file>', 'specify config file', (configPath: string) => {
-    Object.assign(bookConfig, require(path.resolve(process.cwd(), configPath)));
+    Object.assign(bookConfig, __non_webpack_require__(path.resolve(process.cwd(), configPath)));
   })
   .option('-t, --title <title>', 'document title', (title: string) => {
     bookConfig.title = title;
@@ -131,6 +141,9 @@ program
   })
   .option('--i18n', 'enabled i18n', () => {
     bookConfig.i18n = true;
+  })
+  .option('--display-rank', 'sorting number is not displayed in the link', () => {
+    bookConfig.displayRank = true;
   })
   .option('--nav1 <title,link>', 'attach a nav item', addNavItem)
   .option('--nav2 <title,link>', 'attach a nav item', addNavItem)

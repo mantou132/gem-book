@@ -3,6 +3,7 @@ import { html, GemElement, customElement, attribute, property } from '@mantou/ge
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
+import { NavItem } from '../../common/config';
 import { theme } from '../helper/theme';
 import { capitalize, isSameOrigin } from '../lib/utils';
 import { container } from './icons';

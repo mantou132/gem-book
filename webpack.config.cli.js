@@ -1,10 +1,13 @@
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 
 /**
  * @type {import('webpack/declarations/WebpackOptions').WebpackOptions}
  */
 module.exports = {
-  entry: `./src/element`,
+  mode: 'development',
+  target: 'node',
+  entry: `./src/bin`,
   module: {
     rules: [
       {
@@ -15,12 +18,12 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js', '.json'],
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'bin'),
     filename: 'index.js',
-    library: 'GemBook',
   },
+  externals: [nodeExternals()],
   devtool: 'source-map',
 };
