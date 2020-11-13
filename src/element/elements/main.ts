@@ -7,6 +7,7 @@ import '@mantou/gem/elements/link';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-markdown';
+import 'prismjs/components/prism-yaml';
 import 'prismjs/components/prism-typescript';
 
 import { getMdPath, isSameOrigin, removeLinkRank } from '../lib/utils';
@@ -18,7 +19,16 @@ const parser = new DOMParser();
 marked.setOptions({
   highlight: function (code, lang) {
     if (Prism.languages[lang]) {
-      return `<i class="code-lang-name">${lang}</i>${Prism.highlight(code, Prism.languages[lang], lang)}`;
+      let highlightCode = '';
+      if (lang === 'md' || lang === 'markdown') {
+        const { frontmatter, body } = fm(code);
+        highlightCode =
+          (frontmatter ? Prism.highlight(frontmatter, Prism.languages['yaml'], 'yaml') + '\n\n' : '') +
+          Prism.highlight(body, Prism.languages['md'], 'md');
+      } else {
+        highlightCode = Prism.highlight(code, Prism.languages[lang], lang);
+      }
+      return `<i class="code-lang-name">${lang}</i>${highlightCode}`;
     } else {
       return code;
     }
@@ -88,9 +98,9 @@ export class Main extends GemElement<State> {
     });
     const mdPath = getMdPath(this.link, this.lang);
     const md = await (await fetch(mdPath)).text();
-    const elements = [
-      ...parser.parseFromString(marked.parse(fm(md).body, { renderer: this.mdRenderer }), 'text/html').body.children,
-    ];
+    const mdBodyContent = fm(md).body;
+    const html = marked.parse(mdBodyContent, { renderer: this.mdRenderer });
+    const elements = [...parser.parseFromString(html, 'text/html').body.children];
     this.setState({
       fetching: false,
       content: elements,
