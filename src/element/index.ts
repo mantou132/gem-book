@@ -17,6 +17,11 @@ import { flatNav, capitalize, removeLinkRank, NavItemWithOriginLink, NavItemWith
 import { selfI18n } from './helper/i18n';
 import { theme, changeTheme, Theme } from './helper/theme';
 
+const sharedConfig: Partial<BookConfig> = {};
+class GemBookPluginElement extends GemElement {
+  config = sharedConfig;
+}
+
 type State = { config: BookConfig | undefined };
 
 /**
@@ -26,6 +31,8 @@ type State = { config: BookConfig | undefined };
  */
 @customElement('gem-book')
 export class Book extends GemElement<State> {
+  static GemBookPluginElement = GemBookPluginElement;
+
   @attribute src: string;
 
   @property config: BookConfig | undefined;
@@ -232,11 +239,18 @@ export class Book extends GemElement<State> {
     this.effect(
       async () => {
         if (this.src && !this.config) {
-          const res = await fetch(this.src);
-          this.setState({ config: await res.json() });
+          const config = await (await fetch(this.src)).json();
+          this.setState({ config });
+          Object.assign(sharedConfig, config);
         }
       },
       () => [this.src],
+    );
+    this.effect(
+      () => {
+        if (this.config) Object.assign(sharedConfig, this.config);
+      },
+      () => [this.config],
     );
     this.effect(
       () => {
