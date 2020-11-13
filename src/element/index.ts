@@ -241,16 +241,15 @@ export class Book extends GemElement<State> {
         if (this.src && !this.config) {
           const config = await (await fetch(this.src)).json();
           this.setState({ config });
-          Object.assign(sharedConfig, config);
         }
       },
       () => [this.src],
     );
     this.effect(
-      () => {
-        if (this.config) Object.assign(sharedConfig, this.config);
+      ([config]) => {
+        if (config) Object.assign(sharedConfig, config);
       },
-      () => [this.config],
+      () => [this.getConfig()],
     );
     this.effect(
       () => {
