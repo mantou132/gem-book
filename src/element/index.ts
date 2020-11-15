@@ -85,7 +85,7 @@ export class Book extends GemElement<State> {
 
   private getNav(sidebar: NavItem[]) {
     const config = this.getConfig();
-    const nav = config?.nav || [];
+    const nav: NavItem[] = [];
     const traverseSidebar = (items: NavItem[]) => {
       items.forEach((item) => {
         if (item.isNav) {
@@ -96,7 +96,7 @@ export class Book extends GemElement<State> {
       });
     };
     traverseSidebar(sidebar);
-    return nav;
+    return nav.concat(config?.nav || []);
   }
 
   private getRouter(links: NavItemWithLink[], title: string, lang: string) {
