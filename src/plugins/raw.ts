@@ -1,4 +1,4 @@
-import type { Book } from '../';
+import type { Book } from '../element';
 
 declare let Prism: typeof import('prismjs');
 
@@ -6,7 +6,7 @@ customElements.whenDefined('gem-book').then(() => {
   const GemBookPluginElement = (customElements.get('gem-book') as typeof Book).GemBookPluginElement;
 
   customElements.define(
-    'gem-book-plugin-file',
+    'gbp-raw',
     class extends GemBookPluginElement {
       static observedAttributes = ['src', 'lang'];
       src: string;

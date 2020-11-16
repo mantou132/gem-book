@@ -18,12 +18,12 @@ customElements.whenDefined('gem-book').then((Book) => {
 });
 ```
 
-The following is the built-in plugin `<gem-book-plugin-file>`, its function is to highlight the files of the current project:
+The following is the built-in plugin `<gbp-raw>`, its function is to highlight the files of the current project:
 
-<gem-book-plugin-file src="/src/element/plugins/file.ts"></gem-book-plugin-file >
+<gbp-raw src="/src/element/plugins/file.ts"></gbp-raw>
 
 Use in Markdown:
 
 ```md
-<gem-book-plugin-file src="/src/element/plugins/file.ts"></gem-book-plugin-file >
+<gbp-raw src="/src/element/plugins/file.ts"></gbp-raw>
 ```

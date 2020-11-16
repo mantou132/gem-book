@@ -18,12 +18,12 @@ customElements.whenDefined('gem-book').then((Book) => {
 });
 ```
 
-下面是内置的插件 `<gem-book-plugin-file>`，他的作用是高亮显示当前项目的文件：
+下面是内置的插件 `<gbp-raw>`，他的作用是高亮显示当前项目的文件：
 
-<gem-book-plugin-file src="/src/element/plugins/file.ts"></gem-book-plugin-file >
+<gbp-raw src="/src/element/plugins/file.ts"></gbp-raw>
 
 在 Markdown 中使用：
 
 ```md
-<gem-book-plugin-file src="/src/element/plugins/file.ts"></gem-book-plugin-file >
+<gbp-raw src="/src/element/plugins/file.ts"></gbp-raw>
 ```

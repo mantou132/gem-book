@@ -2,7 +2,7 @@ import { render, html } from '@mantou/gem';
 import '../element';
 
 // load plugins
-import('../element/plugins/file');
+import('../plugins/raw');
 
 render(
   html`

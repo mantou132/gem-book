@@ -3,9 +3,11 @@
 /coverage/
 
 # Compiler output
-/bin/
-/common/
+/index.*
 /element/
+/common/
+/plugins/
+/bin/
 /dist/
 
 .DS_Store

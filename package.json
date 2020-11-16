@@ -3,8 +3,17 @@
   "version": "1.0.2",
   "description": "Custom elements for rendering markdown documents",
   "main": "dist/index.js",
-  "module": "element/index.js",
+  "module": "index.js",
   "bin": "bin/index.js",
+  "files": [
+    "/index.*",
+    "/element/",
+    "/common/",
+    "/plugins/",
+    "/bin/",
+    "/dist/",
+    "/src/"
+  ],
   "typings": "index.d.ts",
   "scripts": {
     "lint": "tsc --noEmit && eslint --ext .ts --fix src/",
