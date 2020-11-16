@@ -20,10 +20,16 @@ customElements.whenDefined('gem-book').then((Book) => {
 
 The following is the built-in plugin `<gbp-raw>`, its function is to highlight the files of the current project:
 
-<gbp-raw src="/src/element/plugins/file.ts"></gbp-raw>
+<gbp-raw src="/src/plugins/raw.ts"></gbp-raw>
+
+Import the plugin:
+
+```html
+<script type="module" src="https://unpkg.com/gem-book/plugins/raw.js"></script>
+```
 
 Use in Markdown:
 
 ```md
-<gbp-raw src="/src/element/plugins/file.ts"></gbp-raw>
+<gbp-raw src="/src/plugins/raw.ts"></gbp-raw>
 ```

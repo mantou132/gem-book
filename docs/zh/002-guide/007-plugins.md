@@ -20,10 +20,16 @@ customElements.whenDefined('gem-book').then((Book) => {
 
 下面是内置的插件 `<gbp-raw>`，他的作用是高亮显示当前项目的文件：
 
-<gbp-raw src="/src/element/plugins/file.ts"></gbp-raw>
+<gbp-raw src="/src/plugins/raw.ts"></gbp-raw>
+
+导入插件：
+
+```html
+<script type="module" src="https://unpkg.com/gem-book/plugins/raw.js"></script>
+```
 
 在 Markdown 中使用：
 
 ```md
-<gbp-raw src="/src/element/plugins/file.ts"></gbp-raw>
+<gbp-raw src="/src/plugins/raw.ts"></gbp-raw>
 ```
