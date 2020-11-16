@@ -23,6 +23,7 @@ customElements.whenDefined('gem-book').then(() => {
       async renderContent() {
         const config = this.config;
         if (!this.src) return;
+        this.innerHTML = 'Loading...';
 
         let url = this.src;
 

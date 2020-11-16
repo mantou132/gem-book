@@ -162,6 +162,14 @@ export class Main extends GemElement<State> {
     return html`
       ${content || 'Loading...'}
       <style>
+        :not(:defined)::before {
+          content: 'The plugin is not imported';
+          display: block;
+          padding: 1em;
+          border-radius: 4px;
+          text-align: center;
+          background: ${theme.borderColor};
+        }
         :host {
           z-index: 1;
           grid-area: 2 / content / content / auto;
