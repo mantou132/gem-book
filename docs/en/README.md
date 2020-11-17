@@ -50,7 +50,7 @@ If you don't need to integrate some other functions, then you can create a simpl
 </script>
 ```
 
-And start the local static resource server to preview, such as `http-serve docs`.
+And start the local static resource server to preview, such as `serve docs -s`.
 
 ### Rendering rules
 

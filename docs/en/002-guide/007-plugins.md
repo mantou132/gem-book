@@ -3,11 +3,9 @@
 Plugins are custom elements, and you can extend Markdown with any custom elements. If you read the data of `<gem-book>`, you need to create a `GemBookPluginElement`, which extends from [`GemElement`](https://gem-docs.netlify.app/API/) through the following Way to get `GemBookPluginElement` and read `<gem-book>` configuration.
 
 ```js
-customElements.whenDefined('gem-book').then((Book) => {
-  const GemBookPluginElement = Book.GemBookPluginElement;
-
+customElements.whenDefined('gem-book').then(({ GemBookPluginElement }) => {
   customElements.define(
-    'gem-book-plugin-example',
+    'gbp-example',
     class extends GemBookPluginElement {
       constructor() {
         super();

@@ -2,6 +2,7 @@ import { html, GemElement, customElement, attribute, history, connectStore, prop
 
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
+import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { container } from './icons';
 import { getMdPath, NavItemWithLink } from '../lib/utils';
@@ -67,9 +68,10 @@ export class EditLink extends GemElement<State> {
     return html`
       <style>
         :host {
+          grid-area: auto / content;
           display: flex;
           padding: 2rem 0;
-          grid-area: auto / content;
+          justify-content: space-between;
         }
         gem-link {
           color: ${theme.linkColor};
@@ -85,13 +87,18 @@ export class EditLink extends GemElement<State> {
           height: 18px;
           margin-right: 10px;
         }
-        .last-updated {
-          flex-grow: 1;
-          text-align: right;
-        }
         .last-updated span {
           opacity: 0.5;
           color: ${theme.textColor};
+        }
+        @media ${mediaQuery.PHONE} {
+          :host {
+            flex-direction: column;
+          }
+          gem-link,
+          .last-updated {
+            white-space: nowrap;
+          }
         }
       </style>
       <gem-link class="edit" href=${`${this.github}/blob/${this.sourceBranch}${this.getMdFullPath()}`}>

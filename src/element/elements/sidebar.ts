@@ -74,6 +74,7 @@ export class SideBar extends GemElement {
           padding: 3rem 1rem 0;
           margin: 0 -1rem;
           scrollbar-width: thin;
+          font-size: 14px;
         }
         @media ${mediaQuery.PHONE} {
           :host {
@@ -119,7 +120,7 @@ export class SideBar extends GemElement {
           border: none;
           height: 2.7em;
           outline: none;
-          font-size: 14px;
+          font-size: inherit;
           width: 100%;
           padding: 0 3em 0 1em;
         }
@@ -128,7 +129,6 @@ export class SideBar extends GemElement {
           color: inherit;
           text-decoration: none;
           line-height: 1.2;
-          padding: 0.2em 0;
         }
         gem-active-link.active {
           color: ${theme.textColor};

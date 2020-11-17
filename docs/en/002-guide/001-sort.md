@@ -3,7 +3,7 @@
 By default, the command line tool performs directory traversal in ascending order of file names. The links in the sidebar of the generated configuration file are also sorted according to this rule, and `README.md` is always ranked first. You can add weight numbers to the directory name and file name to customize the sorting, for example:
 
 ```
-src/examples/hello/docs/
+src/docs/
 ├── 002-guide
 │   ├── README.md
 │   └── installation.md

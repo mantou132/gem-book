@@ -3,11 +3,9 @@
 插件就是自定义元素，你可以使用任何自定义元素扩展 Markdown。如果你读取 `<gem-book>` 的数据，就需要创建 `GemBookPluginElement`, 他扩展自 [`GemElement`](https://gem-docs.netlify.app/API/)，通过下面这种方式获取 `GemBookPluginElement` 和读取 `<gem-book>` 配置。
 
 ```js
-customElements.whenDefined('gem-book').then((Book) => {
-  const GemBookPluginElement = Book.GemBookPluginElement;
-
+customElements.whenDefined('gem-book').then(({ GemBookPluginElement }) => {
   customElements.define(
-    'gem-book-plugin-example',
+    'gbp-example',
     class extends GemBookPluginElement {
       constructor() {
         super();

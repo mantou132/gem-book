@@ -182,6 +182,7 @@ export class Book extends GemElement<State> {
           font: 16px/1.7 ${theme.font};
           color: ${theme.textColor};
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+          background: ${theme.backgroundColor};
         }
         @media ${mediaQuery.PHONE} {
           :host {
@@ -192,7 +193,7 @@ export class Book extends GemElement<State> {
         }
         .nav-shadow {
           grid-area: 1 / left / 2 / right;
-          background: white;
+          background: ${theme.backgroundColor};
           border-bottom: 1px solid ${theme.borderColor};
         }
         .nav-shadow,

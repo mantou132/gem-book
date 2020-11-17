@@ -172,7 +172,7 @@ export class Main extends GemElement<State> {
         }
         :host {
           z-index: 1;
-          grid-area: 2 / content / content / auto;
+          grid-area: auto / content;
           opacity: ${fetching ? 0.3 : 1};
           min-height: 10rem;
           overflow: auto;
@@ -181,7 +181,6 @@ export class Main extends GemElement<State> {
         }
         @media ${mediaQuery.PHONE} {
           :host {
-            grid-area: 2 / content / content / auto;
             margin: 0 -1rem;
             padding: 1rem 1rem 0;
           }
@@ -251,17 +250,9 @@ export class Main extends GemElement<State> {
           background: ${theme.tableHeaderBackground};
           border-bottom: 1px solid ${theme.borderColor};
           border-top: 1px solid ${theme.borderColor};
-          font-weight: 400;
+          font-weight: normal;
           font-size: 12px;
           padding: 10px;
-        }
-        thead th:first-child {
-          border-left: 1px solid ${theme.borderColor};
-          border-radius: 4px 0 0 4px;
-        }
-        thead th:last-child {
-          border-right: 1px solid ${theme.borderColor};
-          border-radius: 0 4px 4px 0;
         }
         pre {
           z-index: 2;
@@ -275,7 +266,7 @@ export class Main extends GemElement<State> {
           white-space: pre;
         }
         @media ${mediaQuery.PHONE} {
-          pre {
+          :host > pre {
             margin: 1rem -1rem;
             border-radius: 0;
           }

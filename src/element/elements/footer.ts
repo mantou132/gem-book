@@ -12,8 +12,8 @@ export class Footer extends GemElement {
     return html`
       <style>
         :host {
-          display: block;
           grid-area: auto / content;
+          display: block;
           padding: 2rem 0;
           margin-top: 6rem;
           border-top: 1px solid ${theme.borderColor};

@@ -50,7 +50,7 @@ document.body.append(new Book(config));
 </script>
 ```
 
-并启动本地静态资源服务器来进行预览，比如 `http-serve docs`。
+并启动本地静态资源服务器来进行预览，比如 `serve docs -s`。
 
 ### 渲染规则
 

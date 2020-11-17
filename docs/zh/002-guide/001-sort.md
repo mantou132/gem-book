@@ -4,7 +4,7 @@
 可以在目录名称和文件名称中添加权重数字以自定义排序，例如：
 
 ```
-src/examples/hello/docs/
+src/docs/
 ├── 002-guide
 │   ├── README.md
 │   └── installation.md
