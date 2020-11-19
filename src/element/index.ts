@@ -184,13 +184,6 @@ export class Book extends GemElement<State> {
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
           background: ${theme.backgroundColor};
         }
-        @media ${mediaQuery.PHONE} {
-          :host {
-            grid-column-gap: 1rem;
-            grid-template-areas: 'left content right';
-            grid-template-columns: 0 1fr auto;
-          }
-        }
         .nav-shadow {
           grid-area: 1 / left / 2 / right;
           background: ${theme.backgroundColor};
@@ -206,6 +199,16 @@ export class Book extends GemElement<State> {
           margin-top: ${theme.headerHeight};
           top: ${theme.headerHeight};
         }
+        @media ${mediaQuery.PHONE} {
+          :host {
+            grid-column-gap: 1rem;
+            grid-template-areas: 'left content right';
+            grid-template-columns: 0 1fr auto;
+          }
+          .nav-shadow ~ gem-book-sidebar {
+            margin-top: 0;
+          }
+        }
       </style>
       ${hasNavbar
         ? html`
@@ -213,12 +216,6 @@ export class Book extends GemElement<State> {
             <gem-book-nav tl=${title} .nav=${nav} icon=${icon} github=${github}></gem-book-nav>
           `
         : null}
-      <gem-book-sidebar
-        @languagechange=${languagechangeHandle}
-        lang=${lang}
-        .langlist=${langlist}
-        .sidebar=${sidebarResult}
-      ></gem-book-sidebar>
       <gem-route .key=${lang} .routes=${routes}></gem-route>
       ${github && sourceBranch
         ? html`
@@ -231,6 +228,12 @@ export class Book extends GemElement<State> {
             ></gem-book-edit-link>
           `
         : null}
+      <gem-book-sidebar
+        @languagechange=${languagechangeHandle}
+        lang=${lang}
+        .langlist=${langlist}
+        .sidebar=${sidebarResult}
+      ></gem-book-sidebar>
       <gem-book-rel-link .links=${refLinks}></gem-book-rel-link>
       <gem-book-footer></gem-book-footer>
     `;

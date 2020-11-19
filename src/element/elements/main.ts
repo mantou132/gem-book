@@ -179,12 +179,6 @@ export class Main extends GemElement<State> {
           margin: 0 -3rem;
           padding: 3rem 3rem 0;
         }
-        @media ${mediaQuery.PHONE} {
-          :host {
-            margin: 0 -1rem;
-            padding: 1rem 1rem 0;
-          }
-        }
         a > img + svg {
           display: none;
         }
@@ -453,6 +447,15 @@ export class Main extends GemElement<State> {
 
         .token.italic {
           font-style: italic;
+        }
+        @media ${mediaQuery.PHONE} {
+          :host {
+            margin: 0 -1rem;
+            padding: 1rem 1rem 0;
+          }
+          h1 {
+            font-size: 2.5rem;
+          }
         }
       </style>
     `;
