@@ -23,7 +23,7 @@ marked.setOptions({
       if (lang === 'md' || lang === 'markdown') {
         const { frontmatter, body } = fm(code);
         highlightCode =
-          (frontmatter ? Prism.highlight(frontmatter, Prism.languages['yaml'], 'yaml') + '\n\n' : '') +
+          (frontmatter ? `---\n${Prism.highlight(frontmatter, Prism.languages['yaml'], 'yaml')}\n---\n\n` : '') +
           Prism.highlight(body, Prism.languages['md'], 'md');
       } else {
         highlightCode = Prism.highlight(code, Prism.languages[lang], lang);
