@@ -147,6 +147,9 @@ program
   .option('--display-rank', 'sorting number is not displayed in the link', () => {
     bookConfig.displayRank = true;
   })
+  .option('--home-mode', 'use homepage mode', () => {
+    bookConfig.homeMode = true;
+  })
   .option('--nav1 <title,link>', 'attach a nav item', addNavItem)
   .option('--nav2 <title,link>', 'attach a nav item', addNavItem)
   .option('--nav3 <title,link>', 'attach a nav item', addNavItem)

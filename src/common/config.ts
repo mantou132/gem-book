@@ -19,4 +19,5 @@ export interface BookConfig {
   sourceBranch?: string;
   i18n?: boolean;
   displayRank?: boolean;
+  homeMode?: boolean;
 }

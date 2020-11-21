@@ -35,7 +35,12 @@ export function isSameOrigin(link: string) {
   return origin === location.origin;
 }
 
-export function removeLinkRank(link: string) {
-  const parts = link.split('/');
-  return parts.map((part) => parseFilename(part).title).join('/');
+export function getLinkPath(link: string, displayRank?: boolean) {
+  const path = link.replace(/\.md$/i, '');
+  return displayRank
+    ? path
+    : path
+        .split('/')
+        .map((part) => parseFilename(part).title)
+        .join('/');
 }

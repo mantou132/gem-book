@@ -18,7 +18,7 @@
   "scripts": {
     "lint": "tsc --noEmit && eslint --ext .ts --fix src/",
     "dev:cli": "webpack --watch --config webpack.config.cli.js",
-    "docs": "node ./bin docs --i18n --debug -t Gem-book -i /logo.png",
+    "docs": "node ./bin docs --i18n --debug -t Gem-book -i /logo.png --home-mode",
     "dev:docs": "nodemon --watch bin --exec \"npm run docs -- --watch\"",
     "dev:website": "webpack-dev-server",
     "build:cli": "webpack --config webpack.config.cli.js",

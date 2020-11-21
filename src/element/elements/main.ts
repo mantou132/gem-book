@@ -1,4 +1,4 @@
-import { html, GemElement, customElement, attribute, raw, boolattribute } from '@mantou/gem';
+import { html, GemElement, customElement, attribute, raw, boolattribute, updateStore } from '@mantou/gem';
 import marked from 'marked';
 import Prism from 'prismjs';
 import fm from 'front-matter';
@@ -10,9 +10,11 @@ import 'prismjs/components/prism-markdown';
 import 'prismjs/components/prism-yaml';
 import 'prismjs/components/prism-typescript';
 
-import { getMdPath, isSameOrigin, removeLinkRank } from '../lib/utils';
-import { anchor, link } from './icons';
+import { getMdPath, isSameOrigin, getLinkPath } from '../lib/utils';
 import { theme } from '../helper/theme';
+import { homepageData } from './homepage';
+import { anchor, link } from './icons';
+import { FrontMatter } from '../../common/frontmatter';
 
 const parser = new DOMParser();
 
@@ -75,10 +77,8 @@ export class Main extends GemElement<State> {
     const { displayRank } = this;
     renderer.link = function (href, title, text) {
       if (href?.startsWith('.')) {
-        const hrefWithoutMdExtensionName = href.replace(/\.md$/i, '');
-        const path = displayRank ? hrefWithoutMdExtensionName : removeLinkRank(hrefWithoutMdExtensionName);
         return raw`
-          <gem-link path=${path} title=${title || ''}>${text}</gem-link>
+          <gem-link path=${getLinkPath(href, displayRank)} title=${title || ''}>${text}</gem-link>
         `;
       }
       const internal = isSameOrigin(href || '');
@@ -98,8 +98,12 @@ export class Main extends GemElement<State> {
     });
     const mdPath = getMdPath(this.link, this.lang);
     const md = await (await fetch(mdPath)).text();
-    const mdBodyContent = fm(md).body;
-    const html = marked.parse(mdBodyContent, { renderer: this.mdRenderer });
+    const {
+      body: mdBody,
+      attributes: { hero, features },
+    } = fm<FrontMatter>(md);
+    updateStore(homepageData, { hero, features });
+    const html = this.parse(mdBody);
     const elements = [...parser.parseFromString(html, 'text/html').body.children];
     this.setState({
       fetching: false,
@@ -134,37 +138,14 @@ export class Main extends GemElement<State> {
     }
   };
 
-  mounted() {
-    this.effect(
-      () => {
-        this.mdRenderer = this.getMdRenderer();
-      },
-      () => [this.displayRank],
-    );
-    this.effect(
-      () => {
-        // link change
-        scrollTo(0, 0);
-        this.fetchData();
-      },
-      () => [this.link, this.lang],
-    );
-    this.addEventListener('click', this.clickHandle);
-    window.addEventListener('hashchange', this.hashChangeHandle);
-    return () => {
-      this.removeEventListener('click', this.clickHandle);
-      window.removeEventListener('hashchange', this.hashChangeHandle);
-    };
-  }
-
   render() {
     const { fetching, content } = this.state;
     return html`
       ${content || 'Loading...'}
       <style>
         :not(:defined)::before {
-          content: 'The plugin is not imported';
           display: block;
+          content: 'The plugin is not imported';
           padding: 1em;
           border-radius: 4px;
           text-align: center;
@@ -172,12 +153,12 @@ export class Main extends GemElement<State> {
         }
         :host {
           display: block;
+          width: 100%;
+          box-sizing: border-box;
           z-index: 1;
           opacity: ${fetching ? 0.3 : 1};
           min-height: 10rem;
-          overflow: auto;
-          margin: 0 -3rem;
-          padding: 3rem 3rem 0;
+          padding-top: 3rem;
         }
         a > img + svg {
           display: none;
@@ -450,8 +431,7 @@ export class Main extends GemElement<State> {
         }
         @media ${mediaQuery.PHONE} {
           :host {
-            margin: 0 -1rem;
-            padding: 1rem 1rem 0;
+            padding-top: 1rem;
           }
           h1 {
             font-size: 2.5rem;
@@ -459,5 +439,32 @@ export class Main extends GemElement<State> {
         }
       </style>
     `;
+  }
+
+  mounted() {
+    this.effect(
+      () => {
+        this.mdRenderer = this.getMdRenderer();
+      },
+      () => [this.displayRank],
+    );
+    this.effect(
+      () => {
+        // link change
+        scrollTo(0, 0);
+        this.fetchData();
+      },
+      () => [this.link, this.lang],
+    );
+    this.addEventListener('click', this.clickHandle);
+    window.addEventListener('hashchange', this.hashChangeHandle);
+    return () => {
+      this.removeEventListener('click', this.clickHandle);
+      window.removeEventListener('hashchange', this.hashChangeHandle);
+    };
+  }
+
+  parse(s: string) {
+    return marked.parse(s, { renderer: this.mdRenderer });
   }
 }

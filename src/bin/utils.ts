@@ -8,6 +8,7 @@ import fm from 'front-matter';
 import YAML from 'yaml';
 
 import { NavItem } from '../common/config';
+import { FrontMatter } from '../common/frontmatter';
 
 // https://github.com/webpack/webpack/issues/4175#issuecomment-277232067
 declare global {
@@ -32,13 +33,10 @@ export function getFilename(fullPath: string) {
   return basename.replace(extname, '');
 }
 
-interface FileMetadata {
-  headings?: NavItem[];
+type FileMetadata = FrontMatter & {
   title: string;
-  isNav?: boolean;
-  navTitle?: string;
-  sidebarIgnore?: boolean;
-}
+  headings?: NavItem[];
+};
 
 export function getMetadata(fullPath: string): FileMetadata {
   const getTitle = (p: string) => getFilename(p).replace(/^\d*-/, '');

@@ -22,10 +22,11 @@ export class Nav extends GemElement {
 
   renderItem = ({ navTitle, title, link }: NavItem) => {
     if (link) {
+      const external = !isSameOrigin(link);
       return html`
-        <gem-active-link href=${link} pattern=${`${link}*`}>
+        <gem-active-link class=${external ? 'external' : ''} href=${link} pattern=${`${link}*`}>
           ${capitalize(navTitle || title)}
-          ${isSameOrigin(link) ? null : html`<gem-use .root=${container} selector="#link"></gem-use>`}
+          ${external ? html`<gem-use .root=${container} selector="#link"></gem-use>` : null}
         </gem-active-link>
       `;
     }
@@ -37,15 +38,10 @@ export class Nav extends GemElement {
     return html`
       <style>
         :host {
+          --height: ${theme.headerHeight};
           display: flex;
-          line-height: ${theme.headerHeight};
+          line-height: var(--height);
           color: ${theme.textColor};
-        }
-        @media ${mediaQuery.PHONE} {
-          gem-link,
-          gem-active-link {
-            font-size: 0.875em;
-          }
         }
         gem-link,
         gem-active-link {
@@ -63,9 +59,8 @@ export class Nav extends GemElement {
           align-items: center;
         }
         .title img {
-          --height: calc(0.8 * ${theme.headerHeight});
-          height: var(--height);
-          min-width: var(--height);
+          height: calc(0.8 * var(--height));
+          min-width: calc(0.8 * var(--height));
           object-fit: contain;
           transform: translateX(-10%);
         }
@@ -85,9 +80,20 @@ export class Nav extends GemElement {
           width: 15px;
           height: 15px;
         }
+        @media ${mediaQuery.PHONE} {
+          :host {
+            --height: calc(0.875 * ${theme.headerHeight});
+          }
+          .external {
+            display: none;
+          }
+        }
       </style>
       <div class="title">
-        <gem-link path="/">${this.icon ? html`<img alt=${this.tl} src=${this.icon} />` : null}${this.tl}</gem-link>
+        <gem-link path="/">
+          ${this.icon ? html`<img alt=${this.tl} src=${this.icon} />` : null}
+          ${mediaQuery.isPhone && this.icon && Number(this.nav?.length) >= 2 ? '' : this.tl}
+        </gem-link>
       </div>
       ${this.nav ? this.nav.map(this.renderItem) : null} ${githubLink}
     `;

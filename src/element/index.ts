@@ -11,10 +11,11 @@ import { NavItem, BookConfig } from '../common/config';
 import './elements/nav';
 import './elements/sidebar';
 import './elements/main';
+import './elements/homepage';
 import './elements/footer';
 import './elements/edit-link';
 import './elements/rel-link';
-import { flatNav, capitalize, removeLinkRank, NavItemWithOriginLink, NavItemWithLink, getMdPath } from './lib/utils';
+import { flatNav, capitalize, getLinkPath, NavItemWithOriginLink, NavItemWithLink, getMdPath } from './lib/utils';
 import { selfI18n } from './helper/i18n';
 import { theme, changeTheme, Theme } from './helper/theme';
 
@@ -148,12 +149,18 @@ export class Book extends GemElement<State> {
     const process = (item: NavItem): NavItemWithOriginLink => {
       return {
         ...item,
-        link: config?.displayRank ? item.link : item.link && removeLinkRank(item.link),
+        link: item.link && getLinkPath(item.link, config?.displayRank),
         originLink: item.link,
         children: item.children?.map(process),
       };
     };
     return sidebar.map(process);
+  }
+
+  private getHomePage(links: RouteItem[]) {
+    const link = links.find((e) => e.pattern === '/');
+    if (!link) return '';
+    return link.redirect || link.pattern;
   }
 
   changeTheme = changeTheme;
@@ -162,7 +169,7 @@ export class Book extends GemElement<State> {
     const config = this.getConfig();
     if (!config) return null;
 
-    const { icon = '', github = '', sourceBranch, sourceDir = '', title = '' } = config;
+    const { icon = '', github = '', sourceBranch, sourceDir = '', title = '', homeMode, displayRank } = config;
     const { sidebar, lang, langlist, languagechangeHandle } = this.getI18nSidebar();
     const sidebarResult = this.processSidebar(sidebar);
     const nav = this.getNav(sidebarResult);
@@ -170,7 +177,8 @@ export class Book extends GemElement<State> {
     const links = flatNav(sidebarResult);
     const routes = this.getRouter(links, title, lang);
     const refLinks = links.filter((e) => e.sidebarIgnore !== true);
-    const useHomeMode = false;
+    const homePage = this.getHomePage(routes);
+    const renderHomePage = homeMode && homePage === history.getParams().path;
 
     return html`
       <gem-reflect>
@@ -207,9 +215,6 @@ export class Book extends GemElement<State> {
           margin-top: ${theme.headerHeight};
           top: ${theme.headerHeight};
         }
-        gem-light-route {
-          display: contents;
-        }
         gem-book-sidebar {
           /* how to span all row? */
           grid-area: 1 / aside / 6 / aside;
@@ -217,14 +222,31 @@ export class Book extends GemElement<State> {
         gem-book-nav {
           grid-area: 1 / aside / 2 / content;
         }
-        gem-book-main,
+        gem-light-route,
         gem-book-edit-link,
         gem-book-rel-link,
         gem-book-footer {
           grid-area: auto / content;
         }
-        @media ${useHomeMode ? 'all' : 'not all'} {
-          gem-book-main,
+        gem-light-route {
+          margin: 0 -3rem;
+          padding: 0 3rem;
+        }
+        gem-book-main {
+          max-width: calc(100vw - 9rem - ${theme.sidebarWidth});
+        }
+        @media ${renderHomePage ? 'all' : 'not all'} {
+          gem-light-route {
+            display: flex;
+            justify-content: center;
+          }
+          gem-book-main {
+            max-width: min(${theme.mainWidth}, 100vw);
+          }
+          gem-book-homepage {
+            grid-area: auto / left / auto / right;
+          }
+          gem-light-route,
           gem-book-footer {
             grid-area: auto / aside / auto / content;
           }
@@ -246,15 +268,25 @@ export class Book extends GemElement<State> {
             grid-template-areas: 'left content right';
             grid-template-columns: 0 1fr auto;
           }
+          gem-light-route {
+            margin: 0 -1rem;
+            padding: 0 1rem;
+          }
+          gem-book-main {
+            max-width: calc(100vw - 2rem);
+          }
           gem-book-sidebar,
           gem-book-edit-link,
           gem-book-rel-link,
           gem-book-footer,
-          gem-book-main {
+          gem-light-route {
             grid-area: auto / content;
           }
           gem-book-nav {
             grid-area: 1 / content / 2 / content;
+          }
+          gem-book-footer {
+            text-align: left;
           }
         }
       </style>
@@ -264,6 +296,7 @@ export class Book extends GemElement<State> {
             <gem-book-nav tl=${title} .nav=${nav} icon=${icon} github=${github}></gem-book-nav>
           `
         : null}
+      ${renderHomePage ? html`<gem-book-homepage .displayRank=${displayRank}></gem-book-homepage>` : ''}
       <gem-light-route .key=${lang} .routes=${routes}></gem-light-route>
       ${github && sourceBranch
         ? html`
@@ -279,6 +312,7 @@ export class Book extends GemElement<State> {
       <gem-book-sidebar
         @languagechange=${languagechangeHandle}
         lang=${lang}
+        .homePage=${homeMode ? homePage : ''}
         .langlist=${langlist}
         .sidebar=${sidebarResult}
       ></gem-book-sidebar>

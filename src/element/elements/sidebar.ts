@@ -23,6 +23,7 @@ import { theme } from '../helper/theme';
 @connectStore(history.store)
 export class SideBar extends GemElement {
   @attribute lang: string;
+  @attribute homePage: string;
 
   @property langlist: { code: string; name: string }[];
   @property sidebar: NavItem[];
@@ -34,7 +35,7 @@ export class SideBar extends GemElement {
   };
 
   renderItem = ({ link, title, children, sidebarIgnore }: NavItem, isTop = false): TemplateResult | null => {
-    if (sidebarIgnore) return null;
+    if (sidebarIgnore || (this.homePage && this.homePage === link)) return null;
     if (link) {
       return html`
         <gem-active-link
