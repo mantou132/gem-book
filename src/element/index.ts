@@ -2,6 +2,7 @@ import { html, GemElement, customElement, property, attribute } from '@mantou/ge
 
 import '@mantou/gem/elements/title';
 import '@mantou/gem/elements/route';
+import '@mantou/gem/elements/reflect';
 import { RouteItem } from '@mantou/gem/elements/route';
 import { I18n } from '@mantou/gem/helper/i18n';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
@@ -13,7 +14,7 @@ import './elements/main';
 import './elements/footer';
 import './elements/edit-link';
 import './elements/rel-link';
-import { flatNav, capitalize, removeLinkRank, NavItemWithOriginLink, NavItemWithLink } from './lib/utils';
+import { flatNav, capitalize, removeLinkRank, NavItemWithOriginLink, NavItemWithLink, getMdPath } from './lib/utils';
 import { selfI18n } from './helper/i18n';
 import { theme, changeTheme, Theme } from './helper/theme';
 
@@ -170,6 +171,11 @@ export class Book extends GemElement<State> {
     const refLinks = links.filter((e) => e.sidebarIgnore !== true);
 
     return html`
+      <gem-reflect
+        >${links
+          .filter((e) => !e.originLink.startsWith('#'))
+          .map(({ originLink }) => html`<link rel="prefetch" href=${getMdPath(originLink, lang)}></link>`)}</gem-reflect
+      >
       <style>
         :host {
           display: grid;
