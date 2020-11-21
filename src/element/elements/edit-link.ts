@@ -68,7 +68,6 @@ export class EditLink extends GemElement<State> {
     return html`
       <style>
         :host {
-          grid-area: auto / content;
           display: flex;
           padding: 2rem 0;
           justify-content: space-between;

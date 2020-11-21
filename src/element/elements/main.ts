@@ -171,8 +171,8 @@ export class Main extends GemElement<State> {
           background: ${theme.borderColor};
         }
         :host {
+          display: block;
           z-index: 1;
-          grid-area: auto / content;
           opacity: ${fetching ? 0.3 : 1};
           min-height: 10rem;
           overflow: auto;

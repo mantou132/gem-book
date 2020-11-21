@@ -37,15 +37,11 @@ export class Nav extends GemElement {
     return html`
       <style>
         :host {
-          grid-area: 1 / aside / 2 / content;
-          line-height: ${theme.headerHeight};
           display: flex;
+          line-height: ${theme.headerHeight};
           color: ${theme.textColor};
         }
         @media ${mediaQuery.PHONE} {
-          :host {
-            grid-area: 1 / content / 2 / content;
-          }
           gem-link,
           gem-active-link {
             font-size: 0.875em;

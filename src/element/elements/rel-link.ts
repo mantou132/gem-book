@@ -19,7 +19,7 @@ export class RelLink extends GemElement {
     return html`
       <style>
         :host {
-          grid-area: auto / content;
+          display: block;
           padding: 2rem 0;
           display: flex;
           justify-content: space-between;

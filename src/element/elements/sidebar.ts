@@ -63,8 +63,7 @@ export class SideBar extends GemElement {
     return html`
       <style>
         :host {
-          /* how to span all row? */
-          grid-area: 1 / aside / 6 / aside;
+          display: block;
           overflow: auto;
           overscroll-behavior: contain;
           height: calc(100vh - ${theme.headerHeight});
@@ -78,7 +77,6 @@ export class SideBar extends GemElement {
         }
         @media ${mediaQuery.PHONE} {
           :host {
-            grid-area: auto / content;
             position: static;
             height: auto;
             margin: 0;

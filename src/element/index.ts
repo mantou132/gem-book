@@ -1,4 +1,4 @@
-import { html, GemElement, customElement, property, attribute } from '@mantou/gem';
+import { html, GemElement, customElement, property, attribute, connectStore, history } from '@mantou/gem';
 
 import '@mantou/gem/elements/title';
 import '@mantou/gem/elements/route';
@@ -31,6 +31,7 @@ type State = { config: BookConfig | undefined };
  * @attr src
  */
 @customElement('gem-book')
+@connectStore(history.store)
 export class Book extends GemElement<State> {
   static GemBookPluginElement = GemBookPluginElement;
 
@@ -169,13 +170,14 @@ export class Book extends GemElement<State> {
     const links = flatNav(sidebarResult);
     const routes = this.getRouter(links, title, lang);
     const refLinks = links.filter((e) => e.sidebarIgnore !== true);
+    const useHomeMode = false;
 
     return html`
-      <gem-reflect
-        >${links
+      <gem-reflect>
+        ${links
           .filter((e) => !e.originLink.startsWith('#'))
-          .map(({ originLink }) => html`<link rel="prefetch" href=${getMdPath(originLink, lang)}></link>`)}</gem-reflect
-      >
+          .map(({ originLink }) => html`<link rel="prefetch" href=${getMdPath(originLink, lang)}></link>`)}
+      </gem-reflect>
       <style>
         :host {
           display: grid;
@@ -205,14 +207,54 @@ export class Book extends GemElement<State> {
           margin-top: ${theme.headerHeight};
           top: ${theme.headerHeight};
         }
+        gem-light-route {
+          display: contents;
+        }
+        gem-book-sidebar {
+          /* how to span all row? */
+          grid-area: 1 / aside / 6 / aside;
+        }
+        gem-book-nav {
+          grid-area: 1 / aside / 2 / content;
+        }
+        gem-book-main,
+        gem-book-edit-link,
+        gem-book-rel-link,
+        gem-book-footer {
+          grid-area: auto / content;
+        }
+        @media ${useHomeMode ? 'all' : 'not all'} {
+          gem-book-main,
+          gem-book-footer {
+            grid-area: auto / aside / auto / content;
+          }
+          gem-book-sidebar,
+          gem-book-edit-link,
+          gem-book-rel-link {
+            display: none;
+          }
+          gem-book-footer {
+            text-align: center;
+          }
+        }
         @media ${mediaQuery.PHONE} {
+          .nav-shadow ~ gem-book-sidebar {
+            margin-top: 0;
+          }
           :host {
             grid-column-gap: 1rem;
             grid-template-areas: 'left content right';
             grid-template-columns: 0 1fr auto;
           }
-          .nav-shadow ~ gem-book-sidebar {
-            margin-top: 0;
+          gem-book-sidebar,
+          gem-book-edit-link,
+          gem-book-rel-link,
+          gem-book-footer,
+          gem-book-main {
+            grid-area: auto / content;
+          }
+          gem-book-nav {
+            grid-area: 1 / content / 2 / content;
           }
         }
       </style>
@@ -222,7 +264,7 @@ export class Book extends GemElement<State> {
             <gem-book-nav tl=${title} .nav=${nav} icon=${icon} github=${github}></gem-book-nav>
           `
         : null}
-      <gem-route .key=${lang} .routes=${routes}></gem-route>
+      <gem-light-route .key=${lang} .routes=${routes}></gem-light-route>
       ${github && sourceBranch
         ? html`
             <gem-book-edit-link
