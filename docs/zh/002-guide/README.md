@@ -1,6 +1,6 @@
 ---
 isNav: true
-navTitle: Docs
+navTitle: 指南
 ---
 
 # 简介

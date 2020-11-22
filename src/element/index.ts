@@ -293,7 +293,15 @@ export class Book extends GemElement<State> {
       ${hasNavbar
         ? html`
             <div class="nav-shadow"></div>
-            <gem-book-nav tl=${title} .nav=${nav} icon=${icon} github=${github}></gem-book-nav>
+            <gem-book-nav
+              tl=${title}
+              icon=${icon}
+              github=${github}
+              lang=${lang}
+              .langlist=${langlist}
+              .nav=${nav}
+              @languagechange=${languagechangeHandle}
+            ></gem-book-nav>
           `
         : null}
       ${renderHomePage ? html`<gem-book-homepage .displayRank=${displayRank}></gem-book-homepage>` : ''}
@@ -311,9 +319,7 @@ export class Book extends GemElement<State> {
         : null}
       <gem-book-sidebar
         @languagechange=${languagechangeHandle}
-        lang=${lang}
         .homePage=${homeMode ? homePage : ''}
-        .langlist=${langlist}
         .sidebar=${sidebarResult}
       ></gem-book-sidebar>
       <gem-book-rel-link .links=${refLinks}></gem-book-rel-link>

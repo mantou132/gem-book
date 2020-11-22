@@ -1,4 +1,14 @@
-import { html, GemElement, customElement, attribute, property } from '@mantou/gem';
+import {
+  html,
+  GemElement,
+  customElement,
+  attribute,
+  property,
+  emitter,
+  Emitter,
+  refobject,
+  RefObject,
+} from '@mantou/gem';
 
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
@@ -18,13 +28,41 @@ export class Nav extends GemElement {
   @attribute tl: string;
   @attribute github: string;
   @attribute icon: string;
+  @attribute lang: string;
+
   @property nav: NavItem[] | undefined;
+  @property langlist: { code: string; name: string }[];
+
+  @emitter languagechange: Emitter<string>;
+
+  @refobject i18nRef: RefObject<HTMLSelectElement>;
+
+  renderI18nSet = () => {
+    if (this.lang) {
+      const name = this.langlist.find(({ code }) => code === this.lang)?.name;
+      return html`
+        <div class="item">
+          ${mediaQuery.isPhone ? '' : name || this.lang}
+          <gem-use @click=${() => this.i18nRef.element?.click()} .root=${container} selector="#i18n"></gem-use>
+          <select
+            class="i18n-select"
+            ref=${this.i18nRef.ref}
+            @change=${(e: any) => this.languagechange(e.target.value)}
+          >
+            ${this.langlist.map(
+              ({ name, code }) => html`<option value=${code} ?selected=${code === this.lang}>${name}</option>`,
+            )}
+          </select>
+        </div>
+      `;
+    }
+  };
 
   renderItem = ({ navTitle, title, link }: NavItem) => {
     if (link) {
       const external = !isSameOrigin(link);
       return html`
-        <gem-active-link class=${external ? 'external' : ''} href=${link} pattern=${`${link}*`}>
+        <gem-active-link class="${external ? 'external' : ''} item" href=${link} pattern=${`${link}*`}>
           ${capitalize(navTitle || title)}
           ${external ? html`<gem-use .root=${container} selector="#link"></gem-use>` : null}
         </gem-active-link>
@@ -34,6 +72,8 @@ export class Nav extends GemElement {
 
   render() {
     const githubLink = this.github ? this.renderItem({ title: 'github', link: this.github }) : null;
+    const internals = this.nav?.filter((e) => isSameOrigin(e.link || '')) || [];
+    const externals = this.nav?.filter((e) => !isSameOrigin(e.link || '')) || [];
 
     return html`
       <style>
@@ -45,18 +85,40 @@ export class Nav extends GemElement {
         }
         gem-link,
         gem-active-link {
-          position: relative;
           text-decoration: none;
           color: inherit;
+        }
+        .item {
+          display: flex;
+          align-items: center;
+          position: relative;
+          cursor: pointer;
+        }
+        .item gem-use {
+          margin-left: 0.3rem;
+        }
+        .i18n-select {
+          width: auto;
+          cursor: pointer;
+          position: absolute;
+          top: 0;
+          right: 0;
+          left: 0;
+          bottom: 0;
+          opacity: 0;
         }
         .title {
           flex-grow: 1;
           display: flex;
         }
-        .title gem-link {
-          display: flex;
+        .homelink {
+          margin-right: 3rem;
           font-size: 1.2rem;
-          align-items: center;
+          font-weight: 700;
+        }
+        .homelink ~ .item {
+          font-weight: 300;
+          padding: 0 1rem;
         }
         .title img {
           height: calc(0.8 * var(--height));
@@ -64,16 +126,20 @@ export class Nav extends GemElement {
           object-fit: contain;
           transform: translateX(-10%);
         }
-        gem-active-link + gem-active-link {
+        .item + .item {
           margin-left: 1rem;
         }
+        gem-active-link:hover,
+        gem-active-link.active {
+          color: ${theme.linkColor};
+        }
         gem-active-link.active::after {
+          content: '';
           position: absolute;
           left: 0;
           bottom: 0;
-          height: 2px;
+          height: 3px;
           background: currentColor;
-          content: '';
           width: 100%;
         }
         gem-use {
@@ -84,18 +150,25 @@ export class Nav extends GemElement {
           :host {
             --height: calc(0.875 * ${theme.headerHeight});
           }
+          .homelink {
+            margin-right: 0;
+          }
+          .homelink ~ .item {
+            padding: 0 0.3rem;
+          }
           .external {
             display: none;
           }
         }
       </style>
       <div class="title">
-        <gem-link path="/">
+        <gem-link class="item homelink" path="/">
           ${this.icon ? html`<img alt=${this.tl} src=${this.icon} />` : null}
           ${mediaQuery.isPhone && this.icon && Number(this.nav?.length) >= 2 ? '' : this.tl}
         </gem-link>
+        ${internals.map(this.renderItem)}
       </div>
-      ${this.nav ? this.nav.map(this.renderItem) : null} ${githubLink}
+      ${externals.map(this.renderItem)} ${githubLink} ${this.renderI18nSet()}
     `;
   }
 }

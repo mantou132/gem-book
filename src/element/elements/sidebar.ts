@@ -7,8 +7,6 @@ import {
   history,
   connectStore,
   attribute,
-  Emitter,
-  emitter,
 } from '@mantou/gem';
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
@@ -22,12 +20,9 @@ import { theme } from '../helper/theme';
 @customElement('gem-book-sidebar')
 @connectStore(history.store)
 export class SideBar extends GemElement {
-  @attribute lang: string;
   @attribute homePage: string;
 
-  @property langlist: { code: string; name: string }[];
   @property sidebar: NavItem[];
-  @emitter languagechange: Emitter<string>;
 
   toggleLinks = (e: MouseEvent) => {
     const ele = e.target as HTMLDivElement;
@@ -90,38 +85,6 @@ export class SideBar extends GemElement {
           content: '';
           display: block;
           height: 2rem;
-        }
-        .langselect {
-          user-select: none;
-          display: flex;
-          align-items: center;
-          border: 1px solid ${theme.borderColor};
-          border-radius: 5px;
-          margin-bottom: 1em;
-        }
-        .langselect:hover {
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-          border-color: #ddd;
-        }
-        .dropdown {
-          border-bottom: 1px solid ${theme.borderColor};
-          box-sizing: border-box;
-          padding: 0.8em;
-          pointer-events: none;
-          margin-left: -2em;
-          width: 2em;
-          transform: rotate(90deg);
-        }
-        select {
-          background: none;
-          -webkit-appearance: none;
-          appearance: none;
-          border: none;
-          height: 2.7em;
-          outline: none;
-          font-size: inherit;
-          width: 100%;
-          padding: 0 3em 0 1em;
         }
         gem-active-link {
           display: block;
@@ -192,17 +155,6 @@ export class SideBar extends GemElement {
           margin-top: 0.5rem;
         }
       </style>
-      ${this.lang &&
-      html`
-        <div class="langselect">
-          <select @change=${(e: any) => this.languagechange(e.target.value)}>
-            ${this.langlist.map(
-              ({ name, code }) => html`<option value=${code} ?selected=${code === this.lang}>${name}</option>`,
-            )}
-          </select>
-          <gem-use class="dropdown" .root=${container} selector="#arrow"></gem-use>
-        </div>
-      `}
       ${this.sidebar.map((item) => this.renderItem(item, true))}
     `;
   }

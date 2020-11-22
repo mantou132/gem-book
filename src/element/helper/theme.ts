@@ -9,7 +9,7 @@ export const defaultTheme = {
   backgroundColor: 'white',
   textColor: 'black',
   borderColor: '#eaeaea',
-  linkColor: '#009688',
+  linkColor: '#18a9c9',
   sidebarLinkArrowColor: '#999',
   tableHeaderColor: '#666',
   tableHeaderBackground: '#fafafa',

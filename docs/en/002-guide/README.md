@@ -1,6 +1,6 @@
 ---
 isNav: true
-navTitle: Docs
+navTitle: Guide
 ---
 
 # Introduction

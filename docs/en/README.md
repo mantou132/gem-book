@@ -5,7 +5,7 @@ hero:
   desc: Custom elements for rendering markdown documents.
   actions:
     - text: Getting Started
-      link: ./001-introduction.md
+      link: ./guide/
 features:
   - title: Out of the box
     desc: Just allow the command line and then you can load custom elements in your website, so that all attention can be paid to document writing

@@ -113,6 +113,9 @@ export class Homepage extends GemElement {
           width: 30%;
           object-fit: contain;
         }
+        .has-icon {
+          text-align: center;
+        }
         .feat-title {
           margin: 1rem 0;
           font-size: 1.5;
@@ -123,6 +126,8 @@ export class Homepage extends GemElement {
         .feat-desc {
           line-height: 1.5;
           margin: 1rem 0;
+          letter-spacing: 0.05em;
+          font-weight: 300;
         }
         @media ${mediaQuery.PHONE} {
           .features .body {
@@ -153,7 +158,7 @@ export class Homepage extends GemElement {
         <div class="body">
           ${homepageData.features.map(
             (feature) => html`
-              <div class="feature">
+              <div class="feature ${feature.icon ? 'has-icon' : ''}">
                 ${feature.icon ? html`<img class="icon" src=${feature.icon} />` : ''}
                 <h3 class="feat-title">${feature.title}</h3>
                 <p class="feat-desc">
