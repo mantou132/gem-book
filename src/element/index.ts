@@ -99,7 +99,10 @@ export class Book extends GemElement<State> {
     const process = (item: NavItem): NavItemWithOriginLink => {
       return {
         ...item,
+        // /guide/
         link: item.link && getUserLink(item.link, config?.displayRank),
+        // /guide/readme
+        userFullPath: item.link && getLinkPath(item.link, config?.displayRank),
         originLink: item.link,
         children: item.children?.map(process),
       };
@@ -126,29 +129,23 @@ export class Book extends GemElement<State> {
   private getRouter(links: NavItemWithLink[], title: string, lang: string) {
     const config = this.getConfig();
     const routes: RouteItem[] = [];
-    links.forEach(({ title: pageTitle, link, originLink }) => {
+    links.forEach(({ title: pageTitle, link, userFullPath, originLink }) => {
       const routeTitle = `${capitalize(pageTitle)}${pageTitle ? ' - ' : ''}${title}`;
       const routeContent = html`
         <gem-book-main lang=${lang} link=${originLink} ?display-rank=${config?.displayRank}></gem-book-main>
       `;
-      const clientLink = getUserLink(originLink, config?.displayRank);
 
-      if (clientLink !== link) {
+      routes.push({
+        title: routeTitle,
+        pattern: link,
+        content: routeContent,
+      });
+
+      if (userFullPath !== link) {
         // /xxx/readme => /xxx/
         routes.push({
-          pattern: link,
-          redirect: clientLink,
-        });
-        routes.push({
-          title: routeTitle,
-          pattern: clientLink,
-          content: routeContent,
-        });
-      } else {
-        routes.push({
-          title: routeTitle,
-          pattern: clientLink,
-          content: routeContent,
+          pattern: userFullPath,
+          redirect: link,
         });
       }
 
@@ -210,8 +207,8 @@ export class Book extends GemElement<State> {
     const hasNavbar = icon || title || nav.length;
     const links = flatNav(sidebarResult);
     const routes = this.getRouter(links, title, lang);
-    const refLinks = links.filter((e) => e.sidebarIgnore !== true);
     const homePage = this.getHomePage(routes);
+    const refLinks = links.filter((e) => e.sidebarIgnore !== true && (!homeMode || e.link !== homePage));
     const renderHomePage = homeMode && homePage === history.getParams().path;
 
     return html`
