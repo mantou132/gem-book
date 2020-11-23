@@ -12,14 +12,15 @@ import { Main } from './main';
 
 export const homepageData = createStore<FrontMatter>({});
 
+const placeholder = (s: string) => (s ? '' : 'placeholder');
+
 @customElement('gem-book-homepage')
 @connectStore(homepageData)
 export class Homepage extends GemElement {
   @property displayRank?: boolean;
 
   renderHero() {
-    if (!homepageData.hero) return null;
-    const { title, desc, actions = [] } = homepageData.hero;
+    const { title = '', desc = '', actions = [{ text: '', link: '' }] } = homepageData.hero || {};
     return html`
       <style>
         .hero {
@@ -33,8 +34,14 @@ export class Homepage extends GemElement {
           font-size: 3rem;
           font-weight: 600;
         }
+        .title.placeholder::before {
+          width: 4em;
+        }
         .desc {
           opacity: 0.6;
+        }
+        .desc.placeholder::before {
+          width: 20em;
         }
         .actions {
           display: flex;
@@ -43,6 +50,10 @@ export class Homepage extends GemElement {
           gap: 1rem;
           justify-content: center;
           align-items: center;
+        }
+        .actions .placeholder::before {
+          width: 5em;
+          opacity: 0;
         }
         gem-link {
           color: ${theme.linkColor};
@@ -76,12 +87,12 @@ export class Homepage extends GemElement {
       </style>
       <div class="hero">
         <div class="body">
-          <h1 class="title">${title}</h1>
-          <p class="desc">${desc}</p>
+          <h1 class="title ${placeholder(title)}">${title}</h1>
+          <p class="desc ${placeholder(desc)}">${desc}</p>
           <div class="actions">
             ${actions.map(
               ({ link, text }, index) =>
-                html`<gem-link href=${getUserLink(link)}>
+                html`<gem-link class=${placeholder(text)} href=${getUserLink(link)}>
                   ${text}${index ? html`<gem-use .root=${container} selector="#arrow"></gem-use>` : ''}
                 </gem-link>`,
             )}
@@ -92,7 +103,7 @@ export class Homepage extends GemElement {
   }
 
   renderFeature() {
-    if (!homepageData.features) return null;
+    const { features = Array(3).fill({ title: '', desc: '' }) } = homepageData;
     const parser = new Main();
     const featurecss = css`
       gem-link {
@@ -118,7 +129,7 @@ export class Homepage extends GemElement {
         }
         .feat-title {
           margin: 1rem 0;
-          font-size: 1.5;
+          font-size: 1.5em;
           line-height: 1;
           font-weight: 300;
           opacity: 0.6;
@@ -128,6 +139,13 @@ export class Homepage extends GemElement {
           margin: 1rem 0;
           letter-spacing: 0.05em;
           font-weight: 300;
+        }
+        .feat-title.placeholder::before {
+          width: 5em;
+        }
+        .feat-desc.placeholder::before {
+          width: 100%;
+          height: 10em;
         }
         @media ${mediaQuery.PHONE} {
           .features .body {
@@ -156,12 +174,12 @@ export class Homepage extends GemElement {
       </style>
       <div class="features">
         <div class="body">
-          ${homepageData.features.map(
+          ${features.map(
             (feature) => html`
               <div class="feature ${feature.icon ? 'has-icon' : ''}">
                 ${feature.icon ? html`<img class="icon" src=${feature.icon} />` : ''}
-                <h3 class="feat-title">${feature.title}</h3>
-                <p class="feat-desc">
+                <h3 class="feat-title ${placeholder(feature.title)}">${feature.title}</h3>
+                <p class="feat-desc ${placeholder(feature.desc)}">
                   <gem-unsafe content=${parser.parse(feature.desc)} contentcss=${featurecss}></gem-unsafe>
                 </p>
               </div>
@@ -182,6 +200,16 @@ export class Homepage extends GemElement {
           margin: auto;
           width: 100%;
           max-width: ${theme.mainWidth};
+        }
+        .placeholder {
+          pointer-events: none;
+        }
+        .placeholder::before {
+          max-width: 100%;
+          content: 'x';
+          display: inline-block;
+          opacity: 0.05;
+          background: currentColor;
         }
       </style>
       ${this.renderHero()}${this.renderFeature()}

@@ -98,7 +98,7 @@ export class Nav extends GemElement {
           margin-left: 0.3rem;
         }
         .i18n-select {
-          width: auto;
+          width: 100%;
           cursor: pointer;
           position: absolute;
           top: 0;
