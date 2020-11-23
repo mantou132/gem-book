@@ -9,6 +9,7 @@ import YAML from 'yaml';
 
 import { NavItem } from '../common/config';
 import { FrontMatter } from '../common/frontmatter';
+import { parseFilename } from '../common/utils';
 
 // https://github.com/webpack/webpack/issues/4175#issuecomment-277232067
 declare global {
@@ -27,19 +28,17 @@ export async function getGithubUrl() {
   } catch {}
 }
 
-export function getFilename(fullPath: string) {
-  const basename = path.basename(fullPath);
-  const extname = path.extname(fullPath);
-  return basename.replace(extname, '');
-}
-
 type FileMetadata = FrontMatter & {
   title: string;
   headings?: NavItem[];
 };
 
-export function getMetadata(fullPath: string): FileMetadata {
-  const getTitle = (p: string) => getFilename(p).replace(/^\d*-/, '');
+export function getMetadata(fullPath: string, displayRank?: boolean): FileMetadata {
+  const getTitle = () => {
+    const basename = path.basename(fullPath);
+    const filename = basename.replace(/\.[^.]*$/, '');
+    return displayRank ? filename : parseFilename(filename).title;
+  };
   const parseMd = (fullPath: string) => {
     const md = fs.readFileSync(fullPath, 'utf8');
     const { attributes, body } = fm<FileMetadata>(md);
@@ -49,7 +48,7 @@ export function getMetadata(fullPath: string): FileMetadata {
     const h2s = window.document.querySelectorAll('h2');
     return {
       ...(attributes as FileMetadata),
-      title: attributes.title || h1?.textContent || getTitle(fullPath),
+      title: attributes.title || h1?.textContent || getTitle(),
       headings: h2s.length
         ? [...h2s].map((heading) => ({
             title: heading.textContent as string,
@@ -62,9 +61,9 @@ export function getMetadata(fullPath: string): FileMetadata {
   if (fs.statSync(fullPath).isDirectory()) {
     const files = fs.readdirSync(fullPath);
     const result = {
-      title: getTitle(fullPath),
+      title: getTitle(),
     };
-    if (files.includes('config.yml')) {
+    if (files.find(isDirConfigFile)) {
       const config = YAML.parse(fs.readFileSync(path.join(fullPath, 'config.yml'), 'utf-8'));
       return {
         ...result,
@@ -74,9 +73,17 @@ export function getMetadata(fullPath: string): FileMetadata {
       return result;
     }
   } else {
-    if (path.extname(fullPath) === '.md') {
+    if (isMdfile(fullPath)) {
       return parseMd(fullPath);
     }
   }
   return { title: '' };
+}
+
+export function isMdfile(filename: string) {
+  return /\.md$/i.test(path.extname(filename));
+}
+
+export function isDirConfigFile(filename: string) {
+  return /config\.yml$/i.test(path.basename(filename));
 }

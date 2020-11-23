@@ -10,7 +10,7 @@ import 'prismjs/components/prism-markdown';
 import 'prismjs/components/prism-yaml';
 import 'prismjs/components/prism-typescript';
 
-import { getMdPath, isSameOrigin, getLinkPath } from '../lib/utils';
+import { getMdPath, isSameOrigin, getUserLink } from '../lib/utils';
 import { theme } from '../helper/theme';
 import { homepageData } from './homepage';
 import { anchor, link } from './icons';
@@ -78,7 +78,7 @@ export class Main extends GemElement<State> {
     renderer.link = function (href, title, text) {
       if (href?.startsWith('.')) {
         return raw`
-          <gem-link path=${getLinkPath(href, displayRank)} title=${title || ''}>${text}</gem-link>
+          <gem-link path=${getUserLink(href, displayRank)} title=${title || ''}>${text}</gem-link>
         `;
       }
       const internal = isSameOrigin(href || '');

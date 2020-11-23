@@ -6,7 +6,7 @@ import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { FrontMatter } from '../../common/frontmatter';
 import { theme } from '../helper/theme';
-import { getLinkPath } from '../lib/utils';
+import { getUserLink } from '../lib/utils';
 import { container } from './icons';
 import { Main } from './main';
 
@@ -81,7 +81,7 @@ export class Homepage extends GemElement {
           <div class="actions">
             ${actions.map(
               ({ link, text }, index) =>
-                html`<gem-link href=${getLinkPath(link)}>
+                html`<gem-link href=${getUserLink(link)}>
                   ${text}${index ? html`<gem-use .root=${container} selector="#arrow"></gem-use>` : ''}
                 </gem-link>`,
             )}

@@ -1,7 +1,5 @@
-import { history } from '@mantou/gem';
-
 import { NavItem } from '../../common/config';
-import { parseFilename } from '../../common/utils';
+import { isIndexFile, parseFilename } from '../../common/utils';
 
 export type NavItemWithOriginLink = NavItem & { originLink?: string };
 export type NavItemWithLink = NavItem & { originLink: string; link: string };
@@ -20,14 +18,9 @@ export function flatNav(nav: NavItem[]): NavItemWithLink[] {
     .flat();
 }
 
-export function getMdPath(link: string, lang?: string) {
-  const { pathname } = new URL(link, location.origin);
+export function getMdPath(originPath: string, lang?: string) {
   const langPath = lang ? `/${lang}` : '';
-  if (pathname.endsWith('/')) {
-    return `${history.basePath}${langPath}${pathname}README.md`;
-  } else {
-    return `${history.basePath}${langPath}${pathname}.md`;
-  }
+  return `${langPath}${originPath}`;
 }
 
 export function isSameOrigin(link: string) {
@@ -35,12 +28,25 @@ export function isSameOrigin(link: string) {
   return origin === location.origin;
 }
 
-export function getLinkPath(link: string, displayRank?: boolean) {
-  const path = link.replace(/\.md$/i, '');
+// 001-xxx.md => /xxx
+export function getLinkPath(originPath: string, displayRank?: boolean) {
+  const path = originPath.replace(/\.md$/i, '');
   return displayRank
     ? path
     : path
         .split('/')
         .map((part) => parseFilename(part).title)
         .join('/');
+}
+
+// /001-xxx.md => /xxx
+// /readme.md => /
+export function getUserLink(originPath: string, displayRank?: boolean) {
+  const parts = originPath.split('/');
+  const filename = parts.pop() || '';
+  if (isIndexFile(filename)) {
+    return getLinkPath(parts.join('/') + '/', displayRank);
+  } else {
+    return getLinkPath(originPath, displayRank);
+  }
 }

@@ -5,7 +5,7 @@ import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { container } from './icons';
-import { getMdPath, NavItemWithLink } from '../lib/utils';
+import { getUserLink, getMdPath, NavItemWithLink } from '../lib/utils';
 import { selfI18n } from '../helper/i18n';
 import { theme } from '../helper/theme';
 
@@ -54,12 +54,10 @@ export class EditLink extends GemElement<State> {
 
   getMdFullPath = () => {
     const { path } = history.getParams();
-    const link = this.links.find(({ link }) => link === path);
+    const link = this.links.find(({ originLink }) => getUserLink(originLink) === path);
     if (!link) throw new Error('not found link');
-    const mdPath = getMdPath(link.originLink);
     const sroucePath = this.srouceDir ? `/${this.srouceDir}` : '';
-    const langPath = this.lang ? `/${this.lang}` : '';
-    return `${sroucePath}${langPath}${mdPath}`;
+    return `${sroucePath}${getMdPath(link.originLink, this.lang)}`;
   };
 
   render() {

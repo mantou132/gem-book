@@ -15,7 +15,15 @@ import './elements/homepage';
 import './elements/footer';
 import './elements/edit-link';
 import './elements/rel-link';
-import { flatNav, capitalize, getLinkPath, NavItemWithOriginLink, NavItemWithLink, getMdPath } from './lib/utils';
+import {
+  flatNav,
+  capitalize,
+  getLinkPath,
+  NavItemWithOriginLink,
+  NavItemWithLink,
+  getMdPath,
+  getUserLink,
+} from './lib/utils';
 import { selfI18n } from './helper/i18n';
 import { theme, changeTheme, Theme } from './helper/theme';
 
@@ -86,6 +94,19 @@ export class Book extends GemElement<State> {
     return { sidebar, lang, langlist, languagechangeHandle };
   }
 
+  private processSidebar(sidebar: NavItem[]) {
+    const config = this.getConfig();
+    const process = (item: NavItem): NavItemWithOriginLink => {
+      return {
+        ...item,
+        link: item.link && getUserLink(item.link, config?.displayRank),
+        originLink: item.link,
+        children: item.children?.map(process),
+      };
+    };
+    return sidebar.map(process);
+  }
+
   private getNav(sidebar: NavItem[]) {
     const config = this.getConfig();
     const nav: NavItem[] = [];
@@ -106,34 +127,51 @@ export class Book extends GemElement<State> {
     const config = this.getConfig();
     const routes: RouteItem[] = [];
     links.forEach(({ title: pageTitle, link, originLink }) => {
-      const route = {
-        title: `${capitalize(pageTitle)} - ${title}`,
-        pattern: link,
-        content: html`
-          <gem-book-main lang=${lang} link=${originLink} ?display-rank=${config?.displayRank}></gem-book-main>
-        `,
-      };
-      routes.push(route);
-      if (link !== originLink) {
+      const routeTitle = `${capitalize(pageTitle)}${pageTitle ? ' - ' : ''}${title}`;
+      const routeContent = html`
+        <gem-book-main lang=${lang} link=${originLink} ?display-rank=${config?.displayRank}></gem-book-main>
+      `;
+      const clientLink = getUserLink(originLink, config?.displayRank);
+
+      if (clientLink !== link) {
+        // /xxx/readme => /xxx/
         routes.push({
-          pattern: originLink,
-          redirect: link,
+          pattern: link,
+          redirect: clientLink,
+        });
+        routes.push({
+          title: routeTitle,
+          pattern: clientLink,
+          content: routeContent,
+        });
+      } else {
+        routes.push({
+          title: routeTitle,
+          pattern: clientLink,
+          content: routeContent,
         });
       }
-      if (route.pattern.endsWith('/')) {
-        routes.push({
-          pattern: `${route.pattern}README`,
-          redirect: route.pattern,
-        });
+
+      if (!config?.displayRank) {
+        // /001-x/001-xxx => /x/xxx
+        const path = getLinkPath(originLink, true);
+        if (path !== link) {
+          routes.push({
+            pattern: path,
+            redirect: link,
+          });
+        }
       }
     });
 
     if (!routes.some(({ pattern }) => pattern === '/')) {
-      const firstRoutePath = routes[0].pattern;
-      routes.push({
-        pattern: '/',
-        redirect: firstRoutePath,
-      });
+      const firstRoutePath = routes.find(({ pattern }) => !!pattern)?.pattern;
+      if (firstRoutePath) {
+        routes.push({
+          pattern: '/',
+          redirect: firstRoutePath,
+        });
+      }
     }
 
     routes.push({
@@ -142,19 +180,6 @@ export class Book extends GemElement<State> {
     });
 
     return routes;
-  }
-
-  private processSidebar(sidebar: NavItem[]) {
-    const config = this.getConfig();
-    const process = (item: NavItem): NavItemWithOriginLink => {
-      return {
-        ...item,
-        link: item.link && getLinkPath(item.link, config?.displayRank),
-        originLink: item.link,
-        children: item.children?.map(process),
-      };
-    };
-    return sidebar.map(process);
   }
 
   private getHomePage(links: RouteItem[]) {

@@ -16,8 +16,8 @@ import { startCase, debounce } from 'lodash';
 
 import { version } from '../../package.json';
 import { BookConfig, NavItem, SidebarConfig } from '../common/config';
-import { parseFilename } from '../common/utils';
-import { getFilename, getGithubUrl, getMetadata } from './utils';
+import { isIndexFile, parseFilename } from '../common/utils';
+import { getGithubUrl, isDirConfigFile, getMetadata, isMdfile } from './utils';
 import lang from './lang.json';
 
 program.version(version, '-v, --version');
@@ -41,23 +41,25 @@ function readDir(dir: string, link = '/') {
     .sort((filename1, filename2) => {
       const { rank: rank1 } = parseFilename(filename1);
       const { rank: rank2 } = parseFilename(filename2);
-      if (filename1 === 'README.md') return -1;
+      if (isIndexFile(filename1)) return -1;
       if (parseInt(rank1) > parseInt(rank2) || !rank2) return 1;
       return -1;
     })
-    .forEach((itemname) => {
+    .forEach((filename) => {
       const item: NavItem = { title: '' };
-      const fullPath = path.join(dir, itemname);
+      const fullPath = path.join(dir, filename);
       if (fs.statSync(fullPath).isFile()) {
-        if (path.extname(fullPath) === '.md') {
-          const filename = getFilename(fullPath);
-          item.link = `${link}${filename === 'README' ? '' : filename}`;
-          const { title, headings: children, isNav, navTitle, sidebarIgnore } = getMetadata(fullPath);
+        if (isMdfile(fullPath)) {
+          item.link = `${link}${filename}`;
+          const { title, headings: children, isNav, navTitle, sidebarIgnore } = getMetadata(
+            fullPath,
+            bookConfig.displayRank,
+          );
           Object.assign(item, { title, children, isNav, navTitle, sidebarIgnore });
           result.push(item);
         }
       } else {
-        item.children = readDir(fullPath, path.posix.join(link, itemname) + '/');
+        item.children = readDir(fullPath, path.posix.join(link, filename) + '/');
         const { title, isNav, navTitle, sidebarIgnore } = getMetadata(fullPath);
         Object.assign(item, { title, isNav, navTitle, sidebarIgnore });
         result.push(item);
@@ -164,7 +166,7 @@ program
     command(dir);
     if (watch) {
       fs.watch(dir, { recursive: true }, (type, filePath) => {
-        if (type === 'rename' || path.basename(filePath) === 'config.yml' || path.extname(filePath) === '.md') {
+        if (type === 'rename' || isDirConfigFile(filePath) || isMdfile(filePath)) {
           debounceCommand(dir);
         }
       });
