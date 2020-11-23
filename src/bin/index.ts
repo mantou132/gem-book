@@ -18,14 +18,19 @@ import { version } from '../../package.json';
 import { BookConfig, NavItem, SidebarConfig } from '../common/config';
 import { isIndexFile, parseFilename } from '../common/utils';
 import { getGithubUrl, isDirConfigFile, getMetadata, isMdfile } from './utils';
+import { startBuilder, builderEventTarget } from './build';
 import lang from './lang.json';
 
 program.version(version, '-v, --version');
 
 let debug = false;
+let serve = false;
 let watch = false;
 let output = '';
+let outputFe = false;
 const bookConfig: Partial<BookConfig> = {};
+let resolveBookConfig: (value?: unknown) => void;
+const bookPromise = new Promise((res) => (resolveBookConfig = res));
 
 function readDir(dir: string, link = '/') {
   const result: NavItem[] = [];
@@ -68,7 +73,7 @@ function readDir(dir: string, link = '/') {
   return result;
 }
 
-async function command(dir: string) {
+async function generateBookConfig(dir: string) {
   const fullDir = path.join(process.cwd(), dir);
 
   // read github info
@@ -102,17 +107,24 @@ async function command(dir: string) {
     bookConfig.sidebar = readDir(fullDir);
   }
 
+  resolveBookConfig();
+  builderEventTarget.emit('update');
+
   // create file
+  // Should I still output book.json when packaging front-end resources?
   const out = output || dir; // default dir
   const outputFile = out.endsWith('.json') ? out : path.join(out, 'book.json'); // default filename
   const fullPath = path.join(process.cwd(), outputFile);
-  mkdirp.sync(path.dirname(fullPath));
   const configStr = JSON.stringify(bookConfig, null, 2) + '\n';
-  fs.writeFileSync(fullPath, configStr);
+  if (fs.existsSync(fullPath) && configStr === fs.readFileSync(fullPath, 'utf-8')) {
+    mkdirp.sync(path.dirname(fullPath));
+    // Trigger rename event
+    fs.writeFileSync(fullPath, configStr);
+  }
   if (debug) console.log(util.inspect(JSON.parse(configStr), { colors: true, depth: null }));
 }
 
-const debounceCommand = debounce(command, 300);
+const debounceCommand = debounce(generateBookConfig, 300);
 
 function addNavItem(item: string) {
   bookConfig.nav = bookConfig.nav || [];
@@ -164,14 +176,26 @@ program
   .option('--watch', 'watch mode', () => {
     watch = true;
   })
+  .option('--serve', 'serve mode', () => {
+    serve = true;
+  })
+  // index.html, bundle.js
+  .option('--output-fe', 'output all front-end assets', () => {
+    outputFe = true;
+  })
   .arguments('<dir>')
   .action((dir: string) => {
-    command(dir);
-    if (watch) {
+    generateBookConfig(dir);
+    if (serve || watch) {
       fs.watch(dir, { recursive: true }, (type, filePath) => {
         if (type === 'rename' || isDirConfigFile(filePath) || isMdfile(filePath)) {
           debounceCommand(dir);
         }
+      });
+    }
+    if (serve || outputFe) {
+      bookPromise.then(() => {
+        startBuilder(dir, debug, outputFe, bookConfig);
       });
     }
   });

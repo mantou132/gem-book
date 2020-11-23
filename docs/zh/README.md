@@ -15,6 +15,22 @@ features:
     desc: 能将自定义元素插入已有的网站中；使用自定义元素也能非常方便的自定义展示文档
 ---
 
+## 轻松上手
+
+```bash
+# 安装 gem-book
+npm i gem-book
+
+# 创建文档
+mkdir docs && echo '# Hello <gem-book>!' > docs/readme.md
+
+# 预览文档
+npx gem-book docs --serve
+
+# 构建前端资源
+npx gem-book docs --output-fe
+```
+
 ## 反馈与共建
 
 请访问 [GitHub](https://github.com/mantou132/gem-book)

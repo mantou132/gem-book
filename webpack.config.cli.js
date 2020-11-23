@@ -28,4 +28,9 @@ module.exports = {
   plugins: [new webpack.BannerPlugin({ banner: '#!/usr/bin/env node', raw: true })],
   externals: [nodeExternals()],
   devtool: 'source-map',
+  node: {
+    global: false,
+    __filename: false,
+    __dirname: false,
+  },
 };

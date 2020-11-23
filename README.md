@@ -11,10 +11,8 @@ _The current style comes from [Docute](https://github.com/egoist/docute)_
 ```bash
 # development cli
 npm run dev:cli
-# watch docs
+# watch docs & development `<gem-book>`
 npm run dev:docs
-# development `<gem-book>`
-npm run dev:website
 # install the cli locally
 npm link
 ```

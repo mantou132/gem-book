@@ -11,7 +11,7 @@ render(
         margin: 0;
       }
     </style>
-    <gem-book src="/book.json"></gem-book>
+    <gem-book .config=${JSON.parse(String(process.env.BOOK_CONFIG))}></gem-book>
   `,
   document.body,
 );

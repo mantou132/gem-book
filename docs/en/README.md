@@ -15,6 +15,22 @@ features:
     desc: Can insert custom elements into existing websites; using custom elements can also customize display documents very conveniently
 ---
 
+## Getting Started
+
+```bash
+# Install gem-book
+npm i gem-book
+
+# Create docs
+mkdir docs && echo '# Hello <gem-book>!' > docs/readme.md
+
+# Preview docs
+npx gem-book docs --serve
+
+# Build
+npx gem-book docs --output-fe
+```
+
 ## Feedback
 
 Please visit [GitHub](https://github.com/mantou132/gem-book)

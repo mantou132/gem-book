@@ -4,29 +4,22 @@
   "description": "Custom elements for rendering markdown documents",
   "main": "dist/index.js",
   "module": "index.js",
-  "bin": "bin/index.js",
-  "files": [
-    "/index.*",
-    "/element/",
-    "/common/",
-    "/plugins/",
-    "/bin/",
-    "/dist/",
-    "/src/"
-  ],
+  "bin": {
+    "gem-book": "bin/index.js"
+  },
   "typings": "index.d.ts",
   "scripts": {
     "lint": "tsc --noEmit && eslint --ext .ts --fix src/",
     "dev:cli": "webpack --watch --config webpack.config.cli.js",
-    "docs": "node ./bin docs --i18n --debug -t Gem-book -i /logo.png --home-mode",
-    "dev:docs": "nodemon --watch bin --exec \"npm run docs -- --watch\"",
-    "dev:website": "webpack-dev-server",
+    "docs": "node ./bin docs --i18n -t Gem-book -i /logo.png --home-mode",
+    "dev:docs": "PORT=8090 nodemon --watch bin --exec \"npm run docs -- --watch --serve --debug\"",
     "build:cli": "webpack --config webpack.config.cli.js",
     "build:ele": "tsc -p ./tsconfig.ele.json",
     "build:dist": "webpack --config webpack.config.dist.js",
     "build": "npm run build:cli && npm run build:ele && npm run build:dist",
+    "install": "npm run build:cli",
+    "build:website": "npm run build:cli && npm run docs -- --output-fe",
     "prepublishOnly": "npm run lint && npm run build && npm run docs",
-    "build:website": "npm run build:cli && npm run docs && webpack",
     "test:fe": "npm run build:ele && karma start --coverage",
     "test": "npm run test:fe"
   },
@@ -48,6 +41,10 @@
     "mkdirp": "^0.5.5",
     "parse-github-url": "^1.0.2",
     "prismjs": "^1.22.0",
+    "ts-loader": "^8.0.6",
+    "typescript": "^4.0.3",
+    "webpack": "^4.44.2",
+    "webpack-dev-server": "^3.11.0",
     "yaml": "^1.10.0"
   },
   "devDependencies": {
@@ -60,6 +57,7 @@
     "@types/mkdirp": "^0.5.2",
     "@types/parse-github-url": "^1.0.0",
     "@types/prismjs": "^1.16.1",
+    "@types/webpack-dev-server": "^3.11.1",
     "@typescript-eslint/eslint-plugin": "^4.5.0",
     "@typescript-eslint/parser": "^4.5.0",
     "cross-env": "^6.0.3",
@@ -71,11 +69,7 @@
     "lint-staged": "^8.2.1",
     "nodemon": "^2.0.6",
     "prettier": "^2.1.2",
-    "ts-loader": "^8.0.6",
-    "typescript": "^4.0.3",
-    "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^4.2.2",
     "webpack-node-externals": "^2.5.2"
   },

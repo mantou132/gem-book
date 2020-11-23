@@ -186,6 +186,7 @@ export class Homepage extends GemElement {
       <style>
         :host {
           overflow: hidden;
+          margin-bottom: -5rem;
         }
         .body {
           margin: auto;
