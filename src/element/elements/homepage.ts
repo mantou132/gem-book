@@ -1,14 +1,13 @@
-import { html, css, GemElement, customElement, property, createStore, connectStore } from '@mantou/gem';
+import { html, GemElement, customElement, property, createStore, connectStore } from '@mantou/gem';
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
-import '@mantou/gem/elements/unsafe';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { FrontMatter } from '../../common/frontmatter';
 import { theme } from '../helper/theme';
 import { getUserLink } from '../lib/utils';
 import { container } from './icons';
-import { Main } from './main';
+import { mdRender } from './main';
 
 export const homepageData = createStore<FrontMatter>({});
 
@@ -104,12 +103,6 @@ export class Homepage extends GemElement {
 
   renderFeature() {
     const { features = Array(3).fill({ title: '', desc: '' }) } = homepageData;
-    const parser = new Main();
-    const featurecss = css`
-      gem-link {
-        color: ${theme.linkColor};
-      }
-    `;
     return html`
       <style>
         .features {
@@ -179,9 +172,7 @@ export class Homepage extends GemElement {
               <div class="feature ${feature.icon ? 'has-icon' : ''}">
                 ${feature.icon ? html`<img class="icon" src=${feature.icon} />` : ''}
                 <h3 class="feat-title ${placeholder(feature.title)}">${feature.title}</h3>
-                <p class="feat-desc ${placeholder(feature.desc)}">
-                  <gem-unsafe content=${parser.parse(feature.desc)} contentcss=${featurecss}></gem-unsafe>
-                </p>
+                <p class="feat-desc ${placeholder(feature.desc)}">${mdRender.unsafeRender(feature.desc)}</p>
               </div>
             `,
           )}

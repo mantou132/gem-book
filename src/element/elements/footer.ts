@@ -1,13 +1,15 @@
-import { html, GemElement, customElement, connectStore } from '@mantou/gem';
+import { html, GemElement, customElement, connectStore, attribute } from '@mantou/gem';
 import '@mantou/gem/elements/link';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { selfI18n } from '../helper/i18n';
 import { theme } from '../helper/theme';
+import { mdRender } from './main';
 
 @customElement('gem-book-footer')
 @connectStore(selfI18n.store)
 export class Footer extends GemElement {
+  @attribute footer: string;
   render() {
     return html`
       <style>
@@ -31,10 +33,12 @@ export class Footer extends GemElement {
           text-decoration: underline;
         }
       </style>
-      ${selfI18n.get(
-        'footer',
-        (t) => html`<gem-link href="https://github.com/mantou132/gem-book">&lt;${t}&gt;</gem-link>`,
-      )}
+      ${this.footer
+        ? mdRender.unsafeRender(this.footer)
+        : selfI18n.get(
+            'footer',
+            (t) => html`<gem-link href="https://github.com/mantou132/gem-book">&lt;${t}&gt;</gem-link>`,
+          )}
     `;
   }
 }

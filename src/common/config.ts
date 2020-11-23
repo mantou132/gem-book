@@ -20,4 +20,5 @@ export interface BookConfig {
   i18n?: boolean;
   displayRank?: boolean;
   homeMode?: boolean;
+  footer?: string;
 }

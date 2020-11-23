@@ -194,7 +194,16 @@ export class Book extends GemElement<State> {
     const config = this.getConfig();
     if (!config) return null;
 
-    const { icon = '', github = '', sourceBranch, sourceDir = '', title = '', homeMode, displayRank } = config;
+    const {
+      footer = '',
+      icon = '',
+      github = '',
+      sourceBranch,
+      sourceDir = '',
+      title = '',
+      homeMode,
+      displayRank,
+    } = config;
     const { sidebar, lang, langlist, languagechangeHandle } = this.getI18nSidebar();
     const sidebarResult = this.processSidebar(sidebar);
     const nav = this.getNav(sidebarResult);
@@ -348,7 +357,7 @@ export class Book extends GemElement<State> {
         .sidebar=${sidebarResult}
       ></gem-book-sidebar>
       <gem-book-rel-link .links=${refLinks}></gem-book-rel-link>
-      <gem-book-footer></gem-book-footer>
+      <gem-book-footer .footer=${footer}></gem-book-footer>
     `;
   }
 

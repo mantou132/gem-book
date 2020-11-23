@@ -1,9 +1,11 @@
-import { html, GemElement, customElement, attribute, raw, boolattribute, updateStore } from '@mantou/gem';
+import { html, GemElement, customElement, attribute, raw, boolattribute, updateStore, css } from '@mantou/gem';
 import marked from 'marked';
 import Prism from 'prismjs';
 import fm from 'front-matter';
 
+import '@mantou/gem/elements/unsafe';
 import '@mantou/gem/elements/link';
+
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-markdown';
@@ -103,8 +105,9 @@ export class Main extends GemElement<State> {
       attributes: { hero, features },
     } = fm<FrontMatter>(md);
     updateStore(homepageData, { hero, features });
-    const html = this.parse(mdBody);
-    const elements = [...parser.parseFromString(html, 'text/html').body.children];
+    const elements = [
+      ...parser.parseFromString(marked.parse(mdBody, { renderer: this.mdRenderer }), 'text/html').body.children,
+    ];
     this.setState({
       fetching: false,
       content: elements,
@@ -464,7 +467,16 @@ export class Main extends GemElement<State> {
     };
   }
 
-  parse(s: string) {
-    return marked.parse(s, { renderer: this.mdRenderer });
+  unsafeRender(s: string) {
+    const htmlstr = marked.parse(s, { renderer: this.mdRenderer });
+    const cssstr = css`
+      a,
+      gem-link {
+        color: ${theme.linkColor};
+      }
+    `;
+    return html`<gem-unsafe content=${htmlstr} contentcss=${cssstr}></gem-unsafe>`;
   }
 }
+
+export const mdRender = new Main();

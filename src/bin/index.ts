@@ -143,6 +143,9 @@ program
   .option('--github <link>', 'github link', (link: string) => {
     bookConfig.sourceBranch = link;
   })
+  .option('--footer <footer>', 'footer markdown', (footer: string) => {
+    bookConfig.footer = footer;
+  })
   .option('--i18n', 'enabled i18n', () => {
     bookConfig.i18n = true;
   })
