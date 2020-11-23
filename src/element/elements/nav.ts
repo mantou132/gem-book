@@ -47,7 +47,7 @@ export class Nav extends GemElement {
           <select
             class="i18n-select"
             ref=${this.i18nRef.ref}
-            @change=${(e: any) => this.languagechange(e.target.value)}
+            @change=${(e: any) => this.languagechange(e.target.value, { bubbles: true, composed: true })}
           >
             ${this.langlist.map(
               ({ name, code }) => html`<option value=${code} ?selected=${code === this.lang}>${name}</option>`,
