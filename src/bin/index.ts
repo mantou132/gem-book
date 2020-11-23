@@ -18,7 +18,7 @@ import { version } from '../../package.json';
 import { BookConfig, NavItem, SidebarConfig } from '../common/config';
 import { isIndexFile, parseFilename } from '../common/utils';
 import { getGithubUrl, isDirConfigFile, getMetadata, isMdfile } from './utils';
-import { startBuilder, builderEventTarget } from './build';
+import { startBuilder, builderEventTarget } from './builder';
 import lang from './lang.json';
 
 program.version(version, '-v, --version');
@@ -195,7 +195,7 @@ program
     }
     if (serve || outputFe) {
       bookPromise.then(() => {
-        startBuilder(dir, debug, outputFe, bookConfig);
+        startBuilder({ dir, debug, outputFe }, bookConfig);
       });
     }
   });

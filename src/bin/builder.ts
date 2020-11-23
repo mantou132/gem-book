@@ -6,9 +6,16 @@ import fs from 'fs';
 import { EventEmitter } from 'events';
 import { BookConfig } from '../common/config';
 
+interface BuilderOptions {
+  dir: string;
+  debug: boolean;
+  outputFe: boolean;
+}
+
 export const builderEventTarget = new EventEmitter();
 
-export function startBuilder(dir: string, debug: boolean, outputFe: boolean, bookConfig: Partial<BookConfig>) {
+export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookConfig>) {
+  const { dir, debug, outputFe } = options;
   const output = path.resolve(dir);
   builderEventTarget.on('update', () => {
     fs.writeFileSync(path.resolve(__dirname, '../src/website/update.log'), String(Date.now()));
@@ -77,6 +84,7 @@ export function startBuilder(dir: string, debug: boolean, outputFe: boolean, boo
     const server = new WebpackDevServer(compiler, {
       contentBase: path.resolve(dir),
       historyApiFallback: true,
+      open: true,
     });
     server.listen(Number(process.env.PORT) || 0, function (err) {
       if (err) {

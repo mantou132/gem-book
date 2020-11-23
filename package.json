@@ -17,7 +17,6 @@
     "build:ele": "tsc -p ./tsconfig.ele.json",
     "build:dist": "webpack --config webpack.config.dist.js",
     "build": "npm run build:cli && npm run build:ele && npm run build:dist",
-    "install": "npm run build:cli",
     "build:website": "npm run build:cli && npm run docs -- --output-fe",
     "prepublishOnly": "npm run lint && npm run build && npm run docs",
     "test:fe": "npm run build:ele && karma start --coverage",
