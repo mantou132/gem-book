@@ -32,12 +32,13 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
       rules: [
         {
           test: /\.ts$/,
-          exclude: /node_modules/,
           use: [
             {
               loader: path.resolve(__dirname, '../node_modules/ts-loader'),
               options: {
                 configFile: path.resolve(__dirname, '../tsconfig.json'),
+                // Install cli without installing dev @types dependency
+                transpileOnly: true,
               },
             },
           ],
@@ -87,7 +88,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
     const server = new WebpackDevServer(compiler, {
       contentBase: path.resolve(dir),
       historyApiFallback: true,
-      open: true,
+      open: process.env.PORT ? false : true,
     });
     server.listen(Number(process.env.PORT) || 0, function (err) {
       if (err) {
