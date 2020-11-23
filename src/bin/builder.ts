@@ -14,17 +14,20 @@ interface BuilderOptions {
 
 export const builderEventTarget = new EventEmitter();
 
+const entryDir = path.resolve(__dirname, '../src/website');
+const updateLog = path.resolve(entryDir, './update.log');
+const update = () => {
+  fs.writeFileSync(updateLog, String(Date.now()));
+};
+
 export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookConfig>) {
   const { dir, debug, outputFe } = options;
   const output = path.resolve(dir);
-  builderEventTarget.on('update', () => {
-    fs.writeFileSync(path.resolve(__dirname, '../src/website/update.log'), String(Date.now()));
-  });
+  update();
+  builderEventTarget.on('update', update);
   const compiler = webpack({
     mode: debug ? 'development' : 'production',
-    entry: {
-      bundle: [path.resolve(__dirname, '../src/website/update.log'), path.resolve(__dirname, '../src/website')],
-    },
+    entry: [updateLog, entryDir],
     module: {
       rules: [
         {
@@ -47,7 +50,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
     output: {
       path: output,
       publicPath: '/',
-      filename: '[name].js?[contenthash]',
+      filename: 'bundle.js?[contenthash]',
     },
     plugins: [
       new HtmlWebpackPlugin({

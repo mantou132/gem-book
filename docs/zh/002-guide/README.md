@@ -5,57 +5,65 @@ navTitle: 指南
 
 # 简介
 
-`<gem-book>` 是一个自定义元素，只需要在网页中插入该元素并指定配置文件即可，配置文件可以通过配套的命令行工具生成。
+`<gem-book>` 是一个自定义元素，只需要在网页中插入该元素并指定配置文件即可。自带命令行 `gem-book`，
+可以使用允许命令行一键生成前端资源，或者仅生成配置文件然后手动使用 `<gem-book>`加载配置。
 
 _`<gem-book>` 是为 [Gem](https://github.com/mantou132/gem) 创建的文档生成工具，其本身也是使用 Gem 编写，和 Gem 是共生关系。_
 
 ### 安装
 
 ```bash
+# 如果要自己使用 <gem-book>，请安装成项目依赖
 npm install gem-book
+
+# 如果只使用命令行，可以安装成全局依赖
+npm -g install gem-book
+
 ```
-
-### 生成配置文件
-
-```bash
-# 生成的配置文件默认为 `book.json`
-npx gem-book docs
-```
-
-使用 `--watch` 能持续监听目录，自动生成配置文件。查看命令行[更多](./002-guide/003-cli)选项。
 
 ### 使用 `<gem-book>`
 
-如果你使用类似 [Webpack](https://webpack.js.org/) 的工具来打包前端项目，那么你可以在项目中这样使用 `<gem-book>`：
+```bash
+# 生成配置文件
+gem-book docs
+
+# 使用 watch 模式，自动生成配置文件
+gem-book docs
+```
+
+然后在你的项目中使用 `<gem-book>`：
 
 ```js
-// 使用 `lit-html`
+import { html, render } from '@mantou/gem';
 import 'gem-book';
+
 import config from './book.json';
-html`<gem-book .config=${config}></gem-book>`;
+render(html`<gem-book .config=${config}></gem-book>`, document.body);
 ```
 
-或者
+你可以在任何框架中使用 `<gem-book>` 元素。
 
-```js
-// 使用 DOM API
-import { Book } from 'gem-book';
-import config from './book.json';
-document.body.append(new Book(config));
+### 一键构建成网站
+
+假设你的文档目录为 `doc`
+
+```bash
+# 编写和预览文档
+gem-book docs --serve
+
+# 指定标题
+gem-book docs --serve -t MyApp
+
+# 在 docs 目录添加 logo.png，指定 logo
+gem-book docs --serve -t MyApp -i /logo.png
+
+# 将 readme.md/index.md 渲染成项目首页
+gem-book docs --serve -t MyApp -i /logo.png --home-mode
+
+# 构建前端资源
+gem-book docs --serve -t MyApp -i /logo.png --home-mode --output-fe
+
 ```
-
-如果你不需要集成一些其他的功能，那么你完全可以创建一个简单的 `html` 以使用 `<gem-book>`：
-
-```html
-<srcipt src=https://unpkg.com/gem-book></script>
-<script>
-  const book = document.createElement('gem-book');
-  book.src = '/book.json';
-  document.body.append(book);
-</script>
-```
-
-并启动本地静态资源服务器来进行预览，比如 `serve docs -s`。
 
 ### 渲染规则
 
