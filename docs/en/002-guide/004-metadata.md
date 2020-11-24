@@ -15,7 +15,7 @@ sidebarIgnore: true
 
 In addition, the homepage also supports `hero` and `features`, for example:
 
-<gbp-raw src="/docs/en/README.md"></gbp-raw>
+<gbp-raw src="/docs/en/README.md" range="0-19"></gbp-raw>
 
 Full definition:
 

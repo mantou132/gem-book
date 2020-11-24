@@ -8,9 +8,18 @@ customElements.whenDefined('gem-book').then(() => {
   customElements.define(
     'gbp-raw',
     class extends GemBookPluginElement {
-      static observedAttributes = ['src', 'lang'];
+      static observedAttributes = ['src', 'lang', 'range'];
       src: string;
       lang: string;
+      range: string; // 2-20, -20, 2-,
+
+      get ranges() {
+        const ranges = this.range.split(/,\s*/);
+        return ranges.map((range) => {
+          const [start, end] = range.split('-');
+          return [parseInt(start) || 0, parseInt(end) || 0];
+        });
+      }
 
       mounted() {
         this.renderContent();
@@ -39,15 +48,34 @@ customElements.whenDefined('gem-book').then(() => {
       }
 
       highlight(str: string) {
-        const [, extension] = new URL(this.src, location.origin).pathname.match(/.*\.(.*)$/) || [];
-        const lang = Prism.languages[this.lang] ? this.lang : Prism.languages[extension] ? extension : '';
+        const [, extension] = this.src.split('.');
+        const lang = Prism.languages[this.lang] ? this.lang : Prism.languages[extension] ? extension : 'unknown';
+        let content = str;
         if (lang) {
-          return `
-          <pre><code class="language-${lang}">${Prism.highlight(str, Prism.languages[lang], lang)}</code></pre>
-        `;
-        } else {
-          return str;
+          if (lang === 'md') {
+            const [, , sToken, frontmatter, eToken, body] =
+              str.match(/^(([\r\n\s]*---\s*(?:\r\n|\n))(.*?)((?:\r\n|\n)---\s*(?:\r\n|\n)?))?(.*)$/s) || [];
+            content =
+              (frontmatter
+                ? `${sToken}${Prism.highlight(frontmatter, Prism.languages['yaml'], 'yaml')}${eToken}`
+                : '') + Prism.highlight(body, Prism.languages['md'], 'md');
+          } else {
+            content = Prism.highlight(str, Prism.languages[lang], lang);
+          }
         }
+        const lines = content.split(/\n|\r\n/);
+        const parts = this.range
+          ? this.ranges.map(([start, end]) => {
+              let result = '';
+              for (let i = start; i < (end || lines.length); i++) {
+                result += lines[i] + '\n';
+              }
+              return result;
+            })
+          : [content];
+        return `
+            <pre><code class="language-${lang}">${parts.join('\n...\n\n')}</code></pre>
+        `;
       }
     },
   );
