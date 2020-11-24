@@ -9,14 +9,14 @@ export const defaultTheme = {
   backgroundColor: 'white',
   textColor: 'black',
   borderColor: '#eaeaea',
-  linkColor: '#18a9c9',
+  linkColor: '#26c0e3',
   sidebarLinkArrowColor: '#999',
   tableHeaderColor: '#666',
   tableHeaderBackground: '#fafafa',
-  inlineCodeColor: 'rgb(116, 66, 16)',
-  inlineCodeBackground: 'rgb(254, 252, 191)',
-  codeBlockTextColor: 'white',
-  codeBlockBackground: '#011627',
+  inlineCodeColor: '#d23a3a',
+  inlineCodeBackground: '#f6f6f6',
+  codeBlockTextColor: 'black',
+  codeBlockBackground: '#f6f6f6',
 };
 
 export type Theme = typeof defaultTheme;

@@ -235,6 +235,7 @@ export class Book extends GemElement<State> {
           grid-area: 1 / left / 2 / right;
           background: ${theme.backgroundColor};
           border-bottom: 1px solid ${theme.borderColor};
+          box-shadow: 0 0 1.5rem #00000015;
         }
         .nav-shadow,
         gem-book-nav {

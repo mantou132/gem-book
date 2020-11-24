@@ -25,7 +25,7 @@ export class Homepage extends GemElement {
         .hero {
           text-align: center;
           padding: 3.5rem 1rem;
-          background: ${theme.borderColor};
+          background: #f4f6f7;
         }
         .title {
           margin: 0;

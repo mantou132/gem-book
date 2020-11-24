@@ -9,9 +9,9 @@ hero:
 features:
   - title: Out of the box
     desc: Just allow the command line and then you can load custom elements in your website, so that all attention can be paid to document writing
-  - title: high-performance
+  - title: Performance
     desc: No redundant dependencies, the entire application will run smoothly with streamlined code
-  - title: Pluggable and expandable
+  - title: Expandable
     desc: Can insert custom elements into existing websites; using custom elements can also customize display documents very conveniently
 ---
 

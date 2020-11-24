@@ -344,84 +344,88 @@ export class Main extends GemElement<State> {
           opacity: 1;
         }
 
-        /* https://github.com/SaraVieira/prism-theme-night-owl */
+        pre > code[class*='language-'] {
+          font-size: 1em;
+        }
 
         .token.comment,
         .token.prolog,
+        .token.doctype,
         .token.cdata {
-          color: rgb(99, 119, 119);
-          font-style: italic;
+          color: #898ea4;
         }
 
         .token.punctuation {
-          color: rgb(199, 146, 234);
+          color: #5e6687;
         }
 
-        .namespace {
-          color: rgb(178, 204, 214);
+        .token.namespace {
+          opacity: 0.7;
+        }
+
+        .token.operator,
+        .token.boolean,
+        .token.number {
+          color: #c76b29;
+        }
+
+        .token.property {
+          color: #c08b30;
+        }
+
+        .token.tag {
+          color: #3d8fd1;
+        }
+
+        .token.string {
+          color: #22a2c9;
+        }
+
+        .token.selector {
+          color: #6679cc;
+        }
+
+        .token.attr-name {
+          color: #c76b29;
+        }
+
+        .token.entity,
+        .token.url,
+        .language-css .token.string,
+        .style .token.string {
+          color: #22a2c9;
+        }
+
+        .token.attr-value,
+        .token.keyword,
+        .token.control,
+        .token.directive,
+        .token.unit {
+          color: #ac9739;
+        }
+
+        .token.statement,
+        .token.regex,
+        .token.atrule {
+          color: #22a2c9;
+        }
+
+        .token.placeholder,
+        .token.variable {
+          color: #3d8fd1;
         }
 
         .token.deleted {
-          color: rgba(239, 83, 80, 0.56);
-          font-style: italic;
+          text-decoration: line-through;
         }
 
-        .token.symbol,
-        .token.property {
-          color: rgb(128, 203, 196);
-        }
-
-        .token.tag,
-        .token.operator,
-        .token.keyword {
-          color: rgb(127, 219, 202);
-        }
-
-        .token.boolean {
-          color: rgb(255, 88, 116);
-        }
-
-        .token.number {
-          color: rgb(247, 140, 108);
-        }
-
-        .token.constant,
-        .token.function,
-        .token.builtin,
-        .token.char {
-          color: rgb(130, 170, 255);
-        }
-
-        .token.selector,
-        .token.doctype {
-          color: rgb(199, 146, 234);
-          font-style: italic;
-        }
-
-        .token.attr-name,
         .token.inserted {
-          color: rgb(173, 219, 103);
+          border-bottom: 1px dotted #202746;
+          text-decoration: none;
+        }
+
+        .token.italic {
           font-style: italic;
-        }
-
-        .token.string,
-        .token.url,
-        .token.entity,
-        .language-css .token.string,
-        .style .token.string {
-          color: rgb(173, 219, 103);
-        }
-
-        .token.class-name,
-        .token.atrule,
-        .token.attr-value {
-          color: rgb(255, 203, 139);
-        }
-
-        .token.regex,
-        .token.important,
-        .token.variable {
-          color: rgb(214, 222, 235);
         }
 
         .token.important,
@@ -429,8 +433,36 @@ export class Main extends GemElement<State> {
           font-weight: bold;
         }
 
-        .token.italic {
-          font-style: italic;
+        .token.important {
+          color: #c94922;
+        }
+
+        .token.entity {
+          cursor: help;
+        }
+
+        pre > code.highlight {
+          outline: 0.4em solid #c94922;
+          outline-offset: 0.4em;
+        }
+
+        /* overrides color-values for the Line Numbers plugin
+ * http://prismjs.com/plugins/line-numbers/
+ */
+        .line-numbers .line-numbers-rows {
+          border-right-color: #dfe2f1;
+        }
+
+        .line-numbers-rows > span:before {
+          color: #979db4;
+        }
+
+        /* overrides color-values for the Line Highlight plugin
+ * http://prismjs.com/plugins/line-highlight/
+ */
+        .line-highlight {
+          background: rgba(107, 115, 148, 0.2);
+          background: linear-gradient(to right, rgba(107, 115, 148, 0.2) 70%, rgba(107, 115, 148, 0));
         }
         @media ${mediaQuery.PHONE} {
           :host {
