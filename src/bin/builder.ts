@@ -10,6 +10,7 @@ interface BuilderOptions {
   dir: string;
   debug: boolean;
   outputFe: boolean;
+  html: string;
 }
 
 export const builderEventTarget = new EventEmitter();
@@ -21,7 +22,7 @@ const update = () => {
 };
 
 export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookConfig>) {
-  const { dir, debug, outputFe } = options;
+  const { dir, debug, outputFe, html } = options;
   const output = path.resolve(dir);
   update();
   builderEventTarget.on('update', update);
@@ -57,6 +58,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
       new HtmlWebpackPlugin({
         title: bookConfig.title || 'Gem-book App',
         favicon: bookConfig.icon && path.join(output, bookConfig.icon),
+        template: html ? path.resolve(process.cwd(), html) : undefined,
       }),
       new webpack.DefinePlugin({
         get ['process.env.BOOK_CONFIG']() {

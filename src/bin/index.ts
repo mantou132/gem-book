@@ -28,6 +28,7 @@ let serve = false;
 let watch = false;
 let output = '';
 let outputFe = false;
+let html = '';
 const bookConfig: Partial<BookConfig> = {};
 let resolveBookConfig: (value?: unknown) => void;
 const bookPromise = new Promise((res) => (resolveBookConfig = res));
@@ -179,6 +180,9 @@ program
   .option('--serve', 'serve mode', () => {
     serve = true;
   })
+  .option('--html <path>', 'html template', (path) => {
+    html = path;
+  })
   // index.html, bundle.js
   .option('--output-fe', 'output all front-end assets', () => {
     outputFe = true;
@@ -195,7 +199,7 @@ program
     }
     if (serve || outputFe) {
       bookPromise.then(() => {
-        startBuilder({ dir, debug, outputFe }, bookConfig);
+        startBuilder({ dir, debug, outputFe, html }, bookConfig);
       });
     }
   });
