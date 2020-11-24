@@ -1,16 +1,20 @@
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import path from 'path';
 import fs from 'fs';
 import { EventEmitter } from 'events';
 import { BookConfig } from '../common/config';
+import { inTheDir, isURL } from './utils';
 
 interface BuilderOptions {
   dir: string;
   debug: boolean;
   outputFe: boolean;
   html: string;
+  output: string;
+  iconPath: string;
 }
 
 export const builderEventTarget = new EventEmitter();
@@ -22,10 +26,13 @@ const update = () => {
 };
 
 export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookConfig>) {
-  const { dir, debug, outputFe, html } = options;
-  const output = path.resolve(dir);
   update();
   builderEventTarget.on('update', update);
+
+  const { dir, debug, outputFe, html, output, iconPath } = options;
+  const isRemoteIcon = isURL(iconPath);
+  const docsDir = path.resolve(dir);
+  const outputDir = output ? path.resolve(output) : docsDir;
   const compiler = webpack({
     mode: debug ? 'development' : 'production',
     entry: [updateLog, entryDir],
@@ -50,22 +57,30 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
       extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
-      path: output,
+      path: outputDir,
       publicPath: '/',
       filename: 'bundle.js?[contenthash]',
     },
     plugins: [
       new HtmlWebpackPlugin({
         title: bookConfig.title || 'Gem-book App',
-        favicon: bookConfig.icon && path.join(output, bookConfig.icon),
-        template: html ? path.resolve(process.cwd(), html) : undefined,
+        favicon: !isRemoteIcon && iconPath,
+        ...(html ? { template: path.resolve(process.cwd(), html) } : undefined),
       }),
       new webpack.DefinePlugin({
         get ['process.env.BOOK_CONFIG']() {
           return JSON.stringify(JSON.stringify(bookConfig));
         },
       }),
-    ],
+    ].concat(
+      outputDir !== docsDir
+        ? new CopyWebpackPlugin({
+            patterns: [{ from: docsDir, to: outputDir }].concat(
+              !isRemoteIcon && !inTheDir(outputDir, iconPath) ? { from: iconPath, to: outputDir } : [],
+            ),
+          })
+        : [],
+    ),
     devtool: debug && 'source-map',
   });
   if (outputFe) {

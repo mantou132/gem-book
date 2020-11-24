@@ -10,6 +10,7 @@ export interface NavItem {
 export type SidebarConfig = NavItem[] | { [lang: string]: { name: string; data: NavItem[] } };
 
 export interface BookConfig {
+  // navbar icon absolute path
   icon: string;
   title: string;
   sidebar: SidebarConfig;

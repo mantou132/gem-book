@@ -17,7 +17,7 @@ import { startCase, debounce } from 'lodash';
 import { version } from '../../package.json';
 import { BookConfig, NavItem, SidebarConfig } from '../common/config';
 import { isIndexFile, parseFilename } from '../common/utils';
-import { getGithubUrl, isDirConfigFile, getMetadata, isMdfile } from './utils';
+import { getGithubUrl, isDirConfigFile, getMetadata, isMdfile, inTheDir, isURL } from './utils';
 import { startBuilder, builderEventTarget } from './builder';
 import lang from './lang.json';
 
@@ -29,6 +29,7 @@ let watch = false;
 let output = '';
 let outputFe = false;
 let html = '';
+let iconPath = '';
 const bookConfig: Partial<BookConfig> = {};
 let resolveBookConfig: (value?: unknown) => void;
 const bookPromise = new Promise((res) => (resolveBookConfig = res));
@@ -77,6 +78,11 @@ function readDir(dir: string, link = '/') {
 async function generateBookConfig(dir: string) {
   const fullDir = path.join(process.cwd(), dir);
 
+  //icon path
+  bookConfig.icon = isURL(iconPath)
+    ? iconPath
+    : `/${inTheDir(dir, iconPath) ? path.relative(dir, iconPath) : path.basename(iconPath)}`;
+
   // read github info
   bookConfig.github ??= await getGithubUrl();
 
@@ -112,15 +118,12 @@ async function generateBookConfig(dir: string) {
   builderEventTarget.emit('update');
 
   // create file
-  // Should I still output book.json when packaging front-end resources?
-  const out = output || dir; // default dir
-  const outputFile = out.endsWith('.json') ? out : path.join(out, 'book.json'); // default filename
-  const fullPath = path.join(process.cwd(), outputFile);
+  const configPath = path.resolve(output || dir, output.endsWith('.json') ? '' : 'book.json');
   const configStr = JSON.stringify(bookConfig, null, 2) + '\n';
-  if (fs.existsSync(fullPath) && configStr === fs.readFileSync(fullPath, 'utf-8')) {
-    mkdirp.sync(path.dirname(fullPath));
+  if (!serve && !outputFe && (!fs.existsSync(configPath) || configStr !== fs.readFileSync(configPath, 'utf-8'))) {
+    mkdirp.sync(path.dirname(configPath));
     // Trigger rename event
-    fs.writeFileSync(fullPath, configStr);
+    fs.writeFileSync(configPath, configStr);
   }
   if (debug) console.log(util.inspect(JSON.parse(configStr), { colors: true, depth: null }));
 }
@@ -141,11 +144,11 @@ program
   .option('-t, --title <title>', 'document title', (title: string) => {
     bookConfig.title = title;
   })
-  .option('-i, --icon <icon>', 'project icon', (icon: string) => {
-    bookConfig.icon = icon;
+  .option('-i, --icon <icon>', 'project icon path or url', (path: string) => {
+    iconPath = path;
   })
-  .option('-o, --output <ouput file>', `ouput json file, default \`${output}\``, (out: string) => {
-    output = out;
+  .option('-o, --output <ouput file>', `ouput json file, default \`${output}\``, (dir: string) => {
+    output = dir;
   })
   .option('-d, --source-dir <source dir>', 'github source dir', (sourceDir: string) => {
     bookConfig.sourceDir = sourceDir;
@@ -199,7 +202,7 @@ program
     }
     if (serve || outputFe) {
       bookPromise.then(() => {
-        startBuilder({ dir, debug, outputFe, html }, bookConfig);
+        startBuilder({ dir, debug, outputFe, html, output, iconPath }, bookConfig);
       });
     }
   });

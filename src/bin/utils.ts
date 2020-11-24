@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import { URL } from 'url';
 import gitRemoteOriginUrl from 'git-remote-origin-url';
 import parseGithub from 'parse-github-url';
 import { JSDOM } from 'jsdom';
@@ -86,4 +87,16 @@ export function isMdfile(filename: string) {
 
 export function isDirConfigFile(filename: string) {
   return /config\.yml$/i.test(path.basename(filename));
+}
+
+export function isURL(s: string) {
+  try {
+    return !!new URL(s);
+  } catch {
+    return false;
+  }
+}
+
+export function inTheDir(dir: string, dir2: string) {
+  return !path.relative(dir, dir2).startsWith('.');
 }
