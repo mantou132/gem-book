@@ -15,6 +15,14 @@ interface State {
   commitUrl: string;
 }
 
+const cache: Record<string, unknown> = {};
+const fetchData = async (api: string) => {
+  if (cache[api]) return cache[api];
+  const [commit] = await (await fetch(api)).json();
+  cache[api] = commit;
+  return commit;
+};
+
 /**
  * @attr github
  * @attr srouce-dir
@@ -126,7 +134,7 @@ export class EditLink extends GemElement<State> {
         });
         try {
           const api = `https://api.github.com/repos${repo}/commits?${query}`;
-          const [commit] = await (await fetch(api)).json();
+          const commit = await fetchData(api);
           const date = commit?.commit?.committer?.date;
           this.setState({
             lastUpdated: date || '',
