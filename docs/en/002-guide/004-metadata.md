@@ -12,3 +12,11 @@ sidebarIgnore: true
 
 # Markdown title
 ```
+
+In addition, the homepage also supports `hero` and `features`, for example:
+
+<gbp-raw src="/docs/en/README.md"></gbp-raw>
+
+Full definition:
+
+<gbp-raw src="/src/common/frontmatter.ts"></gbp-raw>

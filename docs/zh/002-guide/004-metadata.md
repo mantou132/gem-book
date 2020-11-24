@@ -12,3 +12,11 @@ sidebarIgnore: true
 
 # Markdown 标题
 ```
+
+此外，首页还支持 `hero` `features`，例如：
+
+<gbp-raw src="/docs/en/README.md"></gbp-raw>
+
+完整定义：
+
+<gbp-raw src="/src/common/frontmatter.ts"></gbp-raw>
