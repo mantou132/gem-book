@@ -25,10 +25,10 @@ npm i gem-book
 mkdir docs && echo '# Hello <gem-book>!' > docs/readme.md
 
 # 预览文档
-npx gem-book docs --serve
+npx gem-book docs
 
 # 构建前端资源
-npx gem-book docs --output-fe
+npx gem-book docs --build
 ```
 
 ## 反馈与共建

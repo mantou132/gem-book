@@ -8,7 +8,6 @@
 
 import program from 'commander';
 import path from 'path';
-import util from 'util';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import getRepoInfo from 'git-repo-info';
@@ -18,23 +17,30 @@ import { version } from '../../package.json';
 import { BookConfig, NavItem, SidebarConfig } from '../common/config';
 import { DEFAULT_FILE } from '../common/constant';
 import { isIndexFile, parseFilename } from '../common/utils';
-import { getGithubUrl, isDirConfigFile, getMetadata, isMdfile, inTheDir, isURL } from './utils';
+
+import {
+  getGithubUrl,
+  isDirConfigFile,
+  getMetadata,
+  isMdfile,
+  inTheDir,
+  isURL,
+  isSomeContent,
+  inspectObject,
+} from './utils';
 import { startBuilder, builderEventTarget } from './builder';
 import lang from './lang.json';
 
 program.version(version, '-v, --version');
 
-let debug = false;
-let serve = false;
-let watch = false;
 let output = '';
-let outputFe = false;
-let html = '';
+let templatePath = '';
 let iconPath = '';
 let plugins = '';
+let buildMode = false;
+let onlyJson = false;
+let debugMode = false;
 const bookConfig: Partial<BookConfig> = {};
-let resolveBookConfig: (value?: unknown) => void;
-const bookPromise = new Promise((res) => (resolveBookConfig = res));
 
 function readDir(dir: string, link = '/') {
   const result: NavItem[] = [];
@@ -116,18 +122,20 @@ async function generateBookConfig(dir: string) {
     bookConfig.sidebar = readDir(fullDir);
   }
 
-  resolveBookConfig();
-  builderEventTarget.emit('update');
-
   // create file
   const configPath = path.resolve(output || dir, output.endsWith('.json') ? '' : DEFAULT_FILE);
   const configStr = JSON.stringify(bookConfig, null, 2) + '\n';
-  if (!outputFe && (!fs.existsSync(configPath) || configStr !== fs.readFileSync(configPath, 'utf-8'))) {
-    mkdirp.sync(path.dirname(configPath));
-    // Trigger rename event
-    fs.writeFileSync(configPath, configStr);
+  // buildMode: embeds the configuration into front-end resources
+  if (!(!onlyJson && buildMode)) {
+    if (!isSomeContent(configPath, configStr)) {
+      mkdirp.sync(path.dirname(configPath));
+      // Trigger rename event
+      fs.writeFileSync(configPath, configStr);
+    }
   }
-  if (debug) console.log(util.inspect(JSON.parse(configStr), { colors: true, depth: null }));
+  if (debugMode) inspectObject(JSON.parse(configStr));
+
+  builderEventTarget.emit('update');
 }
 
 const debounceCommand = debounce(generateBookConfig, 300);
@@ -140,9 +148,6 @@ function addNavItem(item: string) {
 }
 
 program
-  .option('-c, --config <config file>', 'specify config file', (configPath: string) => {
-    Object.assign(bookConfig, __non_webpack_require__(path.resolve(process.cwd(), configPath)));
-  })
   .option('-t, --title <title>', 'document title', (title: string) => {
     bookConfig.title = title;
   })
@@ -179,36 +184,35 @@ program
   .option('--plugins <plugin,plugin>', 'load plugins', (s: string) => {
     plugins = s;
   })
+  .option('--template <path>', 'html template', (path) => {
+    templatePath = path;
+  })
+  .option('--build', 'output all front-end assets or book.json', () => {
+    buildMode = true;
+  })
+  .option('--json', 'only output book.json', () => {
+    onlyJson = true;
+  })
+  .option('--config <config file>', 'specify config file', (configPath: string) => {
+    Object.assign(bookConfig, __non_webpack_require__(path.resolve(process.cwd(), configPath)));
+  })
   .option('--debug', 'enabled debug mode', () => {
-    debug = true;
-  })
-  .option('--watch', 'watch mode', () => {
-    watch = true;
-  })
-  .option('--serve', 'serve mode', () => {
-    serve = true;
-  })
-  .option('--html <path>', 'html template', (path) => {
-    html = path;
-  })
-  // index.html, bundle.js
-  .option('--output-fe', 'output all front-end assets', () => {
-    outputFe = true;
+    debugMode = true;
   })
   .arguments('<dir>')
-  .action((dir: string) => {
-    generateBookConfig(dir);
-    if (serve || watch) {
+  .action(async (dir: string) => {
+    await generateBookConfig(dir);
+    if (!buildMode) {
       fs.watch(dir, { recursive: true }, (type, filePath) => {
         if (type === 'rename' || isDirConfigFile(filePath) || isMdfile(filePath)) {
           debounceCommand(dir);
         }
       });
     }
-    if (serve || outputFe) {
-      bookPromise.then(() => {
-        startBuilder({ dir, debug, devMode: !outputFe, htmlTemplate: html, output, iconPath, plugins }, bookConfig);
-      });
+    if (!onlyJson) {
+      const builderOptions = { dir, debugMode, buildMode, templatePath, output, iconPath, plugins };
+      if (debugMode) inspectObject(builderOptions);
+      startBuilder(builderOptions, bookConfig);
     }
   });
 

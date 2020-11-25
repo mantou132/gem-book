@@ -11,9 +11,9 @@ import { inTheDir, isURL } from './utils';
 interface BuilderOptions {
   dir: string;
   output: string;
-  debug: boolean;
-  devMode: boolean;
-  htmlTemplate: string;
+  debugMode: boolean;
+  buildMode: boolean;
+  templatePath: string;
   iconPath: string;
   plugins: string;
 }
@@ -30,7 +30,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
   update();
   builderEventTarget.on('update', update);
 
-  const { dir, debug, devMode, htmlTemplate: html, output, iconPath, plugins } = options;
+  const { dir, debugMode, buildMode, templatePath, output, iconPath, plugins } = options;
 
   if (path.extname(output) === '.json') {
     return;
@@ -40,7 +40,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
   const docsDir = path.resolve(dir);
   const outputDir = output ? path.resolve(output) : docsDir;
   const compiler = webpack({
-    mode: devMode ? 'development' : 'production',
+    mode: buildMode ? 'production' : 'development',
     entry: [updateLog, entryDir],
     module: {
       rules: [
@@ -71,11 +71,11 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
       new HtmlWebpackPlugin({
         title: bookConfig.title || 'Gem-book App',
         favicon: !isRemoteIcon && iconPath,
-        ...(html ? { template: path.resolve(process.cwd(), html) } : undefined),
+        ...(templatePath ? { template: path.resolve(process.cwd(), templatePath) } : undefined),
       }),
       new webpack.DefinePlugin({
         // dev mode
-        'process.env.DEV_MODE': devMode,
+        'process.env.DEV_MODE': !buildMode,
         // build mode
         'process.env.BOOK_CONFIG': JSON.stringify(JSON.stringify(bookConfig)),
         'process.env.PLUGINS': JSON.stringify(plugins),
@@ -89,21 +89,9 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
           })
         : [],
     ),
-    devtool: debug && 'source-map',
+    devtool: debugMode && 'source-map',
   });
-  if (devMode) {
-    // https://github.com/webpack/webpack-dev-server/blob/master/examples/api/simple/server.js
-    const server = new WebpackDevServer(compiler, {
-      contentBase: path.resolve(dir),
-      historyApiFallback: true,
-      open: process.env.PORT ? false : true,
-    });
-    server.listen(Number(process.env.PORT) || 0, (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
-  } else {
+  if (buildMode) {
     compiler.run((err, stats) => {
       if (err) {
         console.error(err.stack || err);
@@ -118,6 +106,18 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
 
       if (stats.hasWarnings()) {
         console.warn(info.warnings.join());
+      }
+    });
+  } else {
+    // https://github.com/webpack/webpack-dev-server/blob/master/examples/api/simple/server.js
+    const server = new WebpackDevServer(compiler, {
+      contentBase: path.resolve(dir),
+      historyApiFallback: true,
+      open: process.env.PORT ? false : true,
+    });
+    server.listen(Number(process.env.PORT) || 0, (err) => {
+      if (err) {
+        console.error(err);
       }
     });
   }

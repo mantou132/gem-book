@@ -1,1 +1,1 @@
-export const DEFAULT_FILE = 'book.json';
+export const DEFAULT_FILE = 'gem-book.json';

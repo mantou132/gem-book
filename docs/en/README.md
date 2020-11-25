@@ -25,10 +25,10 @@ npm i gem-book
 mkdir docs && echo '# Hello <gem-book>!' > docs/readme.md
 
 # Preview docs
-npx gem-book docs --serve
+npx gem-book docs
 
 # Build
-npx gem-book docs --output-fe
+npx gem-book docs --build
 ```
 
 ## Feedback

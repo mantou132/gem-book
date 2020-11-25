@@ -11,13 +11,13 @@
   "scripts": {
     "lint": "tsc --noEmit && eslint --ext .ts --fix src/",
     "dev:cli": "webpack --watch --config webpack.config.cli.js",
-    "docs": "node ./bin docs -t Gem-book -i ./logo.png --i18n --home-mode --plugins raw",
-    "dev:docs": "PORT=8090 nodemon --watch bin --exec \"npm run docs -- --watch --serve --debug\"",
+    "docs": "node ./bin docs -t Gem-book -i ./logo.png --i18n --home-mode --plugins raw --debug",
+    "dev:docs": "PORT=8090 nodemon --watch bin --exec \"npm run docs\"",
     "build:cli": "webpack --config webpack.config.cli.js",
     "build:ele": "tsc -p ./tsconfig.ele.json",
     "build:dist": "webpack --config webpack.config.dist.js",
     "build": "npm run build:cli && npm run build:ele && npm run build:dist",
-    "build:website": "npm run build:cli && npm run docs -- --output-fe",
+    "build:website": "npm run build:cli && npm run docs -- --build",
     "prepublishOnly": "npm run lint && npm run build && npm run docs",
     "test:fe": "npm run build:ele && karma start --coverage",
     "test": "npm run test:fe"

@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import util from 'util';
 import { URL } from 'url';
 import gitRemoteOriginUrl from 'git-remote-origin-url';
 import parseGithub from 'parse-github-url';
@@ -99,4 +100,12 @@ export function isURL(s: string) {
 
 export function inTheDir(dir: string, dir2: string) {
   return !path.relative(dir, dir2).startsWith('.');
+}
+
+export function isSomeContent(filePath: string, content: string) {
+  return fs.existsSync(filePath) && content === fs.readFileSync(filePath, 'utf-8');
+}
+
+export function inspectObject(obj: any) {
+  console.log(util.inspect(obj, { colors: true, depth: null }));
 }
