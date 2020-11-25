@@ -1,8 +1,9 @@
 import { render, html } from '@mantou/gem';
 import '../element';
 
-// load plugins
-import('../plugins/raw');
+process.env.PLUGINS?.split(',').forEach((plugin) => {
+  plugin && import(`../plugins/${plugin}`);
+});
 
 render(
   html`

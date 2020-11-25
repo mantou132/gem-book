@@ -15,6 +15,7 @@ interface BuilderOptions {
   html: string;
   output: string;
   iconPath: string;
+  plugins: string;
 }
 
 export const builderEventTarget = new EventEmitter();
@@ -29,7 +30,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
   update();
   builderEventTarget.on('update', update);
 
-  const { dir, debug, outputFe, html, output, iconPath } = options;
+  const { dir, debug, outputFe, html, output, iconPath, plugins } = options;
   const isRemoteIcon = isURL(iconPath);
   const docsDir = path.resolve(dir);
   const outputDir = output ? path.resolve(output) : docsDir;
@@ -71,6 +72,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
         get ['process.env.BOOK_CONFIG']() {
           return JSON.stringify(JSON.stringify(bookConfig));
         },
+        'process.env.PLUGINS': JSON.stringify(plugins),
       }),
     ].concat(
       outputDir !== docsDir

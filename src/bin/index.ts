@@ -30,6 +30,7 @@ let output = '';
 let outputFe = false;
 let html = '';
 let iconPath = '';
+let plugins = '';
 const bookConfig: Partial<BookConfig> = {};
 let resolveBookConfig: (value?: unknown) => void;
 const bookPromise = new Promise((res) => (resolveBookConfig = res));
@@ -174,6 +175,9 @@ program
   .option('--nav1 <title,link>', 'attach a nav item', addNavItem)
   .option('--nav2 <title,link>', 'attach a nav item', addNavItem)
   .option('--nav3 <title,link>', 'attach a nav item', addNavItem)
+  .option('--plugins <plugin,plugin>', 'load plugins', (s: string) => {
+    plugins = s;
+  })
   .option('--debug', 'enabled debug mode', () => {
     debug = true;
   })
@@ -202,7 +206,7 @@ program
     }
     if (serve || outputFe) {
       bookPromise.then(() => {
-        startBuilder({ dir, debug, outputFe, html, output, iconPath }, bookConfig);
+        startBuilder({ dir, debug, outputFe, html, output, iconPath, plugins }, bookConfig);
       });
     }
   });
