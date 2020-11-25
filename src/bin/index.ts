@@ -16,6 +16,7 @@ import { startCase, debounce } from 'lodash';
 
 import { version } from '../../package.json';
 import { BookConfig, NavItem, SidebarConfig } from '../common/config';
+import { DEFAULT_FILE } from '../common/constant';
 import { isIndexFile, parseFilename } from '../common/utils';
 import { getGithubUrl, isDirConfigFile, getMetadata, isMdfile, inTheDir, isURL } from './utils';
 import { startBuilder, builderEventTarget } from './builder';
@@ -119,9 +120,9 @@ async function generateBookConfig(dir: string) {
   builderEventTarget.emit('update');
 
   // create file
-  const configPath = path.resolve(output || dir, output.endsWith('.json') ? '' : 'book.json');
+  const configPath = path.resolve(output || dir, output.endsWith('.json') ? '' : DEFAULT_FILE);
   const configStr = JSON.stringify(bookConfig, null, 2) + '\n';
-  if (!serve && !outputFe && (!fs.existsSync(configPath) || configStr !== fs.readFileSync(configPath, 'utf-8'))) {
+  if (!outputFe && (!fs.existsSync(configPath) || configStr !== fs.readFileSync(configPath, 'utf-8'))) {
     mkdirp.sync(path.dirname(configPath));
     // Trigger rename event
     fs.writeFileSync(configPath, configStr);
@@ -206,7 +207,7 @@ program
     }
     if (serve || outputFe) {
       bookPromise.then(() => {
-        startBuilder({ dir, debug, outputFe, html, output, iconPath, plugins }, bookConfig);
+        startBuilder({ dir, debug, devMode: !outputFe, htmlTemplate: html, output, iconPath, plugins }, bookConfig);
       });
     }
   });

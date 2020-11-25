@@ -1,4 +1,5 @@
 import { render, html } from '@mantou/gem';
+import { DEFAULT_FILE } from '../common/constant';
 import '../element';
 
 process.env.PLUGINS?.split(',').forEach((plugin) => {
@@ -12,7 +13,9 @@ render(
         margin: 0;
       }
     </style>
-    <gem-book .config=${JSON.parse(String(process.env.BOOK_CONFIG))}></gem-book>
+    ${process.env.DEV_MODE
+      ? html`<gem-book src=${`/${DEFAULT_FILE}`}></gem-book>`
+      : html`<gem-book .config=${JSON.parse(String(process.env.BOOK_CONFIG))}></gem-book>`}
   `,
   document.body,
 );

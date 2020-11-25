@@ -10,10 +10,10 @@ import { inTheDir, isURL } from './utils';
 
 interface BuilderOptions {
   dir: string;
-  debug: boolean;
-  outputFe: boolean;
-  html: string;
   output: string;
+  debug: boolean;
+  devMode: boolean;
+  htmlTemplate: string;
   iconPath: string;
   plugins: string;
 }
@@ -30,12 +30,17 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
   update();
   builderEventTarget.on('update', update);
 
-  const { dir, debug, outputFe, html, output, iconPath, plugins } = options;
+  const { dir, debug, devMode, htmlTemplate: html, output, iconPath, plugins } = options;
+
+  if (path.extname(output) === '.json') {
+    return;
+  }
+
   const isRemoteIcon = isURL(iconPath);
   const docsDir = path.resolve(dir);
   const outputDir = output ? path.resolve(output) : docsDir;
   const compiler = webpack({
-    mode: debug ? 'development' : 'production',
+    mode: devMode ? 'development' : 'production',
     entry: [updateLog, entryDir],
     module: {
       rules: [
@@ -69,9 +74,10 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
         ...(html ? { template: path.resolve(process.cwd(), html) } : undefined),
       }),
       new webpack.DefinePlugin({
-        get ['process.env.BOOK_CONFIG']() {
-          return JSON.stringify(JSON.stringify(bookConfig));
-        },
+        // dev mode
+        'process.env.DEV_MODE': devMode,
+        // build mode
+        'process.env.BOOK_CONFIG': JSON.stringify(JSON.stringify(bookConfig)),
         'process.env.PLUGINS': JSON.stringify(plugins),
       }),
     ].concat(
@@ -85,7 +91,19 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
     ),
     devtool: debug && 'source-map',
   });
-  if (outputFe) {
+  if (devMode) {
+    // https://github.com/webpack/webpack-dev-server/blob/master/examples/api/simple/server.js
+    const server = new WebpackDevServer(compiler, {
+      contentBase: path.resolve(dir),
+      historyApiFallback: true,
+      open: process.env.PORT ? false : true,
+    });
+    server.listen(Number(process.env.PORT) || 0, (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+  } else {
     compiler.run((err, stats) => {
       if (err) {
         console.error(err.stack || err);
@@ -100,18 +118,6 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
 
       if (stats.hasWarnings()) {
         console.warn(info.warnings.join());
-      }
-    });
-  } else {
-    // https://github.com/webpack/webpack-dev-server/blob/master/examples/api/simple/server.js
-    const server = new WebpackDevServer(compiler, {
-      contentBase: path.resolve(dir),
-      historyApiFallback: true,
-      open: process.env.PORT ? false : true,
-    });
-    server.listen(Number(process.env.PORT) || 0, function (err) {
-      if (err) {
-        console.error(err);
       }
     });
   }
