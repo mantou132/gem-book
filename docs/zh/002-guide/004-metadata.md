@@ -15,7 +15,7 @@ sidebarIgnore: true
 
 此外，首页还支持 `hero` `features`，例如：
 
-<gbp-raw src="/docs/en/README.md" range="0-19"></gbp-raw>
+<gbp-raw src="/docs/en/README.md" range="-19"></gbp-raw>
 
 完整定义：
 

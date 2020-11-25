@@ -80,12 +80,12 @@ export class Main extends GemElement<State> {
     renderer.link = function (href, title, text) {
       if (href?.startsWith('.')) {
         return raw`
-          <gem-link path=${getUserLink(href, displayRank)} title=${title || ''}>${text}</gem-link>
+          <gem-link class="link" path=${getUserLink(href, displayRank)} title=${title || ''}>${text}</gem-link>
         `;
       }
       const internal = isSameOrigin(href || '');
       return raw`
-        <a target=${internal ? '_self' : '_blank'} href=${href || ''} title=${title || ''}>
+        <a class="link" target=${internal ? '_self' : '_blank'} href=${href || ''} title=${title || ''}>
           ${text}
           ${internal ? '' : link}
         </a>
@@ -166,12 +166,19 @@ export class Main extends GemElement<State> {
         a > img + svg {
           display: none;
         }
-        a,
-        gem-link {
-          color: ${theme.linkColor};
-          text-decoration: none;
+        a {
+          color: inherit;
         }
-        /* https://github.com/egoist/docute/blob/master/src/css/page-content.css */
+        .link {
+          color: inherit;
+          background: rgba(${theme.primaryColorRGB}, 0.1);
+          text-decoration: none;
+          border-bottom: 1px solid ${theme.borderColor};
+        }
+        .link:hover {
+          background: rgba(${theme.primaryColorRGB}, 0.2);
+          border-color: currentColor;
+        }
         :host > :first-child {
           margin-top: 0;
         }
@@ -186,7 +193,7 @@ export class Main extends GemElement<State> {
         h6 {
           font-weight: 300;
           line-height: 1.2;
-          scroll-margin: ${theme.headerHeight};
+          scroll-margin: calc(${theme.headerHeight} + 2rem);
         }
         h1 {
           font-size: 3rem;
@@ -231,61 +238,6 @@ export class Main extends GemElement<State> {
           font-weight: normal;
           font-size: 12px;
           padding: 10px;
-        }
-        pre {
-          z-index: 2;
-          position: relative;
-          margin: 2rem 0;
-          padding: 1rem;
-          border-radius: 4px;
-          color: ${theme.codeBlockTextColor};
-          background: ${theme.codeBlockBackground};
-          font-family: ${theme.codeFont};
-          white-space: pre;
-        }
-        @media ${mediaQuery.PHONE} {
-          :host > pre {
-            margin: 1rem -1rem;
-            border-radius: 0;
-          }
-        }
-        pre .code-lang-name {
-          position: absolute;
-          top: 5px;
-          right: 10px;
-          font-size: 12px;
-          color: #cacaca;
-          user-select: none;
-        }
-        pre .code-lang-name::selection {
-          background: transparent;
-        }
-        pre code {
-          display: block;
-          margin: 0;
-          padding: 0;
-          overflow: auto;
-          scrollbar-width: none;
-          color: ${theme.codeBlockTextColor};
-          box-shadow: none;
-          border: none;
-          border-radius: 0;
-          font-size: 1em;
-          background: transparent;
-        }
-        @media print {
-          pre {
-            white-space: pre-wrap;
-            word-break: break-word;
-          }
-        }
-        code {
-          font-family: ${theme.codeFont};
-          font-size: 90%;
-          background: ${theme.inlineCodeBackground};
-          border-radius: 4px;
-          padding: 3px 5px;
-          color: ${theme.inlineCodeColor};
         }
         :host > ol,
         :host > ul {
@@ -343,127 +295,6 @@ export class Main extends GemElement<State> {
         .markdown-header:hover .header-anchor {
           opacity: 1;
         }
-
-        pre > code[class*='language-'] {
-          font-size: 1em;
-        }
-
-        .token.comment,
-        .token.prolog,
-        .token.doctype,
-        .token.cdata {
-          color: #898ea4;
-        }
-
-        .token.punctuation {
-          color: #5e6687;
-        }
-
-        .token.namespace {
-          opacity: 0.7;
-        }
-
-        .token.operator,
-        .token.boolean,
-        .token.number {
-          color: #c76b29;
-        }
-
-        .token.property {
-          color: #c08b30;
-        }
-
-        .token.tag {
-          color: #3d8fd1;
-        }
-
-        .token.string {
-          color: #22a2c9;
-        }
-
-        .token.selector {
-          color: #6679cc;
-        }
-
-        .token.attr-name {
-          color: #c76b29;
-        }
-
-        .token.entity,
-        .token.url,
-        .language-css .token.string,
-        .style .token.string {
-          color: #22a2c9;
-        }
-
-        .token.attr-value,
-        .token.keyword,
-        .token.control,
-        .token.directive,
-        .token.unit {
-          color: #ac9739;
-        }
-
-        .token.statement,
-        .token.regex,
-        .token.atrule {
-          color: #22a2c9;
-        }
-
-        .token.placeholder,
-        .token.variable {
-          color: #3d8fd1;
-        }
-
-        .token.deleted {
-          text-decoration: line-through;
-        }
-
-        .token.inserted {
-          border-bottom: 1px dotted #202746;
-          text-decoration: none;
-        }
-
-        .token.italic {
-          font-style: italic;
-        }
-
-        .token.important,
-        .token.bold {
-          font-weight: bold;
-        }
-
-        .token.important {
-          color: #c94922;
-        }
-
-        .token.entity {
-          cursor: help;
-        }
-
-        pre > code.highlight {
-          outline: 0.4em solid #c94922;
-          outline-offset: 0.4em;
-        }
-
-        /* overrides color-values for the Line Numbers plugin
- * http://prismjs.com/plugins/line-numbers/
- */
-        .line-numbers .line-numbers-rows {
-          border-right-color: #dfe2f1;
-        }
-
-        .line-numbers-rows > span:before {
-          color: #979db4;
-        }
-
-        /* overrides color-values for the Line Highlight plugin
- * http://prismjs.com/plugins/line-highlight/
- */
-        .line-highlight {
-          background: rgba(107, 115, 148, 0.2);
-          background: linear-gradient(to right, rgba(107, 115, 148, 0.2) 70%, rgba(107, 115, 148, 0));
-        }
         @media ${mediaQuery.PHONE} {
           :host {
             padding-top: 1rem;
@@ -471,6 +302,163 @@ export class Main extends GemElement<State> {
           h1 {
             font-size: 2.5rem;
           }
+        }
+
+        code {
+          font-size: 90%;
+          background: ${theme.inlineCodeBackground};
+          border-radius: 4px;
+          padding: 3px 5px;
+        }
+        a code {
+          background: transparent;
+        }
+        pre {
+          z-index: 2;
+          position: relative;
+          margin: 2rem 0;
+          padding: 1rem;
+          border-radius: 4px;
+          white-space: pre;
+        }
+        @media ${mediaQuery.PHONE} {
+          :host > pre {
+            margin: 1rem -1rem;
+            border-radius: 0;
+          }
+        }
+        pre code {
+          display: block;
+          margin: 0;
+          padding: 0;
+          overflow: auto;
+          scrollbar-width: none;
+          box-shadow: none;
+          border: none;
+          border-radius: 0;
+          font-size: 1em;
+          background: transparent;
+        }
+        @media print {
+          pre {
+            white-space: pre-wrap;
+            word-break: break-word;
+          }
+        }
+
+        /* code block */
+        pre {
+          color: #f8f8f2;
+          background: #2e3440;
+        }
+        code {
+          font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+        }
+        pre .code-lang-name {
+          position: absolute;
+          top: 5px;
+          right: 10px;
+          font-size: 12px;
+          color: #cacaca;
+          user-select: none;
+        }
+        pre .code-lang-name::selection {
+          background: transparent;
+        }
+
+        /* plugin */
+        pre code {
+          text-align: left;
+          white-space: pre;
+          word-spacing: normal;
+          word-break: normal;
+          word-wrap: normal;
+          line-height: 1.5;
+          -moz-tab-size: 4;
+          -o-tab-size: 4;
+          tab-size: 4;
+          -webkit-hyphens: none;
+          -moz-hyphens: none;
+          -ms-hyphens: none;
+          hyphens: none;
+        }
+
+        .token.comment,
+        .token.prolog,
+        .token.doctype,
+        .token.cdata {
+          color: #636f88;
+        }
+
+        .token.punctuation {
+          color: #81a1c1;
+        }
+
+        .namespace {
+          opacity: 0.7;
+        }
+
+        .token.property,
+        .token.tag,
+        .token.constant,
+        .token.symbol,
+        .token.deleted {
+          color: #81a1c1;
+        }
+
+        .token.number {
+          color: #b48ead;
+        }
+
+        .token.boolean {
+          color: #81a1c1;
+        }
+
+        .token.selector,
+        .token.attr-name,
+        .token.string,
+        .token.char,
+        .token.builtin,
+        .token.inserted {
+          color: #a3be8c;
+        }
+
+        .token.operator,
+        .token.entity,
+        .token.url,
+        .language-css .token.string,
+        .style .token.string,
+        .token.variable {
+          color: #81a1c1;
+        }
+
+        .token.atrule,
+        .token.attr-value,
+        .token.function,
+        .token.class-name {
+          color: #88c0d0;
+        }
+
+        .token.keyword {
+          color: #81a1c1;
+        }
+
+        .token.regex,
+        .token.important {
+          color: #ebcb8b;
+        }
+
+        .token.important,
+        .token.bold {
+          font-weight: bold;
+        }
+
+        .token.italic {
+          font-style: italic;
+        }
+
+        .token.entity {
+          cursor: help;
         }
       </style>
     `;
@@ -499,13 +487,20 @@ export class Main extends GemElement<State> {
     };
   }
 
-  unsafeRender(s: string) {
+  unsafeRender(s: string, style = '') {
     const htmlstr = marked.parse(s, { renderer: this.mdRenderer });
     const cssstr = css`
       a,
       gem-link {
-        color: ${theme.linkColor};
+        border-bottom: 1px solid ${theme.borderColor};
+        color: inherit;
+        text-decoration: none;
       }
+      a:hover,
+      gem-link:hover {
+        border-bottom: 1px solid;
+      }
+      ${style}
     `;
     return html`<gem-unsafe content=${htmlstr} contentcss=${cssstr}></gem-unsafe>`;
   }

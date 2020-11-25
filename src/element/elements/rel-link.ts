@@ -23,14 +23,16 @@ export class RelLink extends GemElement {
           padding: 2rem 0;
           display: flex;
           justify-content: space-between;
+          line-height: 1.5;
           border-top: 1px solid ${theme.borderColor};
         }
         gem-link {
-          color: ${theme.linkColor};
+          border-bottom: 1px solid ${theme.borderColor};
+          color: inherit;
           text-decoration: none;
         }
         gem-link:hover {
-          text-decoration: underline;
+          border-bottom: 1px solid;
         }
       </style>
       ${prev ? html`<gem-link path=${prev.link}>← ${capitalize(prev.title)}</gem-link>` : null}

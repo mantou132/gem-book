@@ -2,21 +2,18 @@ import { createTheme, updateTheme } from '@mantou/gem/helper/theme';
 
 export const defaultTheme = {
   font: 'BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, sans-serif',
-  codeFont: 'SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace',
   sidebarWidth: '230px',
   mainWidth: '780px',
   headerHeight: '55px',
   backgroundColor: 'white',
-  textColor: 'black',
   borderColor: '#eaeaea',
-  linkColor: '#26c0e3',
-  sidebarLinkArrowColor: '#999',
+  textColorRGB: '0, 0, 0',
+  textColor: 'rgb(0, 0, 0)',
+  primaryColorRGB: '38, 192, 227',
+  primaryColor: 'rgb(38, 192, 227)',
+  inlineCodeBackground: '#ffe56433',
   tableHeaderColor: '#666',
   tableHeaderBackground: '#fafafa',
-  inlineCodeColor: '#d23a3a',
-  inlineCodeBackground: '#f6f6f6',
-  codeBlockTextColor: 'black',
-  codeBlockBackground: '#f6f6f6',
 };
 
 export type Theme = typeof defaultTheme;

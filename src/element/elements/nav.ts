@@ -81,7 +81,6 @@ export class Nav extends GemElement {
           --height: ${theme.headerHeight};
           display: flex;
           line-height: var(--height);
-          color: ${theme.textColor};
         }
         gem-link,
         gem-active-link {
@@ -131,7 +130,7 @@ export class Nav extends GemElement {
         }
         gem-active-link:hover,
         gem-active-link.active {
-          color: ${theme.linkColor};
+          color: ${theme.primaryColor};
         }
         gem-active-link.active::after {
           content: '';

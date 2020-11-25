@@ -17,7 +17,7 @@ customElements.whenDefined('gem-book').then(() => {
         const ranges = this.range.split(/,\s*/);
         return ranges.map((range) => {
           const [start, end] = range.split('-');
-          return [parseInt(start) || 0, parseInt(end) || 0];
+          return [parseInt(start) || 1, parseInt(end) || 0];
         });
       }
 
@@ -67,15 +67,14 @@ customElements.whenDefined('gem-book').then(() => {
         const parts = this.range
           ? this.ranges.map(([start, end]) => {
               let result = '';
-              for (let i = start; i < (end || lines.length); i++) {
+              for (let i = start - 1; i < (end || lines.length); i++) {
                 result += lines[i] + '\n';
               }
               return result;
             })
           : [content];
-        return `
-            <pre><code class="language-${lang}">${parts.join('\n...\n\n')}</code></pre>
-        `;
+        const langTag = `<i class="code-lang-name">${lang}</i>`;
+        return `<pre><code class="language-${lang}">${langTag}${parts.join('\n...\n\n')}</code></pre>`;
       }
     },
   );

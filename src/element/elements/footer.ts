@@ -19,6 +19,8 @@ export class Footer extends GemElement {
           margin-top: 6rem;
           border-top: 1px solid ${theme.borderColor};
           font-style: italic;
+          line-height: 1.5;
+          color: rgba(${theme.textColorRGB}, 0.5);
         }
         @media ${mediaQuery.PHONE} {
           :host {
@@ -26,19 +28,17 @@ export class Footer extends GemElement {
           }
         }
         gem-link {
-          color: ${theme.linkColor};
+          color: ${theme.textColor};
+          border-bottom: 1px solid ${theme.borderColor};
           text-decoration: none;
         }
         gem-link:hover {
-          text-decoration: underline;
+          border-bottom: 1px solid;
         }
       </style>
       ${this.footer
         ? mdRender.unsafeRender(this.footer)
-        : selfI18n.get(
-            'footer',
-            (t) => html`<gem-link href="https://github.com/mantou132/gem-book">&lt;${t}&gt;</gem-link>`,
-          )}
+        : selfI18n.get('footer', (t) => html`<gem-link href="https://gem-book.js.org">&lt;${t}&gt;</gem-link>`)}
     `;
   }
 }

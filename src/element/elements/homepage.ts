@@ -55,7 +55,7 @@ export class Homepage extends GemElement {
           opacity: 0;
         }
         gem-link {
-          color: ${theme.linkColor};
+          color: ${theme.primaryColor};
           text-decoration: none;
           transition: all 0.3s;
         }
@@ -63,7 +63,7 @@ export class Homepage extends GemElement {
           padding: 0.5rem 2rem;
           text-decoration: none;
           color: #fff;
-          background: ${theme.linkColor};
+          background: ${theme.primaryColor};
         }
         gem-link:hover {
           filter: brightness(1.1);
@@ -172,7 +172,19 @@ export class Homepage extends GemElement {
               <div class="feature ${feature.icon ? 'has-icon' : ''}">
                 ${feature.icon ? html`<img class="icon" src=${feature.icon} />` : ''}
                 <h3 class="feat-title ${placeholder(feature.title)}">${feature.title}</h3>
-                <p class="feat-desc ${placeholder(feature.desc)}">${mdRender.unsafeRender(feature.desc)}</p>
+                <p class="feat-desc ${placeholder(feature.desc)}">
+                  ${mdRender.unsafeRender(
+                    feature.desc,
+                    `
+                      a, gem-link {
+                        background: rgba(${theme.primaryColorRGB}, 0.1);
+                      }
+                      a:hover, gem-link:hover {
+                        background: rgba(${theme.primaryColorRGB}, 0.2);
+                      }
+                    `,
+                  )}
+                </p>
               </div>
             `,
           )}

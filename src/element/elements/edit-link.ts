@@ -77,15 +77,17 @@ export class EditLink extends GemElement<State> {
           display: flex;
           padding: 2rem 0;
           justify-content: space-between;
+          line-height: 1.5;
         }
         gem-link {
-          color: ${theme.linkColor};
+          border-bottom: 1px solid ${theme.borderColor};
+          color: inherit;
           text-decoration: none;
           display: inline-flex;
           align-items: center;
         }
         gem-link:hover {
-          text-decoration: underline;
+          border-bottom: 1px solid;
         }
         gem-use {
           width: 18px;
@@ -94,7 +96,6 @@ export class EditLink extends GemElement<State> {
         }
         .last-updated span {
           opacity: 0.5;
-          color: ${theme.textColor};
         }
         @media ${mediaQuery.PHONE} {
           :host {

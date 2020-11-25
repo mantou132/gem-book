@@ -93,7 +93,10 @@ export class SideBar extends GemElement {
           line-height: 1.2;
         }
         gem-active-link.active {
-          color: ${theme.textColor};
+          color: inherit;
+        }
+        gem-active-link:not(.active):hover {
+          opacity: 0.6;
         }
         gem-active-link.active:not([pattern*='#']) {
           font-weight: bolder;
@@ -139,8 +142,9 @@ export class SideBar extends GemElement {
           width: 4px;
           height: 4px;
           border-radius: 50%;
-          background-color: ${theme.sidebarLinkArrowColor};
+          background: currentColor;
           margin-right: calc(1em - 4px);
+          opacity: 0.6;
         }
         .item gem-use {
           transform: rotate(90deg);
