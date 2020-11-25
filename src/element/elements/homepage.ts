@@ -25,7 +25,9 @@ export class Homepage extends GemElement {
         .hero {
           text-align: center;
           padding: 3.5rem 1rem;
-          background: #f4f6f7;
+          --tcolor: rgba(${theme.textColorRGB}, 0.03);
+          --pcolor: rgba(${theme.primaryColorRGB}, 0.02);
+          background: linear-gradient(var(--tcolor), var(--tcolor)), linear-gradient(var(--pcolor), var(--pcolor));
         }
         .title {
           margin: 0;
