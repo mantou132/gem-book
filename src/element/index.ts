@@ -1,4 +1,6 @@
 import { html, GemElement, customElement, property, attribute, connectStore, history } from '@mantou/gem';
+import * as Gem from '@mantou/gem';
+import Prism from 'prismjs';
 
 import '@mantou/gem/elements/title';
 import '@mantou/gem/elements/route';
@@ -29,6 +31,8 @@ import { theme, changeTheme, Theme } from './helper/theme';
 
 const sharedConfig: Partial<BookConfig> = {};
 class GemBookPluginElement extends GemElement {
+  static Gem = Gem;
+  static Prism = Prism;
   config = sharedConfig;
 }
 
