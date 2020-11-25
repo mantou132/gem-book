@@ -74,13 +74,13 @@ render(html`<gem-book .config=${config}></gem-book>`, document.body);
 
 ### 目标
 
-- 将 Markdown 文件组织的目录渲染成页面
-- 生成 `<gem-book>` 需要的配置文件
-- 支持自定义渲染
+- 将文档构建成前端项目
+- 提供解析目录成 `<gem-book>` 配置文件的命令行
+- 提供 `<gem-book>` 供前端项目使用
+- 使用导出的 API 进行自定义渲染
 
 ### 不是目标
 
-- 提供网站
 - 提供服务器
 
 ### 浏览器兼容性

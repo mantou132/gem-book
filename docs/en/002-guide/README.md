@@ -73,13 +73,13 @@ The command line tool directly maps the directory structure to the sidebar struc
 
 ### Goal
 
-- Render the directory organized by Markdown files into pages
-- Generate configuration files needed by `<gem-book>`
-- Support custom rendering
+- Build documentation into front-end projects
+- Provide a command line to parse the directory into a `<gem-book>` configuration file
+- Provide `<gem-book>` for front-end projects
+- Use the exported API for custom rendering
 
 ### No-Goal
 
-- Provide website
 - Provide server
 
 ### Browser compatibility
