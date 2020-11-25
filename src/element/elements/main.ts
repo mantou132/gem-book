@@ -148,7 +148,7 @@ export class Main extends GemElement<State> {
       <style>
         :not(:defined)::before {
           display: block;
-          content: 'The plugin is not imported';
+          content: 'The element is not defined';
           padding: 1em;
           border-radius: 4px;
           text-align: center;
@@ -162,21 +162,29 @@ export class Main extends GemElement<State> {
           opacity: ${fetching ? 0.3 : 1};
           min-height: 10rem;
           padding-top: 3rem;
+          line-height: 1.7;
         }
         a > img + svg {
           display: none;
+        }
+        a > img {
+          margin-bottom: -1px;
         }
         a {
           color: inherit;
         }
         .link {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.2em;
           color: inherit;
           background: rgba(${theme.primaryColorRGB}, 0.1);
           text-decoration: none;
           border-bottom: 1px solid ${theme.borderColor};
+          line-height: 1.5;
         }
         .link:hover {
-          background: rgba(${theme.primaryColorRGB}, 0.2);
+          background: rgba(${theme.primaryColorRGB}, 0.3);
           border-color: currentColor;
         }
         :host > :first-child {
