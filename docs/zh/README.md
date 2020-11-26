@@ -1,5 +1,4 @@
 ---
-title: 使用自定义元素渲染你的文档
 hero:
   title: <gem-book>
   desc: 使用自定义元素渲染你的文档

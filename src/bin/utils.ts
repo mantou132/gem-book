@@ -11,7 +11,7 @@ import YAML from 'yaml';
 
 import { NavItem } from '../common/config';
 import { FrontMatter } from '../common/frontmatter';
-import { parseFilename } from '../common/utils';
+import { isIndexFile, parseFilename } from '../common/utils';
 
 // https://github.com/webpack/webpack/issues/4175#issuecomment-277232067
 declare global {
@@ -38,6 +38,7 @@ type FileMetadata = FrontMatter & {
 export function getMetadata(fullPath: string, displayRank?: boolean): FileMetadata {
   const getTitle = () => {
     const basename = path.basename(fullPath);
+    if (isIndexFile(basename)) return '';
     const filename = basename.replace(/\.[^.]*$/, '');
     return displayRank ? filename : parseFilename(filename).title;
   };

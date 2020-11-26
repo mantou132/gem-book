@@ -1,5 +1,4 @@
 ---
-title: Custom elements for rendering markdown documents
 hero:
   title: <gem-book>
   desc: Custom elements for rendering markdown documents.
