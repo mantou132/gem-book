@@ -20,3 +20,5 @@ In addition, the homepage also supports `hero` and `features`, for example:
 Full definition:
 
 <gbp-raw src="/src/common/frontmatter.ts"></gbp-raw>
+
+You can also use `config.yml` to specify metadata for the folder.

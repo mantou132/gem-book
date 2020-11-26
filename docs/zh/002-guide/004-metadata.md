@@ -20,3 +20,5 @@ sidebarIgnore: true
 完整定义：
 
 <gbp-raw src="/src/common/frontmatter.ts"></gbp-raw>
+
+你也可以使用 `config.yml` 为文件夹指定元数据。

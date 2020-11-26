@@ -70,8 +70,9 @@ export function getMetadata(fullPath: string, displayRank?: boolean): FileMetada
     const result = {
       title: getTitle(),
     };
-    if (files.find(isDirConfigFile)) {
-      const config = YAML.parse(fs.readFileSync(path.join(fullPath, 'config.yml'), 'utf-8'));
+    const configFile = files.find(isDirConfigFile);
+    if (configFile) {
+      const config = YAML.parse(fs.readFileSync(path.join(fullPath, configFile), 'utf-8'));
       return {
         ...result,
         ...config,
@@ -92,7 +93,7 @@ export function isMdfile(filename: string) {
 }
 
 export function isDirConfigFile(filename: string) {
-  return /config\.yml$/i.test(path.basename(filename));
+  return /config\.ya?ml$/i.test(path.basename(filename));
 }
 
 export function isURL(s: string) {
