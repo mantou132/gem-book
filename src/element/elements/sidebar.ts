@@ -69,7 +69,7 @@ export class SideBar extends GemElement {
           padding: 3rem 1rem 0;
           margin: 0 -1rem;
           scrollbar-width: thin;
-          font-size: 14px;
+          font-size: 0.875rem;
         }
         @media ${mediaQuery.PHONE} {
           :host {

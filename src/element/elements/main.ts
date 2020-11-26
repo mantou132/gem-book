@@ -307,10 +307,11 @@ export class Main extends GemElement<State> {
           font-size: 90%;
           background: ${theme.inlineCodeBackground};
           border-radius: 4px;
-          padding: 3px 5px;
+          padding: 0 3px;
         }
         a code {
           background: transparent;
+          padding: 0;
         }
         pre {
           z-index: 2;
