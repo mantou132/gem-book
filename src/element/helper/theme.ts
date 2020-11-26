@@ -1,14 +1,15 @@
 import { createTheme, updateTheme } from '@mantou/gem/helper/theme';
 
 export const defaultTheme = {
-  font: 'BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, sans-serif',
+  font:
+    '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif',
   sidebarWidth: '230px',
   mainWidth: '780px',
   headerHeight: '55px',
   backgroundColor: 'white',
   borderColor: '#eaeaea',
-  textColorRGB: '0, 0, 0',
-  textColor: 'rgb(0, 0, 0)',
+  textColorRGB: '40, 44, 52',
+  textColor: 'rgb(40, 44, 52)',
   primaryColorRGB: '38, 192, 227',
   primaryColor: 'rgb(38, 192, 227)',
   inlineCodeBackground: '#ffe56433',

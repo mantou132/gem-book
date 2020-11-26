@@ -171,8 +171,8 @@ export class Main extends GemElement<State> {
           color: inherit;
           background: rgba(${theme.primaryColorRGB}, 0.1);
           text-decoration: none;
-          border-bottom: 1px solid ${theme.borderColor};
-          line-height: 1.5;
+          border-bottom: 1px solid rgba(${theme.textColorRGB}, 0.3);
+          line-height: 1.2;
         }
         .link:hover {
           background: rgba(${theme.primaryColorRGB}, 0.3);
@@ -190,7 +190,7 @@ export class Main extends GemElement<State> {
         h4,
         h5,
         h6 {
-          font-weight: 300;
+          font-weight: bold;
           line-height: 1.2;
           scroll-margin: calc(${theme.headerHeight} + 2rem);
         }
@@ -200,7 +200,6 @@ export class Main extends GemElement<State> {
         }
         h2 {
           font-size: 2rem;
-          border-bottom: 1px solid ${theme.borderColor};
           margin-top: 7rem;
           padding-bottom: 5px;
         }
@@ -495,7 +494,7 @@ export class Main extends GemElement<State> {
     const cssstr = css`
       a,
       gem-link {
-        border-bottom: 1px solid ${theme.borderColor};
+        border-bottom: 1px solid rgba(${theme.textColorRGB}, 0.3);
         color: inherit;
         text-decoration: none;
       }

@@ -29,7 +29,7 @@ export class Footer extends GemElement {
         }
         gem-link {
           color: ${theme.textColor};
-          border-bottom: 1px solid ${theme.borderColor};
+          border-bottom: 1px solid rgba(${theme.textColorRGB}, 0.3);
           text-decoration: none;
         }
         gem-link:hover {

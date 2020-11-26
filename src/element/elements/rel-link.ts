@@ -27,7 +27,7 @@ export class RelLink extends GemElement {
           border-top: 1px solid ${theme.borderColor};
         }
         gem-link {
-          border-bottom: 1px solid ${theme.borderColor};
+          border-bottom: 1px solid rgba(${theme.textColorRGB}, 0.3);
           color: inherit;
           text-decoration: none;
         }

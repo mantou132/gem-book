@@ -80,7 +80,7 @@ export class EditLink extends GemElement<State> {
           line-height: 1.5;
         }
         gem-link {
-          border-bottom: 1px solid ${theme.borderColor};
+          border-bottom: 1px solid rgba(${theme.textColorRGB}, 0.3);
           color: inherit;
           text-decoration: none;
           display: inline-flex;

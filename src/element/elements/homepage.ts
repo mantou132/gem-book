@@ -33,13 +33,14 @@ export class Homepage extends GemElement {
           margin: 0;
           padding: 0;
           font-size: 3rem;
-          font-weight: 600;
+          font-weight: bold;
         }
         .title.placeholder::before {
           width: 4em;
         }
         .desc {
           opacity: 0.6;
+          font-weight: lighter;
         }
         .desc.placeholder::before {
           width: 20em;
@@ -200,7 +201,7 @@ export class Homepage extends GemElement {
       <style>
         :host {
           overflow: hidden;
-          margin-bottom: -5rem;
+          margin-bottom: -7rem;
         }
         .body {
           margin: auto;
