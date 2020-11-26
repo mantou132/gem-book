@@ -40,7 +40,6 @@ export class Homepage extends GemElement {
         }
         .desc {
           opacity: 0.6;
-          font-weight: lighter;
         }
         .desc.placeholder::before {
           width: 20em;

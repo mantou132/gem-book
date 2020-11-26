@@ -259,7 +259,6 @@ export class Book extends GemElement<State> {
     const homePage = this.getHomePage(routes);
 
     const currentSidebar = this.getCurrentSidebar(sidebarResult);
-    console.log(currentSidebar);
     const refLinks = flatNav(currentSidebar).filter(
       (e) => e.sidebarIgnore !== true && (!homeMode || e.link !== homePage),
     );

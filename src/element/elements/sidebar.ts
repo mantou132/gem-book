@@ -90,6 +90,7 @@ export class SideBar extends GemElement {
           color: inherit;
           text-decoration: none;
           line-height: 1.2;
+          padding: 0.15em 0;
         }
         gem-active-link.active {
           color: inherit;
