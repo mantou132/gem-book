@@ -63,8 +63,7 @@ export class Main extends GemElement<State> {
       return raw`
         <${tag} class="markdown-header" id="${id}">
           <a class="header-anchor" href="#${id}">${anchor}</a>
-          ${text}
-        </${tag}>
+          ${text}</${tag}>
       `;
     };
 
