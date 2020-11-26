@@ -22,17 +22,9 @@ const parser = new DOMParser();
 
 marked.setOptions({
   highlight: function (code, lang) {
-    if (Prism.languages[lang]) {
-      let highlightCode = '';
-      if (lang === 'md' || lang === 'markdown') {
-        const { frontmatter, body } = fm(code);
-        highlightCode =
-          (frontmatter ? `---\n${Prism.highlight(frontmatter, Prism.languages['yaml'], 'yaml')}\n---\n\n` : '') +
-          Prism.highlight(body, Prism.languages['md'], 'md');
-      } else {
-        highlightCode = Prism.highlight(code, Prism.languages[lang], lang);
-      }
-      return `<i class="code-lang-name">${lang}</i>${highlightCode}`;
+    if (lang && Prism.languages[lang]) {
+      const content = Prism.highlight(code, Prism.languages[lang], lang);
+      return `<i class="code-lang-name">${lang}</i>${content}`;
     } else {
       return code;
     }

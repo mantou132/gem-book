@@ -48,19 +48,14 @@ customElements.whenDefined('gem-book').then(() => {
 
       highlight(str: string) {
         const [, extension] = this.src.split('.');
-        const lang = Prism.languages[this.lang] ? this.lang : Prism.languages[extension] ? extension : 'unknown';
+        const lang = Prism.languages[this.lang] ? this.lang : Prism.languages[extension] ? extension : '';
         let content = str;
         if (lang) {
-          if (lang === 'md') {
-            const [, , sToken, frontmatter, eToken, body] =
-              str.match(/^(([\r\n\s]*---\s*(?:\r\n|\n))(.*?)((?:\r\n|\n)---\s*(?:\r\n|\n)?))?(.*)$/s) || [];
-            content =
-              (frontmatter
-                ? `${sToken}${Prism.highlight(frontmatter, Prism.languages['yaml'], 'yaml')}${eToken}`
-                : '') + Prism.highlight(body, Prism.languages['md'], 'md');
-          } else {
-            content = Prism.highlight(str, Prism.languages[lang], lang);
-          }
+          content = Prism.highlight(str, Prism.languages[lang], lang);
+        } else {
+          const div = document.createElement('div');
+          div.innerText = str;
+          content = div.innerHTML;
         }
         const lines = content.split(/\n|\r\n/);
         const parts = this.range
