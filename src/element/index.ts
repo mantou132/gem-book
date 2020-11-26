@@ -121,7 +121,7 @@ export class Book extends GemElement<State> {
         userFullPath: item.link && getLinkPath(item.link, config?.displayRank),
         originLink: item.link,
         children: item.children?.map(process),
-      };
+      } as NavItemWithOriginLink;
     };
     return sidebar.map(process);
   }
@@ -132,7 +132,11 @@ export class Book extends GemElement<State> {
     const traverseSidebar = (items: NavItem[]) => {
       items.forEach((item) => {
         if (item.isNav) {
-          nav.push(item);
+          if (!item.link && item.children) {
+            nav.push({ ...item, link: item.children[0].link });
+          } else {
+            nav.push(item);
+          }
         } else if (item.children) {
           traverseSidebar(item.children);
         }
@@ -201,6 +205,36 @@ export class Book extends GemElement<State> {
     return link.redirect || link.pattern;
   }
 
+  // 如果当前路径在 nav 的目录中，则只返回 nav 目录内容
+  // 如果当前路径不在 nav 目录中，则返回除所有 nav 目录的内容
+  // 不考虑嵌套 nav 目录
+  private getCurrentSidebar(sidebar: NavItemWithOriginLink[]) {
+    const { path } = history.getParams();
+
+    let currentNavNode: NavItemWithOriginLink | undefined;
+    let resultNavNode: NavItemWithOriginLink | undefined;
+    const resultWithoutNav: NavItemWithOriginLink[] = [];
+
+    const traverseSidebar = (items: NavItemWithOriginLink[], result: NavItemWithOriginLink[]) => {
+      items.forEach((item) => {
+        if (!resultNavNode && currentNavNode && item.link === path) {
+          resultNavNode = currentNavNode;
+        }
+        if (item.isNav && !item.link && item.children) {
+          currentNavNode = item;
+        } else {
+          result.push(item);
+        }
+        if (item.children) {
+          item.children = traverseSidebar(item.children, []);
+        }
+      });
+      return items;
+    };
+    traverseSidebar(sidebar, resultWithoutNav);
+    return resultNavNode ? resultNavNode.children : resultWithoutNav;
+  }
+
   changeTheme = changeTheme;
 
   render() {
@@ -224,7 +258,12 @@ export class Book extends GemElement<State> {
     const links = flatNav(sidebarResult);
     const routes = this.getRouter(links, title, lang);
     const homePage = this.getHomePage(routes);
-    const refLinks = links.filter((e) => e.sidebarIgnore !== true && (!homeMode || e.link !== homePage));
+
+    const currentSidebar = this.getCurrentSidebar(sidebarResult);
+    const refLinks = flatNav(currentSidebar).filter(
+      (e) => e.sidebarIgnore !== true && (!homeMode || e.link !== homePage),
+    );
+
     const renderHomePage = homeMode && homePage === history.getParams().path;
 
     return html`
@@ -238,7 +277,6 @@ export class Book extends GemElement<State> {
           display: grid;
           grid-template-areas: 'left aside content right';
           grid-template-columns: auto ${theme.sidebarWidth} minmax(auto, ${theme.mainWidth}) auto;
-          /* how to remove next line? */
           grid-template-rows: repeat(4, auto) 1fr;
           grid-column-gap: 3rem;
           text-rendering: optimizeLegibility;
@@ -372,7 +410,7 @@ export class Book extends GemElement<State> {
       <gem-book-sidebar
         @languagechange=${languagechangeHandle}
         .homePage=${homeMode ? homePage : ''}
-        .sidebar=${sidebarResult}
+        .sidebar=${currentSidebar}
       ></gem-book-sidebar>
       <gem-book-rel-link .links=${refLinks}></gem-book-rel-link>
       <gem-book-footer .footer=${footer}></gem-book-footer>

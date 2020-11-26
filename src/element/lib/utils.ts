@@ -1,8 +1,17 @@
 import { NavItem } from '../../common/config';
 import { isIndexFile, parseFilename } from '../../common/utils';
 
-export type NavItemWithOriginLink = NavItem & { originLink?: string; userFullPath?: string };
-export type NavItemWithLink = NavItem & { originLink: string; userFullPath: string; link: string };
+export type NavItemWithOriginLink = NavItem & {
+  children: NavItemWithOriginLink[];
+  originLink?: string;
+  userFullPath?: string;
+};
+export type NavItemWithLink = NavItem & {
+  children: NavItemWithLink[];
+  originLink: string;
+  userFullPath: string;
+  link: string;
+};
 
 export function capitalize(s: string) {
   return s.replace(/^\w/, (s: string) => s.toUpperCase());
