@@ -61,10 +61,11 @@ function readDir(dir: string, link = '/') {
       return -1;
     })
     .forEach((filename) => {
-      const item: NavItem = { title: '' };
+      const item: NavItem = { title: '', link: '' };
       const fullPath = path.join(dir, filename);
       if (fs.statSync(fullPath).isFile()) {
         if (isMdfile(fullPath)) {
+          item.type = 'file';
           item.link = `${link}${filename}`;
           const { title, headings: children, isNav, navTitle, sidebarIgnore } = getMetadata(
             fullPath,
@@ -74,6 +75,8 @@ function readDir(dir: string, link = '/') {
           result.push(item);
         }
       } else {
+        item.type = 'dir';
+        item.link = `${link}${filename}/`;
         item.children = readDir(fullPath, path.posix.join(link, filename) + '/');
         const { title, isNav, navTitle, sidebarIgnore } = getMetadata(fullPath);
         Object.assign(item, { title, isNav, navTitle, sidebarIgnore });

@@ -29,9 +29,18 @@ export class SideBar extends GemElement {
     ele.classList.toggle('close');
   };
 
-  renderItem = ({ link, title, children, sidebarIgnore }: NavItem, isTop = false): TemplateResult | null => {
+  renderItem = ({ type, link, title, children, sidebarIgnore }: NavItem, isTop = false): TemplateResult | null => {
     if (sidebarIgnore || (this.homePage && this.homePage === link)) return null;
-    if (link) {
+    if (type === 'dir') {
+      if (!children?.length) return null;
+      return html`
+        <div class="item" @click=${this.toggleLinks}>
+          <gem-use class="arrow" selector="#arrow" .root=${container}></gem-use>
+          ${capitalize(title)}
+        </div>
+        <div class="links item">${children.map((item) => this.renderItem(item))}</div>
+      `;
+    } else {
       return html`
         <gem-active-link
           class="item ${isTop ? 'single' : ''}"
@@ -43,16 +52,6 @@ export class SideBar extends GemElement {
         ${children ? html`<div class="links item hash">${children.map((item) => this.renderItem(item))}</div>` : null}
       `;
     }
-    if (children) {
-      return html`
-        <div class="item" @click=${this.toggleLinks}>
-          <gem-use class="arrow" selector="#arrow" .root=${container}></gem-use>
-          ${capitalize(title)}
-        </div>
-        <div class="links item">${children.map((item) => this.renderItem(item))}</div>
-      `;
-    }
-    return null;
   };
 
   render() {

@@ -1,7 +1,8 @@
 export interface NavItem {
   title: string;
-  link?: string;
-  children?: NavItem[]; // dropdown menu
+  link: string;
+  type?: 'dir' | 'file' | 'heading';
+  children?: NavItem[];
   isNav?: boolean;
   navTitle?: string;
   sidebarIgnore?: boolean;

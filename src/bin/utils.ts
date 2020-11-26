@@ -53,10 +53,14 @@ export function getMetadata(fullPath: string, displayRank?: boolean): FileMetada
       ...(attributes as FileMetadata),
       title: attributes.title || h1?.textContent || getTitle(),
       headings: h2s.length
-        ? [...h2s].map((heading) => ({
-            title: heading.textContent as string,
-            link: `#${heading.id}`,
-          }))
+        ? [...h2s].map(
+            (heading) =>
+              ({
+                title: heading.textContent as string,
+                link: `#${heading.id}`,
+                type: 'heading',
+              } as NavItem),
+          )
         : undefined,
     };
   };

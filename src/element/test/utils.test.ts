@@ -9,7 +9,7 @@ describe('lib/utils', () => {
   it('flatNav', () => {
     expect(
       flatNav([
-        { title: 'title', children: [{ title: 'home', link: '/' }] },
+        { title: 'title', link: '/', type: 'dir', children: [{ title: 'home', link: '/' }] },
         { title: 'about', link: '/about' },
       ]),
     ).to.deep.equal([

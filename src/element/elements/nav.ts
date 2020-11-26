@@ -72,8 +72,8 @@ export class Nav extends GemElement {
 
   render() {
     const githubLink = this.github ? this.renderItem({ title: 'github', link: this.github }) : null;
-    const internals = this.nav?.filter((e) => isSameOrigin(e.link || '')) || [];
-    const externals = this.nav?.filter((e) => !isSameOrigin(e.link || '')) || [];
+    const internals = this.nav?.filter((e) => isSameOrigin(e.link)) || [];
+    const externals = this.nav?.filter((e) => !isSameOrigin(e.link)) || [];
 
     return html`
       <style>

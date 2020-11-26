@@ -37,7 +37,7 @@ export class EditLink extends GemElement<State> {
   @attribute sourceBranch: string;
   @attribute lang: string;
 
-  @property links: NavItemWithLink[];
+  @property links: NavItemWithLink[] | undefined;
 
   state = {
     lastUpdated: '',
@@ -62,7 +62,7 @@ export class EditLink extends GemElement<State> {
 
   getMdFullPath = () => {
     const { path } = history.getParams();
-    const link = this.links.find(({ originLink }) => getUserLink(originLink) === path);
+    const link = this.links?.find(({ originLink }) => getUserLink(originLink) === path);
     if (!link) throw new Error('not found link');
     const sroucePath = this.srouceDir ? `/${this.srouceDir}` : '';
     return `${sroucePath}${getMdPath(link.originLink, this.lang)}`;

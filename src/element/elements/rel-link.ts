@@ -9,7 +9,7 @@ import { capitalize } from '../lib/utils';
 @customElement('gem-book-rel-link')
 @connectStore(history.store)
 export class RelLink extends GemElement {
-  @property links: (NavItem & { link: string })[];
+  @property links: NavItem[];
 
   render() {
     const { path } = history.getParams();

@@ -27,15 +27,7 @@ import './elements/homepage';
 import './elements/footer';
 import './elements/edit-link';
 import './elements/rel-link';
-import {
-  flatNav,
-  capitalize,
-  getLinkPath,
-  NavItemWithOriginLink,
-  NavItemWithLink,
-  getMdPath,
-  getUserLink,
-} from './lib/utils';
+import { flatNav, capitalize, getLinkPath, NavItemWithLink, getMdPath, getUserLink } from './lib/utils';
 import { selfI18n } from './helper/i18n';
 import { theme, changeTheme, Theme } from './helper/theme';
 
@@ -112,7 +104,7 @@ export class Book extends GemElement<State> {
 
   private processSidebar(sidebar: NavItem[]) {
     const config = this.getConfig();
-    const process = (item: NavItem): NavItemWithOriginLink => {
+    const process = (item: NavItem): NavItemWithLink => {
       return {
         ...item,
         // /guide/
@@ -121,7 +113,7 @@ export class Book extends GemElement<State> {
         userFullPath: item.link && getLinkPath(item.link, config?.displayRank),
         originLink: item.link,
         children: item.children?.map(process),
-      } as NavItemWithOriginLink;
+      } as NavItemWithLink;
     };
     return sidebar.map(process);
   }
@@ -132,11 +124,7 @@ export class Book extends GemElement<State> {
     const traverseSidebar = (items: NavItem[]) => {
       items.forEach((item) => {
         if (item.isNav) {
-          if (!item.link && item.children) {
-            nav.push({ ...item, link: item.children[0].link });
-          } else {
-            nav.push(item);
-          }
+          nav.push(item);
         } else if (item.children) {
           traverseSidebar(item.children);
         }
@@ -144,6 +132,12 @@ export class Book extends GemElement<State> {
     };
     traverseSidebar(sidebar);
     return nav.concat(config?.nav || []);
+  }
+
+  private getNavRoutes(nav: NavItem[]): RouteItem[] {
+    return nav
+      .filter(({ type, link, children }) => type === 'dir' && link !== children?.[0].link)
+      .map(({ link, children }) => ({ pattern: link, redirect: children?.[0].link }));
   }
 
   private getRouter(links: NavItemWithLink[], title: string, lang: string) {
@@ -208,19 +202,19 @@ export class Book extends GemElement<State> {
   // 如果当前路径在 nav 的目录中，则只返回 nav 目录内容
   // 如果当前路径不在 nav 目录中，则返回除所有 nav 目录的内容
   // 不考虑嵌套 nav 目录
-  private getCurrentSidebar(sidebar: NavItemWithOriginLink[]) {
+  private getCurrentSidebar(sidebar: NavItemWithLink[]) {
     const { path } = history.getParams();
 
-    let currentNavNode: NavItemWithOriginLink | undefined;
-    let resultNavNode: NavItemWithOriginLink | undefined;
-    const resultWithoutNav: NavItemWithOriginLink[] = [];
+    let currentNavNode: NavItemWithLink | undefined;
+    let resultNavNode: NavItemWithLink | undefined;
+    const resultWithoutNav: NavItemWithLink[] = [];
 
-    const traverseSidebar = (items: NavItemWithOriginLink[], result: NavItemWithOriginLink[]) => {
+    const traverseSidebar = (items: NavItemWithLink[], result: NavItemWithLink[]) => {
       items.forEach((item) => {
-        if (!resultNavNode && currentNavNode && item.link === path) {
+        if (!resultNavNode && currentNavNode && item.link === path && item.type === 'file') {
           resultNavNode = currentNavNode;
         }
-        if (item.isNav && !item.link && item.children) {
+        if (item.isNav && item.type === 'dir') {
           currentNavNode = item;
         } else {
           result.push(item);
@@ -232,7 +226,7 @@ export class Book extends GemElement<State> {
       return items;
     };
     traverseSidebar(sidebar, resultWithoutNav);
-    return resultNavNode ? resultNavNode.children : resultWithoutNav;
+    return resultNavNode ? resultNavNode.children || [] : resultWithoutNav;
   }
 
   changeTheme = changeTheme;
@@ -253,10 +247,10 @@ export class Book extends GemElement<State> {
     } = config;
     const { sidebar, lang, langlist, languagechangeHandle } = this.getI18nSidebar();
     const sidebarResult = this.processSidebar(sidebar);
+    const links = flatNav(sidebarResult);
     const nav = this.getNav(sidebarResult);
     const hasNavbar = icon || title || nav.length;
-    const links = flatNav(sidebarResult);
-    const routes = this.getRouter(links, title, lang);
+    const routes = [...this.getNavRoutes(nav), ...this.getRouter(links, title, lang)];
     const homePage = this.getHomePage(routes);
 
     const currentSidebar = this.getCurrentSidebar(sidebarResult);
@@ -269,7 +263,7 @@ export class Book extends GemElement<State> {
     return html`
       <gem-reflect>
         ${links
-          .filter((e) => !e.originLink.startsWith('#'))
+          .filter((e) => e.type === 'file')
           .map(({ originLink }) => html`<link rel="prefetch" href=${getMdPath(originLink, lang)}></link>`)}
       </gem-reflect>
       <style>
