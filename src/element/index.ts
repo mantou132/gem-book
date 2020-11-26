@@ -221,6 +221,7 @@ export class Book extends GemElement<State> {
         }
         if (item.children) {
           item.children = traverseSidebar(item.children, []);
+          currentNavNode = undefined;
         }
       });
       return items;
