@@ -199,9 +199,9 @@ export class Book extends GemElement<State> {
     return link.redirect || link.pattern;
   }
 
-  // 如果当前路径在 nav 的目录中，则只返回 nav 目录内容
-  // 如果当前路径不在 nav 目录中，则返回除所有 nav 目录的内容
-  // 不考虑嵌套 nav 目录
+  // 如果当前路径在 isNav 的目录中，则只返回 isNav 目录内容
+  // 如果当前路径不在 isNav 目录中，则返回除所有 isNav 目录的内容
+  // 不考虑嵌套 isNav 目录
   private getCurrentSidebar(sidebar: NavItemWithLink[]) {
     const { path } = history.getParams();
 
@@ -211,16 +211,20 @@ export class Book extends GemElement<State> {
 
     const traverseSidebar = (items: NavItemWithLink[], result: NavItemWithLink[]) => {
       items.forEach((item) => {
+        let tempNode: NavItemWithLink | undefined;
         if (!resultNavNode && currentNavNode && item.link === path && item.type === 'file') {
           resultNavNode = currentNavNode;
         }
         if (item.isNav && item.type === 'dir') {
           currentNavNode = item;
+          tempNode = item;
         } else {
           result.push(item);
         }
         if (item.children) {
           item.children = traverseSidebar(item.children, []);
+        }
+        if (tempNode) {
           currentNavNode = undefined;
         }
       });
@@ -255,6 +259,7 @@ export class Book extends GemElement<State> {
     const homePage = this.getHomePage(routes);
 
     const currentSidebar = this.getCurrentSidebar(sidebarResult);
+    console.log(currentSidebar);
     const refLinks = flatNav(currentSidebar).filter(
       (e) => e.sidebarIgnore !== true && (!homeMode || e.link !== homePage),
     );
