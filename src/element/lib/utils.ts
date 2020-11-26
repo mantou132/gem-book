@@ -30,7 +30,7 @@ export function isSameOrigin(link: string) {
 
 // 001-xxx.md => /xxx
 export function getLinkPath(originPath: string, displayRank?: boolean) {
-  const path = originPath.replace(/\.md$/i, '');
+  const path = encodeURI(originPath.replace(/\.md$/i, ''));
   return displayRank
     ? path
     : path
