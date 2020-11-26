@@ -351,6 +351,9 @@ export class Main extends GemElement<State> {
           color: #f8f8f2;
           background: #2e3440;
         }
+        pre ::selection {
+          background: #3c526d;
+        }
         code {
           font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
         }
