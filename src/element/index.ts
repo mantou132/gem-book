@@ -1,4 +1,14 @@
-import { html, GemElement, customElement, property, attribute, connectStore, history } from '@mantou/gem';
+import {
+  html,
+  GemElement,
+  customElement,
+  property,
+  attribute,
+  connectStore,
+  history,
+  emitter,
+  Emitter,
+} from '@mantou/gem';
 import * as Gem from '@mantou/gem';
 import Prism from 'prismjs';
 
@@ -52,6 +62,8 @@ export class Book extends GemElement<State> {
 
   @property config: BookConfig | undefined;
   @property theme: Partial<Theme> | undefined;
+
+  @emitter routechange: Emitter;
 
   state: State = {
     config: undefined, // `src` generate
@@ -341,7 +353,11 @@ export class Book extends GemElement<State> {
           `
         : null}
       ${renderHomePage ? html`<gem-book-homepage .displayRank=${displayRank}></gem-book-homepage>` : ''}
-      <gem-light-route .key=${lang} .routes=${routes}></gem-light-route>
+      <gem-light-route
+        .key=${lang}
+        .routes=${routes}
+        @change=${(e: CustomEvent) => this.routechange(e.detail, { bubbles: true, composed: true })}
+      ></gem-light-route>
       ${github && sourceBranch
         ? html`
             <gem-book-edit-link
