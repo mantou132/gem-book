@@ -14,7 +14,7 @@ gem-book::part(homepage-hero) {
 
 ## Slots
 
-The slot allows you to customize `<gem-book>` but the content, currently only supports `sidebar-before`.
+[Slot](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/slot) allows you to customize `<gem-book>` but the content, currently supported slots are `sidebar-before`, `main-before`, `nav-inside`.
 
 ```html
 <gem-book><div slot="sidebar-before">Hello</div></gem-book>

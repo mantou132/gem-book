@@ -63,6 +63,7 @@ export class Book extends GemElement<State> {
 
   @slot sidebarBefore: string;
   @slot mainBefore: string;
+  @slot navInside: string;
 
   state: State = {
     config: undefined, // `src` generate
@@ -395,7 +396,9 @@ export class Book extends GemElement<State> {
               .langlist=${langlist}
               .nav=${nav}
               @languagechange=${languagechangeHandle}
-            ></gem-book-nav>
+            >
+              <slot name=${this.navInside}></slot>
+            </gem-book-nav>
           `
         : null}
       ${renderHomePage
