@@ -87,14 +87,14 @@ function readDir(dir: string, link = '/') {
 }
 
 async function generateBookConfig(dir: string) {
-  const fullDir = path.join(process.cwd(), dir);
+  const fullDir = path.resolve(process.cwd(), dir);
 
   //icon path
-  bookConfig.icon = !iconPath
-    ? ''
-    : isURL(iconPath)
-    ? iconPath
-    : `/${inTheDir(dir, iconPath) ? path.relative(dir, iconPath) : path.basename(iconPath)}`;
+  if (iconPath) {
+    bookConfig.icon ??= isURL(iconPath)
+      ? iconPath
+      : `/${inTheDir(dir, iconPath) ? path.relative(dir, iconPath) : path.basename(iconPath)}`;
+  }
 
   // read github info
   bookConfig.github ??= await getGithubUrl();
@@ -222,3 +222,7 @@ program
   });
 
 program.parse(process.argv);
+
+if (!program.args.length) {
+  program.outputHelp(() => program.help());
+}
