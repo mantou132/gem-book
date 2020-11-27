@@ -333,7 +333,7 @@ export class Main extends GemElement<State> {
           white-space: pre;
         }
         @media ${mediaQuery.PHONE} {
-          :host > pre {
+          pre {
             margin: 1rem -1rem;
             border-radius: 0;
           }
@@ -349,6 +349,9 @@ export class Main extends GemElement<State> {
           border-radius: 0;
           font-size: 1em;
           background: transparent;
+        }
+        pre code::-webkit-scrollbar {
+          width: 0;
         }
         @media print {
           pre {
@@ -370,9 +373,9 @@ export class Main extends GemElement<State> {
         }
         pre .code-lang-name {
           position: absolute;
-          top: 5px;
-          right: 10px;
-          font-size: 12px;
+          top: 3px;
+          right: 7px;
+          font-size: 10px;
           color: #cacaca;
           user-select: none;
         }

@@ -324,6 +324,7 @@ export class Book extends GemElement<State> {
           grid-area: auto / content;
         }
         gem-light-route {
+          overflow: hidden;
           margin: 0 -3rem;
           padding: 0 3rem;
         }
