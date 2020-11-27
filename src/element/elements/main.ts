@@ -135,6 +135,7 @@ export class Main extends GemElement<State> {
   render() {
     const { fetching, content } = this.state;
     return html`
+      <slot></slot>
       ${content || 'Loading...'}
       <style>
         :not(:defined)::before {
@@ -178,7 +179,7 @@ export class Main extends GemElement<State> {
           background: rgba(${theme.primaryColorRGB}, 0.3);
           border-color: currentColor;
         }
-        :host > :first-child {
+        slot ~ * {
           margin-top: 0;
         }
         :host > h2:first-child {

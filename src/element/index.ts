@@ -62,6 +62,7 @@ export class Book extends GemElement<State> {
   @part homepageHero: string;
 
   @slot sidebarBefore: string;
+  @slot mainBefore: string;
 
   state: State = {
     config: undefined, // `src` generate
@@ -152,7 +153,9 @@ export class Book extends GemElement<State> {
     links.forEach(({ title: pageTitle, link, userFullPath, originLink }) => {
       const routeTitle = `${capitalize(pageTitle)}${pageTitle ? ' - ' : ''}${title}`;
       const routeContent = html`
-        <gem-book-main lang=${lang} link=${originLink} ?display-rank=${config?.displayRank}></gem-book-main>
+        <gem-book-main lang=${lang} link=${originLink} ?display-rank=${config?.displayRank}>
+          <slot name=${this.mainBefore}></slot>
+        </gem-book-main>
       `;
 
       routes.push({

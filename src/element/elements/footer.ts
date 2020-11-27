@@ -37,7 +37,7 @@ export class Footer extends GemElement {
         }
       </style>
       ${this.footer
-        ? mdRender.unsafeRender(this.footer)
+        ? mdRender.unsafeRender(this.footer, `p { margin : 0 }`)
         : selfI18n.get('footer', (t) => html`<gem-link href="https://gem-book.js.org">&lt;${t}&gt;</gem-link>`)}
     `;
   }
