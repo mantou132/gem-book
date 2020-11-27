@@ -54,6 +54,8 @@ export class Main extends GemElement<State> {
 
   mdRenderer = this.getMdRenderer();
 
+  cache = new Map<string, string>();
+
   getMdRenderer() {
     const renderer = new marked.Renderer();
     // https://github.com/markedjs/marked/blob/ed18cd58218ed4ab98d3457bec2872ba1f71230e/lib/marked.esm.js#L986
@@ -88,9 +90,14 @@ export class Main extends GemElement<State> {
   fetchData = async () => {
     this.setState({
       fetching: true,
+      content: null,
     });
     const mdPath = getMdPath(this.link, this.lang);
-    const md = await (await fetch(mdPath)).text();
+    let md = this.cache.get(mdPath);
+    if (!md) {
+      md = await (await fetch(mdPath)).text();
+      this.cache.set(mdPath, md);
+    }
     const {
       body: mdBody,
       attributes: { hero, features },
@@ -136,7 +143,7 @@ export class Main extends GemElement<State> {
     const { fetching, content } = this.state;
     return html`
       <slot></slot>
-      ${content || 'Loading...'}
+      ${content || html`<div style="height: 20em">Loading...</div>`}
       <style>
         :not(:defined)::before {
           display: block;
