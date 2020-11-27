@@ -86,7 +86,7 @@ export class Homepage extends GemElement {
           }
         }
       </style>
-      <div class="hero">
+      <div class="hero" part="hero">
         <div class="body">
           <h1 class="title ${placeholder(title)}">${title}</h1>
           <p class="desc ${placeholder(desc)}">${desc}</p>

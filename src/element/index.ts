@@ -8,6 +8,8 @@ import {
   history,
   emitter,
   Emitter,
+  part,
+  slot,
 } from '@mantou/gem';
 import * as Gem from '@mantou/gem';
 import Prism from 'prismjs';
@@ -56,6 +58,10 @@ export class Book extends GemElement<State> {
   @property theme: Partial<Theme> | undefined;
 
   @emitter routechange: Emitter;
+
+  @part homepageHero: string;
+
+  @slot sidebarBefore: string;
 
   state: State = {
     config: undefined, // `src` generate
@@ -389,7 +395,12 @@ export class Book extends GemElement<State> {
             ></gem-book-nav>
           `
         : null}
-      ${renderHomePage ? html`<gem-book-homepage .displayRank=${displayRank}></gem-book-homepage>` : ''}
+      ${renderHomePage
+        ? html`<gem-book-homepage
+            .displayRank=${displayRank}
+            exportparts="hero: ${this.homepageHero}"
+          ></gem-book-homepage>`
+        : ''}
       <gem-light-route
         .key=${lang}
         .routes=${routes}
@@ -410,7 +421,9 @@ export class Book extends GemElement<State> {
         @languagechange=${languagechangeHandle}
         .homePage=${homeMode ? homePage : ''}
         .sidebar=${currentSidebar}
-      ></gem-book-sidebar>
+      >
+        <slot name=${this.sidebarBefore}></slot>
+      </gem-book-sidebar>
       <gem-book-rel-link .links=${refLinks}></gem-book-rel-link>
       <gem-book-footer .footer=${footer}></gem-book-footer>
     `;

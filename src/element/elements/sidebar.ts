@@ -56,6 +56,7 @@ export class SideBar extends GemElement {
 
   render() {
     return html`
+      <slot></slot>
       <style>
         :host {
           display: block;

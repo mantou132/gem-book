@@ -1,6 +1,48 @@
-# Plugins
+# Extension
 
-Plugins are custom elements, and you can extend Markdown with any custom elements. If you read the data of `<gem-book>`, you need to create a `GemBookPluginElement`, which extends from [`GemElement`](https://gem-docs.netlify.app/API/) through the following Way to get `GemBookPluginElement` and read `<gem-book>` configuration.
+`<gem-book>` allows multiple ways to expand.
+
+## Parts
+
+Parts allows you to customize `<gem-book>` but the internal style, currently only supported Part is `homepage-hero`.
+
+```css
+gem-book::part(homepage-hero) {
+  /* ... */
+}
+```
+
+## Slots
+
+The slot allows you to customize `<gem-book>` but the content, currently only supports `sidebar-before`.
+
+```html
+<gem-book><div slot="sidebar-before">Hello</div></gem-book>
+```
+
+## Plugins
+
+Plugins are custom elements that can be used in Markdown to customize the rendering content. Here is how to use the built-in plugin `<gbp-raw>`.
+
+import plugin:
+
+```bash
+gem-book docs --plugins raw
+```
+
+or
+
+```html
+<script type="module" src="https://unpkg.com/gem-book/plugins/raw.js"></script>
+```
+
+Then use it in Markdown:
+
+```md
+<gbp-raw src="/src/plugins/raw.ts"></gbp-raw>
+```
+
+Any element can be used as a plugin, but if you want to read the data of `<gem-book>` like `<gbp-raw>`, you need to create a `GemBookPluginElement`, which extends from [`GemElement`](https://gem-docs.netlify.app/API/), obtain `GemBookPluginElement` and read `<gem-book>` configuration in the following way.
 
 ```js
 customElements.whenDefined('gem-book').then(({ GemBookPluginElement }) => {
@@ -9,25 +51,10 @@ customElements.whenDefined('gem-book').then(({ GemBookPluginElement }) => {
     class extends GemBookPluginElement {
       constructor() {
         super();
+        // GemBook.config
         console.log(this.config);
       }
     },
   );
 });
-```
-
-The following is the built-in plugin `<gbp-raw>`, its function is to highlight the files of the current project:
-
-<gbp-raw src="/src/plugins/raw.ts"></gbp-raw>
-
-Import the plugin:
-
-```html
-<script type="module" src="https://unpkg.com/gem-book/plugins/raw.js"></script>
-```
-
-Use in Markdown:
-
-```md
-<gbp-raw src="/src/plugins/raw.ts"></gbp-raw>
 ```

@@ -1,4 +1,4 @@
-# 部署
+# 部署成网站
 
 只需要把前端资源（`index.html`，`gem-book.json`...）文档目录部署到服务器即可，由于 `<gem-book>` 使用了 [History API](https://developer.mozilla.org/en-US/docs/Web/API/History)，所以默认不支持 Github Pages。
 

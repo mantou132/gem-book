@@ -1,6 +1,48 @@
-# 插件
+# 扩展
 
-插件就是自定义元素，你可以使用任何自定义元素扩展 Markdown。如果你读取 `<gem-book>` 的数据，就需要创建 `GemBookPluginElement`, 他扩展自 [`GemElement`](https://gem-docs.netlify.app/API/)，通过下面这种方式获取 `GemBookPluginElement` 和读取 `<gem-book>` 配置。
+`<gem-book>` 允许多种方式进行扩展。
+
+## Parts
+
+Parts 能让你自定义 `<gem-book>` 但内部样式，目前支持的 Part 只有 `homepage-hero`。
+
+```css
+gem-book::part(homepage-hero) {
+  /* ... */
+}
+```
+
+## 插槽
+
+插槽能让你自定义 `<gem-book>` 但内容，目前支持的插槽只有 `sidebar-before`。
+
+```html
+<gem-book><div slot="sidebar-before">Hello</div></gem-book>
+```
+
+## 插件
+
+插件就是自定义元素，在 Markdown 中使用就能自定义渲染内容，下面是内置插件 `<gbp-raw>` 的使用方式。
+
+引入插件：
+
+```bash
+gem-book docs --plugins raw
+```
+
+or
+
+```html
+<script type="module" src="https://unpkg.com/gem-book/plugins/raw.js"></script>
+```
+
+然后在 Markdown 中使用：
+
+```md
+<gbp-raw src="/src/plugins/raw.ts"></gbp-raw>
+```
+
+任意元素都可以作为插件，但如果你想像 `<gbp-raw>` 一样读取 `<gem-book>` 的数据，就需要创建 `GemBookPluginElement`, 他扩展自 [`GemElement`](https://gem-docs.netlify.app/API/)，通过下面这种方式获取 `GemBookPluginElement` 和读取 `<gem-book>` 配置。
 
 ```js
 customElements.whenDefined('gem-book').then(({ GemBookPluginElement }) => {
@@ -9,25 +51,10 @@ customElements.whenDefined('gem-book').then(({ GemBookPluginElement }) => {
     class extends GemBookPluginElement {
       constructor() {
         super();
+        // GemBook.config
         console.log(this.config);
       }
     },
   );
 });
-```
-
-下面是内置的插件 `<gbp-raw>`，他的作用是高亮显示当前项目的文件：
-
-<gbp-raw src="/src/plugins/raw.ts"></gbp-raw>
-
-导入插件：
-
-```html
-<script type="module" src="https://unpkg.com/gem-book/plugins/raw.js"></script>
-```
-
-在 Markdown 中使用：
-
-```md
-<gbp-raw src="/src/plugins/raw.ts"></gbp-raw>
 ```
