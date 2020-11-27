@@ -90,7 +90,9 @@ async function generateBookConfig(dir: string) {
   const fullDir = path.join(process.cwd(), dir);
 
   //icon path
-  bookConfig.icon = isURL(iconPath)
+  bookConfig.icon = !iconPath
+    ? ''
+    : isURL(iconPath)
     ? iconPath
     : `/${inTheDir(dir, iconPath) ? path.relative(dir, iconPath) : path.basename(iconPath)}`;
 
