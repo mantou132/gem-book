@@ -6,9 +6,9 @@ navTitle: 指南
 # 简介
 
 `<gem-book>` 是一个自定义元素，只需要在网页中插入该元素并指定配置文件即可。自带命令行 `gem-book`，
-该命令行允许构建完成的前端资源或者仅生成配置文件供 `<gem-book>` 使用。
+该命令行允许构建完整的前端资源或者仅生成配置文件供 `<gem-book>` 使用。
 
-_`<gem-book>` 是为 [Gem](https://github.com/mantou132/gem) 创建的文档生成工具，其本身也是使用 Gem 编写，和 Gem 是共生关系。_
+> `<gem-book>` 是为 [Gem](https://github.com/mantou132/gem) 创建的文档生成工具，其本身也是使用 Gem 编写，和 Gem 是共生关系。
 
 ### 安装
 
@@ -34,13 +34,13 @@ gem-book docs
 gem-book docs -t MyApp
 
 # 在 docs 目录添加 logo.png，指定 logo
-gem-book docs -t MyApp -i /logo.png
+gem-book docs -t MyApp -i logo.png
 
 # 将 readme.md/index.md 渲染成项目首页
-gem-book docs -t MyApp -i /logo.png --home-mode
+gem-book docs -t MyApp -i logo.png --home-mode
 
 # 构建前端资源
-gem-book docs -t MyApp -i /logo.png --home-mode --build
+gem-book docs -t MyApp -i logo.png --home-mode --build
 
 ```
 
@@ -50,7 +50,7 @@ gem-book docs -t MyApp -i /logo.png --home-mode --build
 
 ```bash
 # 仅生成 <gem-book> 需要 json 配置文件
-gem-book docs -t MyApp -i /logo.png --home-mode --build --json
+gem-book docs -t MyApp -i logo.png --home-mode --build --json
 ```
 
 然后在你的项目中使用 `<gem-book>`：
@@ -77,11 +77,11 @@ render(html`<gem-book .config=${config}></gem-book>`, document.body);
 - 将文档构建成前端项目
 - 提供解析目录成 `<gem-book>` 配置文件的命令行
 - 提供 `<gem-book>` 供前端项目使用
-- 使用导出的 API 进行自定义渲染
+- 提供 API 进行自定义渲染
 
 ### 不是目标
 
-- 提供服务器
+- 提供网站服务器
 
 ### 浏览器兼容性
 

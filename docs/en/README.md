@@ -1,13 +1,13 @@
 ---
 hero:
   title: <gem-book>
-  desc: Custom elements for rendering markdown documents.
+  desc: Create your document website easily and quickly
   actions:
     - text: Getting Started
       link: ./guide/
 features:
   - title: Out of the box
-    desc: Just allow the command line and then you can load custom elements in your website, so that all attention can be paid to document writing
+    desc: Just run the command line to pack all front-end resources, so that all attention can be paid to document writing
   - title: Performance
     desc: No redundant dependencies, the entire application will run smoothly with streamlined code
   - title: Expandable

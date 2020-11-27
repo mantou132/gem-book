@@ -250,23 +250,27 @@ export class Main extends GemElement<State> {
           max-width: 100%;
         }
         blockquote {
-          background: #f1f1f1;
-          border-left: 8px solid #ccc;
-          margin: 20px 0;
-          padding: 14px 16px;
-          color: #6a737d;
+          background: rgba(${theme.textColorRGB}, 0.05);
+          border-left: 8px solid rgba(${theme.textColorRGB}, 0.2);
+          margin: 1.2em 0;
+          padding: 0.8em 1em;
         }
         blockquote p {
-          margin: 15px 0 0;
+          margin: 0.5em 0 0;
         }
         blockquote > :first-child {
           margin-top: 0;
+          font-weight: bold;
+        }
+        blockquote > :nth-child(n + 2),
+        blockquote > :last-child {
+          font-weight: normal;
         }
         hr {
           height: 1px;
           padding: 0;
           margin: 3rem 0;
-          background-color: #e1e4e8;
+          background-color: ${theme.borderColor};
           border: 0;
         }
         .header-anchor {

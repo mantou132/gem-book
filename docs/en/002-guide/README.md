@@ -5,9 +5,9 @@ navTitle: Guide
 
 # Introduction
 
-`<gem-book>` is a custom element, you only need to insert the element in the web page and specify the configuration file. Comes with command line `gem-book`, the command line allows to build the completed front-end resources or only generate configuration files for use by `<gem-book>`.
+`<gem-book>` is a custom element, you only need to insert the element in the web page and specify the configuration file. Comes with command line `gem-book`, the command line allows to build complete front-end resources or only generate configuration files for use by `<gem-book>`.
 
-_`<gem-book>` is a document generation tool created for [Gem](https://github.com/mantou132/gem), and it also uses Gem, and Gem is a symbiotic relationship._
+> `<gem-book>` is a document generation tool created for [Gem](https://github.com/mantou132/gem), and it also uses Gem, and Gem is a symbiotic relationship.
 
 ### Installation
 
@@ -35,13 +35,13 @@ gem-book docs
 gem-book docs -t MyApp
 
 # Add logo.png in the docs directory and specify the logo
-gem-book docs -t MyApp -i /logo.png
+gem-book docs -t MyApp -i logo.png
 
 # Render readme.md/index.md as the project homepage
-gem-book docs -t MyApp -i /logo.png --home-mode
+gem-book docs -t MyApp -i logo.png --home-mode
 
 # Build front-end resources
-gem-book docs -t MyApp -i /logo.png --home-mode --build
+gem-book docs -t MyApp -i logo.png --home-mode --build
 
 ```
 
@@ -49,7 +49,7 @@ gem-book docs -t MyApp -i /logo.png --home-mode --build
 
 ```bash
 # Only generate <gem-book> requires json configuration file
-gem-book docs -t MyApp -i /logo.png --home-mode --build --json
+gem-book docs -t MyApp -i logo.png --home-mode --build --json
 ```
 
 Then use `<gem-book>` in your project:
@@ -76,11 +76,11 @@ The command line tool directly maps the directory structure to the sidebar struc
 - Build documentation into front-end projects
 - Provide a command line to parse the directory into a `<gem-book>` configuration file
 - Provide `<gem-book>` for front-end projects
-- Use the exported API for custom rendering
+- Provide API for custom rendering
 
 ### No-Goal
 
-- Provide server
+- Provide website server
 
 ### Browser compatibility
 
