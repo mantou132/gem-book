@@ -22,7 +22,8 @@ export async function getGithubUrl() {
   const repoDir = process.cwd();
   try {
     const repoPkg = __non_webpack_require__(path.resolve(repoDir, './package.json'));
-    const git = repoPkg?.repository?.url || (await gitRemoteOriginUrl(repoDir));
+    const repo = repoPkg?.repository;
+    const git = typeof repo === 'string' ? repo : repo?.url || (await gitRemoteOriginUrl(repoDir));
     const parsed = parseGithub(git);
     if (parsed?.repository) {
       return `https://github.com/${parsed.repository}`;
