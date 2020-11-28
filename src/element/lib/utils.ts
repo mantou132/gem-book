@@ -1,3 +1,4 @@
+import { history } from '@mantou/gem';
 import { NavItem } from '../../common/config';
 import { isIndexFile, parseFilename } from '../../common/utils';
 
@@ -24,6 +25,12 @@ export function flatNav(nav: NavItem[]): NavItemWithLink[] {
 export function getMdPath(originPath: string, lang?: string) {
   const langPath = lang ? `/${lang}` : '';
   return `${langPath}${originPath}`;
+}
+
+export function getAlternateUrl(lang: string) {
+  const { origin } = location;
+  const { path, query, hash } = history.getParams();
+  return `${origin}/${lang}${path}${query}${hash}`;
 }
 
 export function isSameOrigin(link: string) {

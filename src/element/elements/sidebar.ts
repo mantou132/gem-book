@@ -30,9 +30,13 @@ export class SideBar extends GemElement {
   };
 
   renderItem = ({ type, link, title, children, sidebarIgnore }: NavItem, isTop = false): TemplateResult | null => {
-    if (sidebarIgnore || (this.homePage && this.homePage === link)) return null;
+    if (sidebarIgnore || (this.homePage && this.homePage === link)) {
+      return html`<!-- No need to render homepage item -->`;
+    }
     if (type === 'dir') {
-      if (!children?.length) return null;
+      if (!children?.length) {
+        return html`<!-- No need for an empty directory -->`;
+      }
       return html`
         <div class="item" @click=${this.toggleLinks}>
           <gem-use class="arrow" selector="#arrow" .root=${container}></gem-use>
@@ -47,7 +51,7 @@ export class SideBar extends GemElement {
           pattern=${children ? new URL(link, location.origin).pathname : link}
           href=${link}
         >
-          ${capitalize(title)}
+          ${title ? capitalize(title) : 'No title'}
         </gem-active-link>
         ${children ? html`<div class="links item hash">${children.map((item) => this.renderItem(item))}</div>` : null}
       `;

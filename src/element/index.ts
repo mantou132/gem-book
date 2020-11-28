@@ -29,7 +29,15 @@ import './elements/homepage';
 import './elements/footer';
 import './elements/edit-link';
 import './elements/rel-link';
-import { flatNav, capitalize, getLinkPath, NavItemWithLink, getMdPath, getUserLink } from './lib/utils';
+import {
+  flatNav,
+  capitalize,
+  getLinkPath,
+  NavItemWithLink,
+  getMdPath,
+  getUserLink,
+  getAlternateUrl,
+} from './lib/utils';
 import { selfI18n } from './helper/i18n';
 import { theme, changeTheme, Theme } from './helper/theme';
 
@@ -94,12 +102,18 @@ export class Book extends GemElement<State> {
         const sidebarConfig = config.sidebar;
         langlist = Object.keys(config.sidebar).map((code) => ({ code, name: sidebarConfig[code].name }));
         const fallbackLanguage = langlist[0].code;
-        const i18n = new I18n<any>({ fallbackLanguage, resources: sidebarConfig, cache: true });
+        // detect language
+        const i18n = new I18n<any>({ fallbackLanguage, resources: sidebarConfig, cache: true, urlParamsType: 'path' });
         lang = i18n.currentLanguage;
+        history.basePath = `/${lang}`;
         sidebar = sidebarConfig[lang].data;
         languagechangeHandle = async (evt: CustomEvent<string>) => {
+          const { path, query, hash } = history.getParams();
+          // will modify `history.getParams()`
+          history.basePath = `/${evt.detail}`;
           await i18n.setLanguage(evt.detail);
-          this.update();
+          // Use custom anchors id to ensure that the hash is correct after i18n switching
+          history.replace({ path, query, hash });
         };
       }
     }
@@ -280,6 +294,8 @@ export class Book extends GemElement<State> {
         ${links
           .filter((e) => e.type === 'file')
           .map(({ originLink }) => html`<link rel="prefetch" href=${getMdPath(originLink, lang)}></link>`)}
+        ${// 404 ?
+        langlist.map(({ code }) => html`<link rel="alternate" hreflang=${code} href=${getAlternateUrl(code)} />`)}
       </gem-reflect>
       <style>
         :host {

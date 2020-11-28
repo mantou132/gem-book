@@ -37,7 +37,7 @@ export class Nav extends GemElement {
 
   @refobject i18nRef: RefObject<HTMLSelectElement>;
 
-  renderI18nSet = () => {
+  renderI18nSelect = () => {
     if (this.lang) {
       const name = this.langlist.find(({ code }) => code === this.lang)?.name;
       return html`
@@ -168,7 +168,13 @@ export class Nav extends GemElement {
         ${internals.map(this.renderItem)}
       </div>
       <slot class="item"></slot>
-      ${externals.map(this.renderItem)} ${githubLink} ${this.renderI18nSet()}
+      ${externals.map(this.renderItem)} ${githubLink} ${this.renderI18nSelect()}
     `;
+  }
+
+  updated() {
+    if (this.i18nRef.element) {
+      this.i18nRef.element.value = this.lang;
+    }
   }
 }

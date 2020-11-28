@@ -30,6 +30,8 @@ import {
   getRepoTitle,
 } from './utils';
 import { startBuilder, builderEventTarget } from './builder';
+
+// https://developers.google.com/search/docs/advanced/crawling/localized-versions#language-codes
 import lang from './lang.json';
 
 program.version(version, '-v, --version');
