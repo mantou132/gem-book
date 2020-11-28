@@ -1,6 +1,6 @@
 {
   "name": "gem-book",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Custom elements for rendering markdown documents",
   "main": "dist/index.js",
   "module": "index.js",
