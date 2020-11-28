@@ -11,7 +11,7 @@ import path from 'path';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import getRepoInfo from 'git-repo-info';
-import { startCase, debounce } from 'lodash';
+import { debounce } from 'lodash';
 
 import { version } from '../../package.json';
 import { BookConfig, NavItem, SidebarConfig } from '../common/config';
@@ -27,6 +27,7 @@ import {
   isURL,
   isSomeContent,
   inspectObject,
+  getRepoTitle,
 } from './utils';
 import { startBuilder, builderEventTarget } from './builder';
 import lang from './lang.json';
@@ -100,7 +101,7 @@ async function generateBookConfig(dir: string) {
   bookConfig.github ??= await getGithubUrl();
 
   // default title
-  bookConfig.title ??= startCase(path.basename(process.cwd()));
+  bookConfig.title ??= getRepoTitle();
 
   // default sourceDir
   bookConfig.sourceDir ??= dir;

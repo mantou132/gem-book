@@ -8,6 +8,7 @@ import { JSDOM } from 'jsdom';
 import marked from 'marked';
 import fm from 'front-matter';
 import YAML from 'yaml';
+import { startCase } from 'lodash';
 
 import { NavItem } from '../common/config';
 import { FrontMatter } from '../common/frontmatter';
@@ -29,6 +30,17 @@ export async function getGithubUrl() {
       return `https://github.com/${parsed.repository}`;
     }
   } catch {}
+}
+
+export function getRepoTitle() {
+  const repoDir = process.cwd();
+  try {
+    const repoPkg = __non_webpack_require__(path.resolve(repoDir, './package.json'));
+    if (!repoPkg.title) throw 'no title';
+    return repoPkg.title;
+  } catch {
+    return startCase(path.basename(process.cwd()));
+  }
 }
 
 type FileMetadata = FrontMatter & {
