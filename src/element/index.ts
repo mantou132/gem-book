@@ -328,9 +328,6 @@ export class Book extends GemElement<State> {
           margin: 0 -3rem;
           padding: 0 3rem;
         }
-        gem-book-main {
-          max-width: calc(100vw - 9rem - ${theme.sidebarWidth});
-        }
         @media ${renderHomePage ? 'all' : 'not all'} {
           gem-light-route {
             display: flex;
@@ -367,9 +364,6 @@ export class Book extends GemElement<State> {
           gem-light-route {
             margin: 0 -1rem;
             padding: 0 1rem;
-          }
-          gem-book-main {
-            max-width: calc(100vw - 2rem);
           }
           gem-book-sidebar,
           gem-book-edit-link,

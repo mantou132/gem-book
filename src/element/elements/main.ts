@@ -309,6 +309,9 @@ export class Main extends GemElement<State> {
           :host {
             padding-top: 1rem;
           }
+          .header-anchor {
+            display: none;
+          }
           h1 {
             font-size: 2.5rem;
           }
@@ -327,8 +330,6 @@ export class Main extends GemElement<State> {
         pre {
           z-index: 2;
           position: relative;
-          margin: 2rem 0;
-          padding: 1rem;
           border-radius: 4px;
           white-space: pre;
         }
@@ -340,18 +341,21 @@ export class Main extends GemElement<State> {
         }
         pre code {
           display: block;
-          margin: 0;
-          padding: 0;
+          margin: 2rem 0;
+          padding: 1rem;
           overflow: auto;
-          scrollbar-width: none;
           box-shadow: none;
           border: none;
           border-radius: 0;
           font-size: 1em;
           background: transparent;
+          scrollbar-width: thin;
         }
         pre code::-webkit-scrollbar {
-          width: 0;
+          height: 1rem;
+        }
+        pre code::-webkit-scrollbar-thumb {
+          background: #fff3;
         }
         @media print {
           pre {
