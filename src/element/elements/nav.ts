@@ -4,10 +4,10 @@ import {
   customElement,
   attribute,
   property,
-  emitter,
   Emitter,
   refobject,
   RefObject,
+  globalemitter,
 } from '@mantou/gem';
 
 import '@mantou/gem/elements/link';
@@ -33,7 +33,7 @@ export class Nav extends GemElement {
   @property nav: NavItem[] | undefined;
   @property langlist: { code: string; name: string }[];
 
-  @emitter languagechange: Emitter<string>;
+  @globalemitter languagechange: Emitter<string>;
 
   @refobject i18nRef: RefObject<HTMLSelectElement>;
 
@@ -47,7 +47,7 @@ export class Nav extends GemElement {
           <select
             class="i18n-select"
             ref=${this.i18nRef.ref}
-            @change=${(e: any) => this.languagechange(e.target.value, { bubbles: true, composed: true })}
+            @change=${(e: any) => this.languagechange(e.target.value)}
           >
             ${this.langlist.map(
               ({ name, code }) => html`<option value=${code} ?selected=${code === this.lang}>${name}</option>`,

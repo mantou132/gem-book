@@ -6,10 +6,10 @@ import {
   attribute,
   connectStore,
   history,
-  emitter,
   Emitter,
   part,
   slot,
+  globalemitter,
 } from '@mantou/gem';
 import * as Gem from '@mantou/gem';
 import Prism from 'prismjs';
@@ -65,7 +65,7 @@ export class Book extends GemElement<State> {
   @property config: BookConfig | undefined;
   @property theme: Partial<Theme> | undefined;
 
-  @emitter routechange: Emitter;
+  @globalemitter routechange: Emitter;
 
   @part homepageHero: string;
 
@@ -421,7 +421,7 @@ export class Book extends GemElement<State> {
       <gem-light-route
         .key=${lang}
         .routes=${routes}
-        @change=${(e: CustomEvent) => this.routechange(e.detail, { bubbles: true, composed: true })}
+        @change=${(e: CustomEvent) => this.routechange(e.detail)}
       ></gem-light-route>
       ${github && sourceBranch
         ? html`
