@@ -113,18 +113,6 @@ export class Main extends GemElement<State> {
     queueMicrotask(this.hashChangeHandle);
   };
 
-  clickHandle = (e: Event) => {
-    const [ele] = e.composedPath();
-    if (ele instanceof HTMLPreElement) {
-      const range = document.createRange();
-      range.selectNode(ele);
-      const sel = getSelection();
-      if (!sel) return;
-      sel.removeAllRanges();
-      sel.addRange(range);
-    }
-  };
-
   hashChangeHandle = () => {
     const { hash } = location;
     const ele = hash && this.shadowRoot?.querySelector(decodeURIComponent(hash));
@@ -500,10 +488,8 @@ export class Main extends GemElement<State> {
       },
       () => [this.link, this.lang],
     );
-    this.addEventListener('click', this.clickHandle);
     window.addEventListener('hashchange', this.hashChangeHandle);
     return () => {
-      this.removeEventListener('click', this.clickHandle);
       window.removeEventListener('hashchange', this.hashChangeHandle);
     };
   }
