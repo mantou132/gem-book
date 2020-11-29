@@ -6,13 +6,15 @@ import path from 'path';
 import fs from 'fs';
 import { EventEmitter } from 'events';
 import { BookConfig } from '../common/config';
-import { inTheDir, isURL } from './utils';
+import { resolveTheme, isURL } from './utils';
+import { DEV_THEME_FILE, STATS_FILE } from '../common/constant';
 
 interface BuilderOptions {
   dir: string;
   output: string;
   debugMode: boolean;
   buildMode: boolean;
+  themePath: string;
   templatePath: string;
   iconPath: string;
   plugins: string;
@@ -26,11 +28,12 @@ const update = () => {
   fs.writeFileSync(updateLog, String(Date.now()));
 };
 
+// dev mode uses memory file system
 export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookConfig>) {
   update();
   builderEventTarget.on('update', update);
 
-  const { dir, debugMode, buildMode, templatePath, output, iconPath, plugins } = options;
+  const { dir, debugMode, buildMode, themePath, templatePath, output, iconPath, plugins } = options;
 
   if (path.extname(output) === '.json') {
     return;
@@ -39,6 +42,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
   const isRemoteIcon = isURL(iconPath);
   const docsDir = path.resolve(dir);
   const outputDir = output ? path.resolve(output) : docsDir;
+  const { theme, resolveThemePath } = resolveTheme(themePath);
   const compiler = webpack({
     mode: buildMode ? 'production' : 'development',
     entry: [updateLog, entryDir],
@@ -70,6 +74,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
     plugins: [
       new HtmlWebpackPlugin({
         title: bookConfig.title || 'Gem-book App',
+        // Automatically copied to the output directory
         favicon: !isRemoteIcon && iconPath,
         ...(templatePath ? { template: path.resolve(process.cwd(), templatePath) } : undefined),
       }),
@@ -78,17 +83,24 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
         'process.env.DEV_MODE': !buildMode,
         // build mode
         'process.env.BOOK_CONFIG': JSON.stringify(JSON.stringify(bookConfig)),
+        'process.env.THEME': JSON.stringify(JSON.stringify(theme)),
         'process.env.PLUGINS': JSON.stringify(plugins),
       }),
-    ].concat(
-      outputDir !== docsDir
-        ? new CopyWebpackPlugin({
-            patterns: [{ from: docsDir, to: outputDir }].concat(
-              !isRemoteIcon && !inTheDir(outputDir, iconPath) ? { from: iconPath, to: outputDir } : [],
-            ),
-          })
-        : [],
-    ),
+    ]
+      .concat(
+        outputDir !== docsDir
+          ? new CopyWebpackPlugin({
+              patterns: [{ from: docsDir, to: outputDir }],
+            })
+          : [],
+      )
+      .concat(
+        !buildMode && resolveThemePath
+          ? new CopyWebpackPlugin({
+              patterns: [{ from: resolveThemePath, to: path.resolve(outputDir, DEV_THEME_FILE) }],
+            })
+          : [],
+      ),
     devtool: debugMode && 'source-map',
   });
   if (buildMode) {
@@ -109,7 +121,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
       }
 
       if (debugMode) {
-        fs.writeFileSync(path.resolve(outputDir, 'stats.json'), JSON.stringify(stats.toJson({}, true), null, 2));
+        fs.writeFileSync(path.resolve(outputDir, STATS_FILE), JSON.stringify(stats.toJson({}, true), null, 2));
       }
     });
   } else {

@@ -38,6 +38,7 @@ program.version(version, '-v, --version');
 
 let output = '';
 let templatePath = '';
+let themePath = '';
 let iconPath = '';
 let plugins = '';
 let buildMode = false;
@@ -189,11 +190,14 @@ program
   .option('--nav1 <title,link>', 'attach a nav item', addNavItem)
   .option('--nav2 <title,link>', 'attach a nav item', addNavItem)
   .option('--nav3 <title,link>', 'attach a nav item', addNavItem)
-  .option('--plugins <plugin,plugin>', 'load plugins', (s: string) => {
-    plugins = s;
+  .option('--plugins <plugin,plugin>', 'load plugins', (names: string) => {
+    plugins = names;
   })
   .option('--template <path>', 'html template', (path) => {
     templatePath = path;
+  })
+  .option('--theme <path>', 'html template', (path) => {
+    themePath = path;
   })
   .option('--build', 'output all front-end assets or book.json', () => {
     buildMode = true;
@@ -218,7 +222,7 @@ program
       });
     }
     if (!onlyJson) {
-      const builderOptions = { dir, debugMode, buildMode, templatePath, output, iconPath, plugins };
+      const builderOptions = { dir, debugMode, buildMode, themePath, templatePath, output, iconPath, plugins };
       if (debugMode) inspectObject(builderOptions);
       startBuilder(builderOptions, bookConfig);
     }

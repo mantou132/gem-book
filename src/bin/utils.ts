@@ -43,6 +43,18 @@ export function getRepoTitle() {
   }
 }
 
+export function resolveTheme(p: string) {
+  if (!p) return { theme: {}, p };
+  const file = p.startsWith('.json') ? p : `${p}.json`;
+  try {
+    const resolveThemePath = path.resolve(process.cwd(), file);
+    return { resolveThemePath, theme: __non_webpack_require__(resolveThemePath) };
+  } catch {
+    const resolveThemePath = path.resolve(__dirname, `../themes/${file}`);
+    return { resolveThemePath, theme: __non_webpack_require__(resolveThemePath) };
+  }
+}
+
 type FileMetadata = FrontMatter & {
   title: string;
   headings?: NavItem[];

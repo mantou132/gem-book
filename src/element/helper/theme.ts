@@ -13,8 +13,7 @@ export const defaultTheme = {
   primaryColorRGB: '38, 192, 227',
   primaryColor: 'rgb(38, 192, 227)',
   inlineCodeBackground: '#ffe56433',
-  tableHeaderColor: '#666',
-  tableHeaderBackground: '#fafafa',
+  blockCodeBackground: '#2e3440',
 };
 
 export type Theme = typeof defaultTheme;

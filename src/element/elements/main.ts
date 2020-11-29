@@ -227,8 +227,8 @@ export class Main extends GemElement<State> {
           text-align: left;
         }
         thead th {
-          color: ${theme.tableHeaderColor};
-          background: ${theme.tableHeaderBackground};
+          color: ${theme.textColor};
+          background: rgba(${theme.textColorRGB}, 0.05);
           border-bottom: 1px solid ${theme.borderColor};
           border-top: 1px solid ${theme.borderColor};
           font-weight: normal;
@@ -322,6 +322,7 @@ export class Main extends GemElement<State> {
           position: relative;
           border-radius: 4px;
           white-space: pre;
+          background: ${theme.blockCodeBackground};
         }
         @media ${mediaQuery.PHONE} {
           pre {
@@ -336,7 +337,6 @@ export class Main extends GemElement<State> {
           overflow: auto;
           box-shadow: none;
           border: none;
-          border-radius: 0;
           font-size: 1em;
           background: transparent;
           scrollbar-width: thin;
@@ -346,6 +346,7 @@ export class Main extends GemElement<State> {
         }
         pre code::-webkit-scrollbar-thumb {
           background: #fff3;
+          border-radius: inherit;
         }
         @media print {
           pre {
@@ -357,7 +358,6 @@ export class Main extends GemElement<State> {
         /* code block */
         pre {
           color: #f8f8f2;
-          background: #2e3440;
         }
         pre ::selection {
           background: #3c526d;
@@ -381,16 +381,8 @@ export class Main extends GemElement<State> {
         pre code {
           text-align: left;
           white-space: pre;
-          word-spacing: normal;
-          word-break: normal;
-          word-wrap: normal;
           line-height: 1.5;
-          -moz-tab-size: 4;
-          -o-tab-size: 4;
-          tab-size: 4;
-          -webkit-hyphens: none;
-          -moz-hyphens: none;
-          -ms-hyphens: none;
+          tab-size: 2;
           hyphens: none;
         }
 

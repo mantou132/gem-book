@@ -1,13 +1,24 @@
 # Theme
 
-#### Default theme
+The `<gem-book>` element provides the theme API, which can be very convenient to customize the theme.
+
+## Default theme
 
 <gbp-raw src="/src/element/helper/theme.ts" range="3-18"></gbp-raw>
 
-#### Custom theme
+## Custom theme
+
+You can directly use the cli options to provide the theme file path in `json` format or build-in theme name:
+
+```bash
+gem-book --theme my-theme.json
+gem-book --theme dark
+```
+
+You can also set the theme on `<gem-book>`.
 
 ```js
-new Book(config, theme);
+new GemBookElement(config, theme);
 ```
 
 or
