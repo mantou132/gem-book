@@ -61,7 +61,7 @@ export class Main extends GemElement<State> {
     // https://github.com/markedjs/marked/blob/ed18cd58218ed4ab98d3457bec2872ba1f71230e/lib/marked.esm.js#L986
     renderer.heading = function (fullText, level, r, slugger) {
       // # heading {#custom-id}
-      const [, text, customId] = fullText.match(/^(.*?)\s*(?:{#(.*)})?$/) as RegExpMatchArray;
+      const [, text, customId] = fullText.match(/^(.*?)\s*(?:{#(.*)})?$/s) as RegExpMatchArray;
       const tag = `h${level}`;
       const id = customId || `${this.options.headerPrefix}${slugger.slug(r)}`;
       return raw`
