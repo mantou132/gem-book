@@ -1,7 +1,14 @@
 {
   "name": "gem-book",
   "version": "1.2.9",
-  "description": "Custom elements for rendering markdown documents",
+  "description": "Create your document website easily and quickly",
+  "keywords": [
+    "doc",
+    "docs",
+    "documentation",
+    "creator",
+    "generator"
+  ],
   "main": "dist/index.js",
   "module": "index.js",
   "bin": {

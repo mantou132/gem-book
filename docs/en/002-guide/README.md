@@ -45,6 +45,8 @@ gem-book docs -t MyApp -i logo.png --home-mode --build
 
 ```
 
+More [options](./003-cli.md).
+
 ### Use `<gem-book>`
 
 ```bash

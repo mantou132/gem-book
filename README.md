@@ -19,7 +19,7 @@ Build beautiful documentation websites quickly.
 
 ## Showcase
 
-These projects are using `<gem-book>`, [Add your?](https://github.com/mantou132/gem-book/issues/new)
+These projects are using `<gem-book>`, [add your?](https://github.com/mantou132/gem-book/issues/new)
 
 - [Gem](https://gem.js.org)
 

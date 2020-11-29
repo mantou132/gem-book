@@ -2,7 +2,7 @@
 
 #### 默认主题
 
-<gbp-raw src="/src/element/helper/theme.ts" range="3-17"></gbp-raw>
+<gbp-raw src="/src/element/helper/theme.ts" range="3-18"></gbp-raw>
 
 #### 自定义主题
 

@@ -8,7 +8,7 @@ Parts 能让你自定义 `<gem-book>` 但内部样式，目前支持的 Part 只
 
 ```css
 gem-book::part(homepage-hero) {
-  /* ... */
+  background: #eee;
 }
 ```
 

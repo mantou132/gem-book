@@ -1,7 +1,7 @@
-import type { Book } from '../element';
+import type { GemBookElement } from '../element';
 
 customElements.whenDefined('gem-book').then(() => {
-  const { GemBookPluginElement } = customElements.get('gem-book') as typeof Book;
+  const { GemBookPluginElement } = customElements.get('gem-book') as typeof GemBookElement;
   const { Prism } = GemBookPluginElement;
 
   customElements.define(

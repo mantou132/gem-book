@@ -57,7 +57,7 @@ type State = { config: BookConfig | undefined };
  */
 @customElement('gem-book')
 @connectStore(history.store)
-export class Book extends GemElement<State> {
+export class GemBookElement extends GemElement<State> {
   static GemBookPluginElement = GemBookPluginElement;
 
   @attribute src: string;
