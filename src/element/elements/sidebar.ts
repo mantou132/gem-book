@@ -66,14 +66,19 @@ export class SideBar extends GemElement {
           display: block;
           overflow: auto;
           overscroll-behavior: contain;
-          height: calc(100vh - ${theme.headerHeight});
           box-sizing: border-box;
           position: sticky;
           top: 0;
           padding: 3rem 1rem 0;
           margin: 0 -1rem;
-          scrollbar-width: thin;
           font-size: 0.875rem;
+          scrollbar-width: thin;
+        }
+        :host::-webkit-scrollbar {
+          width: 0.5em;
+        }
+        :host::-webkit-scrollbar-thumb {
+          background: ${theme.borderColor};
         }
         @media ${mediaQuery.PHONE} {
           :host {

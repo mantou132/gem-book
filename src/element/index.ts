@@ -325,10 +325,12 @@ export class GemBookElement extends GemElement<State> {
         .nav-shadow ~ gem-book-sidebar {
           margin-top: ${theme.headerHeight};
           top: ${theme.headerHeight};
+          height: calc(100vh - ${theme.headerHeight});
         }
         gem-book-sidebar {
           /* how to span all row? */
           grid-area: 1 / aside / 6 / aside;
+          height: 100vh;
         }
         gem-book-nav {
           grid-area: 1 / aside / 2 / content;
