@@ -18,7 +18,7 @@
     "build:dist": "webpack --config webpack.config.dist.js",
     "build": "npm run build:cli && npm run build:ele && npm run build:dist",
     "build:website": "npm run build:cli && npm run docs -- --build",
-    "prepublishOnly": "npm run lint && npm run build && npm run docs",
+    "prepublishOnly": "npm run lint && npm run build",
     "test:fe": "npm run build:ele && karma start --coverage",
     "test": "npm run test:fe"
   },

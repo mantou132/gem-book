@@ -107,6 +107,10 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
       if (stats.hasWarnings()) {
         console.warn(info.warnings.join());
       }
+
+      if (debugMode) {
+        fs.writeFileSync(path.resolve(outputDir, 'stats.json'), JSON.stringify(stats.toJson({}, true), null, 2));
+      }
     });
   } else {
     // https://github.com/webpack/webpack-dev-server/blob/master/examples/api/simple/server.js
