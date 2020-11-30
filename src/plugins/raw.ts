@@ -2,7 +2,7 @@ import type { GemBookElement } from '../element';
 
 customElements.whenDefined('gem-book').then(() => {
   const { GemBookPluginElement } = customElements.get('gem-book') as typeof GemBookElement;
-  const { Prism } = GemBookPluginElement;
+  const { Prism, config } = GemBookPluginElement;
 
   customElements.define(
     'gbp-raw',
@@ -29,7 +29,6 @@ customElements.whenDefined('gem-book').then(() => {
       }
 
       async renderContent() {
-        const config = this.config;
         if (!this.src) return;
         this.innerHTML = 'Loading...';
 
@@ -47,7 +46,7 @@ customElements.whenDefined('gem-book').then(() => {
       }
 
       highlight(str: string) {
-        const [, extension] = this.src.split('.');
+        const extension = this.src.split('.').pop() || '';
         const lang = Prism.languages[this.lang] ? this.lang : Prism.languages[extension] ? extension : '';
         let content = str;
         if (lang) {

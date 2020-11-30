@@ -51,8 +51,7 @@ customElements.whenDefined('gem-book').then(({ GemBookPluginElement }) => {
     class extends GemBookPluginElement {
       constructor() {
         super();
-        // GemBook.config
-        console.log(this.config);
+        console.log(GemBookPluginElement.config);
       }
     },
   );

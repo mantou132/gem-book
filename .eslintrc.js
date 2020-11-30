@@ -19,6 +19,7 @@ module.exports = {
         args: 'after-used',
         ignoreRestSiblings: true,
         caughtErrors: 'none',
+        varsIgnorePattern: '^_',
         argsIgnorePattern: '^_',
       },
     ],

@@ -12,6 +12,7 @@ import {
   globalemitter,
 } from '@mantou/gem';
 import * as Gem from '@mantou/gem';
+import marked from 'marked';
 import Prism from 'prismjs';
 
 import '@mantou/gem/elements/title';
@@ -45,7 +46,9 @@ const sharedConfig: Partial<BookConfig> = {};
 class GemBookPluginElement extends GemElement {
   static Gem = Gem;
   static Prism = Prism;
-  config = sharedConfig;
+  static marked = marked;
+  static config = sharedConfig;
+  static theme = theme;
 }
 
 type State = { config: BookConfig | undefined };
