@@ -4,7 +4,7 @@
 
 ## Parts
 
-Parts allows you to customize `<gem-book>` but the internal style, currently only supported Part is `homepage-hero`.
+[Part](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/part) allows you to customize the internal style of `<gem-book>`, for example:
 
 ```css
 gem-book::part(homepage-hero) {

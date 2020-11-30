@@ -4,7 +4,7 @@
 
 ## Parts
 
-Parts 能让你自定义 `<gem-book>` 但内部样式，目前支持的 Part 只有 `homepage-hero`。
+[Part](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/part) 能让你自定义 `<gem-book>` 的内部样式，例如：
 
 ```css
 gem-book::part(homepage-hero) {

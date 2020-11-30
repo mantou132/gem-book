@@ -70,6 +70,13 @@ export class GemBookElement extends GemElement<State> {
 
   @globalemitter routechange: Emitter;
 
+  @part nav: string;
+  @part navShadow: string;
+  @part sidebar: string;
+  @part main: string;
+  @part editLink: string;
+  @part relLink: string;
+  @part footer: string;
   @part homepageHero: string;
 
   @slot sidebarBefore: string;
@@ -403,8 +410,9 @@ export class GemBookElement extends GemElement<State> {
       </style>
       ${hasNavbar
         ? html`
-            <div class="nav-shadow"></div>
+            <div class="nav-shadow" part=${this.navShadow}></div>
             <gem-book-nav
+              part=${this.nav}
               tl=${title}
               icon=${icon}
               github=${github}
@@ -424,6 +432,7 @@ export class GemBookElement extends GemElement<State> {
           ></gem-book-homepage>`
         : ''}
       <gem-light-route
+        part=${this.main}
         .key=${lang}
         .routes=${routes}
         @change=${(e: CustomEvent) => this.routechange(e.detail)}
@@ -431,6 +440,7 @@ export class GemBookElement extends GemElement<State> {
       ${github && sourceBranch
         ? html`
             <gem-book-edit-link
+              part=${this.editLink}
               github=${github}
               source-branch=${sourceBranch}
               srouce-dir=${sourceDir}
@@ -440,14 +450,15 @@ export class GemBookElement extends GemElement<State> {
           `
         : null}
       <gem-book-sidebar
+        part=${this.sidebar}
         @languagechange=${languagechangeHandle}
         .homePage=${homeMode ? homePage : ''}
         .sidebar=${currentSidebar}
       >
         <slot name=${this.sidebarBefore}></slot>
       </gem-book-sidebar>
-      <gem-book-rel-link .links=${refLinks}></gem-book-rel-link>
-      <gem-book-footer .footer=${footer}></gem-book-footer>
+      <gem-book-rel-link part=${this.relLink} .links=${refLinks}></gem-book-rel-link>
+      <gem-book-footer part=${this.footer} .footer=${footer}></gem-book-footer>
     `;
   }
 
