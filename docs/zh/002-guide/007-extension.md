@@ -27,7 +27,7 @@ gem-book::part(homepage-hero) {
 引入插件：
 
 ```bash
-gem-book docs --plugins raw
+gem-book docs --plugin raw
 ```
 
 or

@@ -17,7 +17,7 @@ interface BuilderOptions {
   themePath: string;
   templatePath: string;
   iconPath: string;
-  plugins: string;
+  plugins: string[];
 }
 
 export const builderEventTarget = new EventEmitter();
@@ -84,7 +84,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
         // build mode
         'process.env.BOOK_CONFIG': JSON.stringify(JSON.stringify(bookConfig)),
         'process.env.THEME': JSON.stringify(JSON.stringify(theme)),
-        'process.env.PLUGINS': JSON.stringify(plugins),
+        'process.env.PLUGINS': JSON.stringify(JSON.stringify(plugins)),
       }),
     ]
       .concat(

@@ -27,7 +27,7 @@ Plugins are custom elements that can be used in Markdown to customize the render
 import plugin:
 
 ```bash
-gem-book docs --plugins raw
+gem-book docs --plugin raw
 ```
 
 or

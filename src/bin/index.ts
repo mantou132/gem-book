@@ -40,10 +40,10 @@ let output = '';
 let templatePath = '';
 let themePath = '';
 let iconPath = '';
-let plugins = '';
 let buildMode = false;
 let onlyJson = false;
 let debugMode = false;
+const plugins: string[] = [];
 const bookConfig: Partial<BookConfig> = {};
 
 function readDir(dir: string, link = '/') {
@@ -194,8 +194,12 @@ program
   .option('--nav2 <title,link>', 'attach a nav item', addNavItem)
   // @Deprecated
   .option('--nav3 <title,link>', 'attach a nav item', addNavItem)
-  .option('--plugins <plugin,plugin>', 'load plugins', (names: string) => {
-    plugins = names;
+  // @Deprecated
+  .option('--plugins <plugin,...>', 'load plugins', (names: string) => {
+    plugins.push(...names.split(','));
+  })
+  .option('--plugin <name>', 'load plugin', (name: string) => {
+    plugins.push(name);
   })
   .option('--template <path>', 'html template', (path) => {
     templatePath = path;
