@@ -194,25 +194,30 @@ export class Main extends GemElement<State> {
         }
         h1 {
           font-size: 3rem;
-          margin-bottom: 1.4rem;
+          margin: 0 0 1.4rem;
         }
         h2 {
           font-size: 2rem;
-          margin-top: 7rem;
+          margin: 7rem 0 2rem;
           padding-bottom: 5px;
         }
         h3 {
           font-size: 1.7rem;
-          margin: 40px 0 30px;
+          margin: 2.5rem 0 1.5rem;
         }
         h4 {
           font-size: 1.4rem;
+          margin: 2rem 0 1rem;
         }
         h5 {
           font-size: 1.1rem;
+          margin: 2rem 0 1rem;
         }
         p {
-          margin: 15px 0;
+          margin: 1rem 0;
+        }
+        li > p {
+          margin: 0;
         }
         table {
           margin: 2rem 0;
@@ -321,6 +326,7 @@ export class Main extends GemElement<State> {
           z-index: 2;
           position: relative;
           border-radius: 4px;
+          margin: 1rem 0px;
           white-space: pre;
           background: ${theme.blockCodeBackground};
         }
@@ -332,7 +338,6 @@ export class Main extends GemElement<State> {
         }
         pre code {
           display: block;
-          margin: 2rem 0;
           padding: 1rem;
           overflow: auto;
           box-shadow: none;
