@@ -44,7 +44,7 @@ export function getRepoTitle() {
 }
 
 export function resolveTheme(p: string) {
-  if (!p) return { theme: {}, p };
+  if (!p) return { theme: null, resolveThemePath: p };
   const file = p.startsWith('.json') ? p : `${p}.json`;
   try {
     const resolveThemePath = path.resolve(process.cwd(), file);
