@@ -187,8 +187,12 @@ program
   .option('--home-mode', 'use homepage mode', () => {
     bookConfig.homeMode = true;
   })
+  .option('--nav <title,link>', 'attach a nav item', addNavItem)
+  // @Deprecated
   .option('--nav1 <title,link>', 'attach a nav item', addNavItem)
+  // @Deprecated
   .option('--nav2 <title,link>', 'attach a nav item', addNavItem)
+  // @Deprecated
   .option('--nav3 <title,link>', 'attach a nav item', addNavItem)
   .option('--plugins <plugin,plugin>', 'load plugins', (names: string) => {
     plugins = names;
