@@ -336,6 +336,7 @@ export class Main extends GemElement<State> {
           display: block;
           padding: 1rem;
           overflow: auto;
+          overflow-clip-box: content-box;
           box-shadow: none;
           border: none;
           font-size: 1em;
