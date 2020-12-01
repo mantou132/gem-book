@@ -3,7 +3,16 @@ import { DEFAULT_FILE, DEV_THEME_FILE } from '../common/constant';
 import type { GemBookElement } from '../element';
 import '../element';
 
-(JSON.parse(String(process.env.PLUGINS)) as string[]).forEach((plugin) => import(`../plugins/${plugin}`));
+(JSON.parse(String(process.env.PLUGINS)) as string[]).forEach((plugin) => {
+  if (/^(https?:)?\/\//.test(plugin)) {
+    const script = document.createElement('script');
+    script.src = plugin;
+    document.body.append();
+    script.remove();
+  } else {
+    import(`../plugins/${plugin}`);
+  }
+});
 
 const config = JSON.parse(String(process.env.BOOK_CONFIG));
 const theme = JSON.parse(String(process.env.THEME));

@@ -7,10 +7,6 @@ import '@mantou/gem/elements/unsafe';
 import '@mantou/gem/elements/link';
 
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
-import 'prismjs/components/prism-bash';
-import 'prismjs/components/prism-markdown';
-import 'prismjs/components/prism-yaml';
-import 'prismjs/components/prism-typescript';
 
 import { getMdPath, isSameOrigin, getUserLink } from '../lib/utils';
 import { theme } from '../helper/theme';

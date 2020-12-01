@@ -18,13 +18,13 @@
   "scripts": {
     "lint": "tsc --noEmit && eslint --ext .ts --fix src/",
     "dev:cli": "webpack --watch --config webpack.config.cli.js",
-    "docs": "node ./bin docs -t Gem-book -i ./logo.png --i18n --home-mode --plugin raw --debug",
+    "docs": "node ./bin docs -t Gem-book -i ./logo.png --i18n --home-mode --plugin raw --highlight bash --highlight markdown --highlight typescript --ga G-PZYZ441YD3 --debug",
     "dev:docs": "cross-env PORT=8090 nodemon --watch bin --exec \"npm run docs\"",
     "build:cli": "webpack --config webpack.config.cli.js",
     "build:ele": "tsc -p ./tsconfig.ele.json",
     "build:dist": "webpack --config webpack.config.dist.js",
     "build": "npm run build:cli && npm run build:ele && npm run build:dist",
-    "build:website": "npm run build:cli && npm run docs -- --build",
+    "build:website": "npm run build:cli && npm run docs -- --build --ga G-7X2Z4B2KV0",
     "prepublishOnly": "npm run lint && npm run build",
     "test:fe": "npm run build:ele && karma start --coverage",
     "test": "npm run test:fe"

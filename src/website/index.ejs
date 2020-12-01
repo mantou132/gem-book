@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body>
+    <% highlights.forEach(function(lang){ %>
+    <script defer src="https://unpkg.com/prismjs@<%- prismjsVersion %>/components/prism-<%- lang %>.min.js"></script>
+    <% }); %>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <% if (ga) { %>
+    <script defer src="https://www.googletagmanager.com/gtag/js?id=<%- ga %>"></script>
+    <script type="module">
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      function send() {
+        // https://gem.js.org/en/api/history
+        const { path } = history.getParams();
+        console.log(path);
+        gtag('event', 'page_view', {
+          page_location: `${location.origin}${path}`,
+          page_path: path,
+          page_title: document.title,
+        });
+      }
+      gtag('js', new Date());
+      gtag('config', '<%- ga %>', { send_page_view: false });
+      send();
+      // https://gem-book.js.org/en/api/event
+      window.addEventListener('routechange', send);
+    </script>
+    <% } %>
+  </body>
+</html>

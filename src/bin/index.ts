@@ -44,6 +44,8 @@ let buildMode = false;
 let onlyJson = false;
 let debugMode = false;
 const plugins: string[] = [];
+const highlights: string[] = [];
+let ga = '';
 const bookConfig: Partial<BookConfig> = {};
 
 function readDir(dir: string, link = '/') {
@@ -201,6 +203,12 @@ program
   .option('--plugin <name>', 'load plugin', (name: string) => {
     plugins.push(name);
   })
+  .option('--ga <id>', 'add google analytics', (id: string) => {
+    ga = id;
+  })
+  .option('--highlight <lang>', 'load prismjs highlight components', (lang: string) => {
+    highlights.push(lang);
+  })
   .option('--template <path>', 'html template', (path) => {
     templatePath = path;
   })
@@ -230,7 +238,18 @@ program
       });
     }
     if (!onlyJson) {
-      const builderOptions = { dir, debugMode, buildMode, themePath, templatePath, output, iconPath, plugins };
+      const builderOptions = {
+        dir,
+        debugMode,
+        buildMode,
+        themePath,
+        templatePath,
+        output,
+        iconPath,
+        plugins,
+        highlights,
+        ga,
+      };
       if (debugMode) inspectObject(builderOptions);
       startBuilder(builderOptions, bookConfig);
     }

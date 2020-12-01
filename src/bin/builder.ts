@@ -8,6 +8,7 @@ import { EventEmitter } from 'events';
 import { BookConfig } from '../common/config';
 import { resolveTheme, isURL } from './utils';
 import { DEV_THEME_FILE, STATS_FILE } from '../common/constant';
+import { version as prismjsVersion } from 'prismjs/package.json';
 
 interface BuilderOptions {
   dir: string;
@@ -18,12 +19,15 @@ interface BuilderOptions {
   templatePath: string;
   iconPath: string;
   plugins: string[];
+  highlights: string[];
+  ga: string;
 }
 
 export const builderEventTarget = new EventEmitter();
 
 const entryDir = path.resolve(__dirname, '../src/website');
 const updateLog = path.resolve(entryDir, './update.log');
+const defaultTemp = path.resolve(entryDir, './index.ejs');
 const update = () => {
   fs.writeFileSync(updateLog, String(Date.now()));
 };
@@ -33,7 +37,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
   update();
   builderEventTarget.on('update', update);
 
-  const { dir, debugMode, buildMode, themePath, templatePath, output, iconPath, plugins } = options;
+  const { dir, debugMode, buildMode, themePath, templatePath, output, iconPath, plugins, highlights, ga } = options;
 
   if (path.extname(output) === '.json') {
     return;
@@ -76,7 +80,15 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
         title: bookConfig.title || 'Gem-book App',
         // Automatically copied to the output directory
         favicon: !isRemoteIcon && iconPath,
-        ...(templatePath ? { template: path.resolve(process.cwd(), templatePath) } : undefined),
+        template: templatePath ? path.resolve(process.cwd(), templatePath) : defaultTemp,
+        meta: {
+          viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+        },
+        templateParameters: {
+          ga,
+          highlights,
+          prismjsVersion,
+        },
       }),
       new webpack.DefinePlugin({
         // dev mode
