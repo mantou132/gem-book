@@ -19,7 +19,7 @@ export class Homepage extends GemElement {
   @property displayRank?: boolean;
 
   renderHero() {
-    const { title = '', desc = '', actions = [{ text: '', link: '' }] } = homepageData.hero || {};
+    const { title, desc, actions } = homepageData.hero || { title: '', desc: '', actions: [{ text: '', link: '' }] };
     return html`
       <style>
         .hero {
@@ -89,7 +89,7 @@ export class Homepage extends GemElement {
       <div class="hero" part="hero">
         <div class="body">
           <h1 class="title ${placeholder(title)}">${title}</h1>
-          <p class="desc ${placeholder(desc)}">${desc}</p>
+          ${desc === undefined ? '' : html`<p class="desc ${placeholder(desc)}">${desc}</p>`}
           <div class="actions">
             ${actions.map(
               ({ link, text }, index) =>
@@ -105,6 +105,7 @@ export class Homepage extends GemElement {
 
   renderFeature() {
     const { features = Array(3).fill({ title: '', desc: '' }) } = homepageData;
+    if (features === null) return null;
     return html`
       <style>
         .features {

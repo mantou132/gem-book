@@ -1,6 +1,6 @@
 export interface Hero {
   title: string;
-  desc: string;
+  desc?: string;
   actions: { text: string; link: string }[];
 }
 
@@ -15,7 +15,10 @@ export interface FrontMatter {
   isNav?: boolean;
   navTitle?: string;
   sidebarIgnore?: boolean;
-  // home page
+
+  /** The following is the homepage options */
+
   hero?: Hero;
-  features?: Feature[];
+  // `null` when `features:` has no members
+  features?: Feature[] | null;
 }
