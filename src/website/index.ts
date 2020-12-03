@@ -3,6 +3,37 @@ import { DEFAULT_FILE, DEV_THEME_FILE } from '../common/constant';
 import type { GemBookElement } from '../element';
 import '../element';
 
+(JSON.parse(String(process.env.HIGHLIGHTS)) as string[]).forEach((lang) => {
+  require(`prismjs/components/prism-${lang}`);
+});
+
+if (process.env.GA_ID) {
+  const script = document.createElement('script');
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${process.env.GA_ID}`;
+  script.onload = () => {
+    function gtag(..._rest: any): any {
+      // eslint-disable-next-line prefer-rest-params
+      (window as any).dataLayer.push(arguments);
+    }
+    function send() {
+      // https://gem.js.org/en/api/history
+      const { path } = history.getParams();
+      gtag('event', 'page_view', {
+        page_location: location.origin + path,
+        page_path: path,
+        page_title: document.title,
+      });
+    }
+    gtag('js', new Date());
+    gtag('config', process.env.GA_ID, { send_page_view: false });
+    send();
+    // https://gem-book.js.org/en/api/event
+    window.addEventListener('routechange', send);
+  };
+  document.body.append(script);
+  script.remove();
+}
+
 (JSON.parse(String(process.env.PLUGINS)) as string[]).forEach((plugin) => {
   if (/^(https?:)?\/\//.test(plugin)) {
     const script = document.createElement('script');

@@ -8,7 +8,6 @@ import { EventEmitter } from 'events';
 import { BookConfig } from '../common/config';
 import { resolveTheme, isURL } from './utils';
 import { DEV_THEME_FILE, STATS_FILE } from '../common/constant';
-import { version as prismjsVersion } from 'prismjs/package.json';
 
 interface BuilderOptions {
   dir: string;
@@ -27,7 +26,6 @@ export const builderEventTarget = new EventEmitter();
 
 const entryDir = path.resolve(__dirname, '../src/website');
 const updateLog = path.resolve(entryDir, './update.log');
-const defaultTemp = path.resolve(entryDir, './index.ejs');
 const update = () => {
   fs.writeFileSync(updateLog, String(Date.now()));
 };
@@ -78,16 +76,11 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
     plugins: [
       new HtmlWebpackPlugin({
         title: bookConfig.title || 'Gem-book App',
+        ...(templatePath ? { template: path.resolve(process.cwd(), templatePath) } : undefined),
         // Automatically copied to the output directory
         favicon: !isRemoteIcon && iconPath,
-        template: templatePath ? path.resolve(process.cwd(), templatePath) : defaultTemp,
         meta: {
           viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
-        },
-        templateParameters: {
-          ga,
-          highlights,
-          prismjsVersion,
         },
       }),
       new webpack.DefinePlugin({
@@ -97,6 +90,8 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
         'process.env.BOOK_CONFIG': JSON.stringify(JSON.stringify(bookConfig)),
         'process.env.THEME': JSON.stringify(JSON.stringify(theme)),
         'process.env.PLUGINS': JSON.stringify(JSON.stringify(plugins)),
+        'process.env.HIGHLIGHTS': JSON.stringify(JSON.stringify(highlights)),
+        'process.env.GA_ID': JSON.stringify(ga),
       }),
     ]
       .concat(
