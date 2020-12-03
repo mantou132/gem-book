@@ -3,10 +3,6 @@ import { DEFAULT_FILE, DEV_THEME_FILE } from '../common/constant';
 import type { GemBookElement } from '../element';
 import '../element';
 
-(JSON.parse(String(process.env.HIGHLIGHTS)) as string[]).forEach((lang) => {
-  require(`prismjs/components/prism-${lang}`);
-});
-
 if (process.env.GA_ID) {
   const script = document.createElement('script');
   script.src = `https://www.googletagmanager.com/gtag/js?id=${process.env.GA_ID}`;

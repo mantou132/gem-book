@@ -2,12 +2,14 @@ import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import HtmlWebpackTagsPlugin from 'html-webpack-tags-plugin';
 import path from 'path';
 import fs from 'fs';
 import { EventEmitter } from 'events';
 import { BookConfig } from '../common/config';
 import { resolveTheme, isURL } from './utils';
 import { DEV_THEME_FILE, STATS_FILE } from '../common/constant';
+import { version as prismjsVersion } from 'prismjs/package.json';
 
 interface BuilderOptions {
   dir: string;
@@ -59,6 +61,9 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
                 configFile: path.resolve(__dirname, '../tsconfig.json'),
                 // Install cli without installing dev @types dependency
                 transpileOnly: true,
+                compilerOptions: {
+                  module: 'esnext',
+                },
               },
             },
           ],
@@ -83,6 +88,11 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
           viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
         },
       }),
+      new HtmlWebpackTagsPlugin({
+        publicPath: false,
+        tags: highlights.map((lang) => `https://unpkg.com/prismjs@${prismjsVersion}/components/prism-${lang}.min.js`),
+        append: true,
+      }),
       new webpack.DefinePlugin({
         // dev mode
         'process.env.DEV_MODE': !buildMode,
@@ -90,7 +100,6 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
         'process.env.BOOK_CONFIG': JSON.stringify(JSON.stringify(bookConfig)),
         'process.env.THEME': JSON.stringify(JSON.stringify(theme)),
         'process.env.PLUGINS': JSON.stringify(JSON.stringify(plugins)),
-        'process.env.HIGHLIGHTS': JSON.stringify(JSON.stringify(highlights)),
         'process.env.GA_ID': JSON.stringify(ga),
       }),
     ]
