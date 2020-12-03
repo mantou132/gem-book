@@ -11,8 +11,8 @@ The `<gem-book>` element provides the theme API, which can be very convenient to
 You can directly use the cli options to provide the theme file path in `json` format or build-in theme name:
 
 ```bash
-gem-book --theme my-theme.json
-gem-book --theme dark
+gem-book docs --theme my-theme.json
+gem-book docs --theme dark
 ```
 
 You can also set the theme on `<gem-book>`.

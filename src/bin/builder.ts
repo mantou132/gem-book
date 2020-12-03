@@ -2,14 +2,12 @@ import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import HtmlWebpackTagsPlugin from 'html-webpack-tags-plugin';
 import path from 'path';
 import fs from 'fs';
 import { EventEmitter } from 'events';
 import { BookConfig } from '../common/config';
 import { resolveTheme, isURL } from './utils';
 import { DEV_THEME_FILE, STATS_FILE } from '../common/constant';
-import { version as prismjsVersion } from 'prismjs/package.json';
 
 interface BuilderOptions {
   dir: string;
@@ -20,7 +18,6 @@ interface BuilderOptions {
   templatePath: string;
   iconPath: string;
   plugins: string[];
-  highlights: string[];
   ga: string;
 }
 
@@ -37,7 +34,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
   update();
   builderEventTarget.on('update', update);
 
-  const { dir, debugMode, buildMode, themePath, templatePath, output, iconPath, plugins, highlights, ga } = options;
+  const { dir, debugMode, buildMode, themePath, templatePath, output, iconPath, plugins, ga } = options;
 
   if (path.extname(output) === '.json') {
     return;
@@ -87,11 +84,6 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
         meta: {
           viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
         },
-      }),
-      new HtmlWebpackTagsPlugin({
-        publicPath: false,
-        tags: highlights.map((lang) => `https://unpkg.com/prismjs@${prismjsVersion}/components/prism-${lang}.min.js`),
-        append: true,
       }),
       new webpack.DefinePlugin({
         // dev mode

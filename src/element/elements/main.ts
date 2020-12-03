@@ -1,6 +1,5 @@
 import { html, GemElement, customElement, attribute, raw, boolattribute, updateStore, css } from '@mantou/gem';
 import marked from 'marked';
-import Prism from 'prismjs';
 import fm from 'front-matter';
 
 import '@mantou/gem/elements/unsafe';
@@ -8,24 +7,15 @@ import '@mantou/gem/elements/link';
 
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
-import { getMdPath, isSameOrigin, getUserLink } from '../lib/utils';
+import { FrontMatter } from '../../common/frontmatter';
+import { getMdPath, isSameOrigin, getUserLink, escapeHTML } from '../lib/utils';
 import { theme } from '../helper/theme';
 import { homepageData } from './homepage';
 import { anchor, link } from './icons';
-import { FrontMatter } from '../../common/frontmatter';
+
+import './pre';
 
 const parser = new DOMParser();
-
-marked.setOptions({
-  highlight: function (code, lang) {
-    if (lang && Prism.languages[lang]) {
-      const content = Prism.highlight(code, Prism.languages[lang], lang);
-      return `<i class="code-lang-name">${lang}</i>${content}`;
-    } else {
-      return code;
-    }
-  },
-});
 
 interface State {
   fetching: boolean;
@@ -65,6 +55,11 @@ export class Main extends GemElement<State> {
           <a class="header-anchor" href="#${id}">${anchor}</a>
           ${text}</${tag}>
       `;
+    };
+
+    renderer.code = (code, infostring) => {
+      const lang = infostring?.match(/\S*/)?.[0];
+      return `<gem-book-pre lang=${lang}>${escapeHTML(code)}</gem-book-pre>`;
     };
 
     const { displayRank } = this;
@@ -309,6 +304,7 @@ export class Main extends GemElement<State> {
         }
 
         code {
+          font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
           font-size: 90%;
           background: ${theme.inlineCodeBackground};
           border-radius: 4px;
@@ -318,152 +314,23 @@ export class Main extends GemElement<State> {
           background: transparent;
           padding: 0;
         }
-        pre {
+        gem-book-pre {
           z-index: 2;
-          position: relative;
           border-radius: 4px;
           margin: 1rem 0px;
-          white-space: pre;
           background: ${theme.blockCodeBackground};
         }
         @media ${mediaQuery.PHONE} {
-          pre {
+          gem-book-pre {
             margin: 1rem -1rem;
             border-radius: 0;
           }
         }
-        pre code {
-          display: block;
-          padding: 1rem;
-          overflow: auto;
-          overflow-clip-box: content-box;
-          box-shadow: none;
-          border: none;
-          font-size: 1em;
-          background: transparent;
-          scrollbar-width: thin;
-        }
-        pre code::-webkit-scrollbar {
-          height: 1rem;
-        }
-        pre code::-webkit-scrollbar-thumb {
-          background: #fff3;
-          border-radius: inherit;
-        }
         @media print {
-          pre {
+          gem-book-pre {
             white-space: pre-wrap;
             word-break: break-word;
           }
-        }
-
-        /* code block */
-        pre {
-          color: #f8f8f2;
-        }
-        pre ::selection {
-          background: #3c526d;
-        }
-        code {
-          font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-        }
-        pre .code-lang-name {
-          position: absolute;
-          top: 3px;
-          right: 7px;
-          font-size: 10px;
-          color: #cacaca;
-          user-select: none;
-        }
-        pre .code-lang-name::selection {
-          background: transparent;
-        }
-
-        /* plugin */
-        pre code {
-          text-align: left;
-          white-space: pre;
-          line-height: 1.5;
-          tab-size: 2;
-          hyphens: none;
-        }
-
-        .token.comment,
-        .token.prolog,
-        .token.doctype,
-        .token.cdata {
-          color: #636f88;
-        }
-
-        .token.punctuation {
-          color: #81a1c1;
-        }
-
-        .namespace {
-          opacity: 0.7;
-        }
-
-        .token.property,
-        .token.tag,
-        .token.constant,
-        .token.symbol,
-        .token.deleted {
-          color: #81a1c1;
-        }
-
-        .token.number {
-          color: #b48ead;
-        }
-
-        .token.boolean {
-          color: #81a1c1;
-        }
-
-        .token.selector,
-        .token.attr-name,
-        .token.string,
-        .token.char,
-        .token.builtin,
-        .token.inserted {
-          color: #a3be8c;
-        }
-
-        .token.operator,
-        .token.entity,
-        .token.url,
-        .language-css .token.string,
-        .style .token.string,
-        .token.variable {
-          color: #81a1c1;
-        }
-
-        .token.atrule,
-        .token.attr-value,
-        .token.function,
-        .token.class-name {
-          color: #88c0d0;
-        }
-
-        .token.keyword {
-          color: #81a1c1;
-        }
-
-        .token.regex,
-        .token.important {
-          color: #ebcb8b;
-        }
-
-        .token.important,
-        .token.bold {
-          font-weight: bold;
-        }
-
-        .token.italic {
-          font-style: italic;
-        }
-
-        .token.entity {
-          cursor: help;
         }
       </style>
     `;

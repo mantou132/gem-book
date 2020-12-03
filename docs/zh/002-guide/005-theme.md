@@ -11,8 +11,8 @@
 可以直接使用命令行参数提供 `json` 格式的主题文件路径或者内置主题名称：
 
 ```bash
-gem-book --theme my-theme.json
-gem-book --theme dark
+gem-book docs --theme my-theme.json
+gem-book docs --theme dark
 ```
 
 也可以在 `<gem-book>` 上设置主题。

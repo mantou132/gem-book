@@ -40,12 +40,11 @@ let output = '';
 let templatePath = '';
 let themePath = '';
 let iconPath = '';
+let ga = '';
 let buildMode = false;
 let onlyJson = false;
 let debugMode = false;
 const plugins: string[] = [];
-const highlights: string[] = [];
-let ga = '';
 const bookConfig: Partial<BookConfig> = {};
 
 function readDir(dir: string, link = '/') {
@@ -151,13 +150,6 @@ async function generateBookConfig(dir: string) {
 
 const debounceCommand = debounce(generateBookConfig, 300);
 
-function addNavItem(item: string) {
-  bookConfig.nav = bookConfig.nav || [];
-  const [title, link] = item.split(',');
-  if (!link) throw new Error('nav options error');
-  bookConfig.nav.push({ title, link });
-}
-
 program
   .option('-t, --title <title>', 'document title', (title: string) => {
     bookConfig.title = title;
@@ -189,25 +181,17 @@ program
   .option('--home-mode', 'use homepage mode', () => {
     bookConfig.homeMode = true;
   })
-  .option('--nav <title,link>', 'attach a nav item', addNavItem)
-  // @Deprecated
-  .option('--nav1 <title,link>', 'attach a nav item', addNavItem)
-  // @Deprecated
-  .option('--nav2 <title,link>', 'attach a nav item', addNavItem)
-  // @Deprecated
-  .option('--nav3 <title,link>', 'attach a nav item', addNavItem)
-  // @Deprecated
-  .option('--plugins <plugin,...>', 'load plugins', (names: string) => {
-    plugins.push(...names.split(','));
+  .option('--nav <title,link>', 'attach a nav item', (item: string) => {
+    bookConfig.nav = bookConfig.nav || [];
+    const [title, link] = item.split(',');
+    if (!link) throw new Error('nav options error');
+    bookConfig.nav.push({ title, link });
   })
   .option('--plugin <name>', 'load plugin', (name: string) => {
     plugins.push(name);
   })
   .option('--ga <id>', 'add google analytics', (id: string) => {
     ga = id;
-  })
-  .option('--highlight <lang>', 'load prismjs highlight components', (lang: string) => {
-    highlights.push(lang);
   })
   .option('--template <path>', 'html template', (path) => {
     templatePath = path;
@@ -247,7 +231,6 @@ program
         output,
         iconPath,
         plugins,
-        highlights,
         ga,
       };
       if (debugMode) inspectObject(builderOptions);

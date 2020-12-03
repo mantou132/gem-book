@@ -18,7 +18,7 @@
   "scripts": {
     "lint": "tsc --noEmit && eslint --ext .ts --fix src/",
     "dev:cli": "webpack --watch --config webpack.config.cli.js",
-    "docs": "node ./bin docs -t Gem-book -i ./logo.png --i18n --home-mode --plugin raw --highlight bash --highlight markdown --highlight typescript --ga G-PZYZ441YD3 --debug",
+    "docs": "node ./bin docs -t Gem-book -i ./logo.png --i18n --home-mode --plugin raw --ga G-PZYZ441YD3 --debug",
     "dev:docs": "cross-env PORT=8090 nodemon --watch bin --exec \"npm run docs\"",
     "build:cli": "webpack --config webpack.config.cli.js",
     "build:ele": "tsc -p ./tsconfig.ele.json",
@@ -43,7 +43,6 @@
     "git-remote-origin-url": "^3.1.0",
     "git-repo-info": "^2.1.1",
     "html-webpack-plugin": "^4.5.0",
-    "html-webpack-tags-plugin": "^2.0.17",
     "jsdom": "^16.4.0",
     "lodash": "^4.17.20",
     "marked": "^0.8.2",
