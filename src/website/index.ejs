@@ -6,7 +6,7 @@
   </head>
   <body>
     <% highlights.forEach(function(lang){ %>
-    <script defer src="https://unpkg.com/prismjs@<%- prismjsVersion %>/components/prism-<%- lang %>.min.js"></script>
+    <script src="https://unpkg.com/prismjs@<%- prismjsVersion %>/components/prism-<%- lang %>.min.js"></script>
     <% }); %>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -19,7 +19,6 @@
       function send() {
         // https://gem.js.org/en/api/history
         const { path } = history.getParams();
-        console.log(path);
         gtag('event', 'page_view', {
           page_location: `${location.origin}${path}`,
           page_path: path,
