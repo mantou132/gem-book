@@ -75,6 +75,7 @@ export class EditLink extends GemElement<State> {
       <style>
         :host {
           display: flex;
+          flex-wrap: wrap;
           padding: 2rem 0;
           justify-content: space-between;
           line-height: 1.5;
@@ -98,9 +99,6 @@ export class EditLink extends GemElement<State> {
           opacity: 0.5;
         }
         @media ${mediaQuery.PHONE} {
-          :host {
-            flex-direction: column;
-          }
           gem-link,
           .last-updated {
             white-space: nowrap;

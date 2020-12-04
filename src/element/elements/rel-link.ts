@@ -19,10 +19,10 @@ export class RelLink extends GemElement {
     return html`
       <style>
         :host {
-          display: block;
-          padding: 2rem 0;
           display: flex;
+          flex-wrap: wrap;
           justify-content: space-between;
+          padding: 2rem 0;
           line-height: 1.5;
           border-top: 1px solid ${theme.borderColor};
         }

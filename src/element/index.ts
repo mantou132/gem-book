@@ -383,6 +383,7 @@ export class GemBookElement extends GemElement<State> {
         @media ${mediaQuery.PHONE} {
           .nav-shadow ~ gem-book-sidebar {
             margin-top: 0;
+            height: auto;
           }
           :host {
             grid-column-gap: 1rem;
