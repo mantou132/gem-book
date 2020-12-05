@@ -1,4 +1,4 @@
-import { html, GemElement, customElement, property, createStore, connectStore } from '@mantou/gem';
+import { html, GemElement, customElement, property, createStore, connectStore, part } from '@mantou/gem';
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
@@ -17,6 +17,8 @@ const placeholder = (s: string) => (s ? '' : 'placeholder');
 @connectStore(homepageData)
 export class Homepage extends GemElement {
   @property displayRank?: boolean;
+
+  @part hero: string;
 
   renderHero() {
     const { title, desc, actions } = homepageData.hero || { title: '', desc: '', actions: [{ text: '', link: '' }] };
@@ -86,7 +88,7 @@ export class Homepage extends GemElement {
           }
         }
       </style>
-      <div class="hero" part="hero">
+      <div class="hero" part=${this.hero}>
         <div class="body">
           <h1 class="title ${placeholder(title)}">${title}</h1>
           ${desc === undefined ? '' : html`<p class="desc ${placeholder(desc)}">${desc}</p>`}
@@ -201,7 +203,6 @@ export class Homepage extends GemElement {
       <style>
         :host {
           overflow: hidden;
-          margin-bottom: -7rem;
         }
         .body {
           margin: auto;

@@ -123,7 +123,6 @@ export class Main extends GemElement<State> {
   render() {
     const { fetching, content } = this.state;
     return html`
-      <slot></slot>
       ${content || html`<div style="height: 20em">Loading...</div>`}
       <style>
         :not(:defined)::before {
@@ -141,8 +140,10 @@ export class Main extends GemElement<State> {
           z-index: 1;
           opacity: ${fetching ? 0.3 : 1};
           min-height: 10rem;
-          padding-top: 3rem;
           line-height: 1.7;
+        }
+        :host :first-child {
+          margin-top: 0;
         }
         a > img + svg {
           display: none;
@@ -166,12 +167,6 @@ export class Main extends GemElement<State> {
         .link:hover {
           background: rgba(${theme.primaryColorRGB}, 0.3);
           border-color: currentColor;
-        }
-        slot ~ * {
-          margin-top: 0;
-        }
-        :host > h2:first-child {
-          margin-top: 7rem;
         }
         h1,
         h2,
@@ -292,9 +287,6 @@ export class Main extends GemElement<State> {
           opacity: 1;
         }
         @media ${mediaQuery.PHONE} {
-          :host {
-            padding-top: 1rem;
-          }
           .header-anchor {
             display: none;
           }

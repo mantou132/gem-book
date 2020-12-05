@@ -14,7 +14,7 @@ gem-book::part(homepage-hero) {
 
 ## 插槽
 
-[插槽](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/slot)能让你自定义 `<gem-book>` 但内容，目前支持的插槽有 `sidebar-before`, `main-before`, `nav-inside`。
+[插槽](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/slot)能让你自定义 `<gem-book>` 但内容，目前支持的插槽有 `sidebar-before`, `main-before`, `main-after`, `nav-inside`。
 
 ```html
 <gem-book><div slot="sidebar-before">Hello</div></gem-book>

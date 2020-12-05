@@ -81,6 +81,7 @@ export class GemBookElement extends GemElement<State> {
 
   @slot sidebarBefore: string;
   @slot mainBefore: string;
+  @slot mainAfter: string;
   @slot navInside: string;
 
   state: State = {
@@ -178,9 +179,7 @@ export class GemBookElement extends GemElement<State> {
     links.forEach(({ title: pageTitle, link, userFullPath, originLink }) => {
       const routeTitle = `${capitalize(pageTitle)}${pageTitle ? ' - ' : ''}${title}`;
       const routeContent = html`
-        <gem-book-main lang=${lang} link=${originLink} ?display-rank=${config?.displayRank}>
-          <slot name=${this.mainBefore}></slot>
-        </gem-book-main>
+        <gem-book-main lang=${lang} link=${originLink} ?display-rank=${config?.displayRank}></gem-book-main>
       `;
 
       routes.push({
@@ -348,8 +347,18 @@ export class GemBookElement extends GemElement<State> {
         gem-light-route,
         gem-book-edit-link,
         gem-book-rel-link,
-        gem-book-footer {
+        gem-book-footer,
+        slot[name='${this.mainBefore}'],
+        slot[name='${this.mainAfter}'] {
           grid-area: auto / content;
+        }
+        slot[name='${this.mainBefore}'],
+        slot[name='${this.mainAfter}'] {
+          display: block;
+          grid-area: auto / content;
+        }
+        slot[name='${this.mainBefore}'] {
+          margin-top: 3rem;
         }
         gem-light-route {
           overflow: hidden;
@@ -384,6 +393,9 @@ export class GemBookElement extends GemElement<State> {
           .nav-shadow ~ gem-book-sidebar {
             margin-top: 0;
             height: auto;
+          }
+          slot[name='${this.mainBefore}'] {
+            margin-top: 1rem;
           }
           :host {
             grid-column-gap: 1rem;
@@ -431,7 +443,7 @@ export class GemBookElement extends GemElement<State> {
             .displayRank=${displayRank}
             exportparts="hero: ${this.homepageHero}"
           ></gem-book-homepage>`
-        : ''}
+        : html`<slot name=${this.mainBefore}></slot>`}
       <gem-light-route
         part=${this.main}
         .key=${lang}
@@ -459,6 +471,7 @@ export class GemBookElement extends GemElement<State> {
         <slot name=${this.sidebarBefore}></slot>
       </gem-book-sidebar>
       <gem-book-rel-link part=${this.relLink} .links=${refLinks}></gem-book-rel-link>
+      ${renderHomePage ? '' : html`<slot name=${this.mainAfter}></slot>`}
       <gem-book-footer part=${this.footer} .footer=${footer}></gem-book-footer>
     `;
   }
