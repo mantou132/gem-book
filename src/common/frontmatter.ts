@@ -1,5 +1,5 @@
 export interface Hero {
-  title: string;
+  title?: string;
   desc?: string;
   actions: { text: string; link: string }[];
 }

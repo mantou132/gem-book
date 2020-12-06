@@ -90,7 +90,7 @@ export class Homepage extends GemElement {
       </style>
       <div class="hero" part=${this.hero}>
         <div class="body">
-          <h1 class="title ${placeholder(title)}">${title}</h1>
+          ${title === undefined ? '' : html`<h1 class="title ${placeholder(title)}">${title}</h1>`}
           ${desc === undefined ? '' : html`<p class="desc ${placeholder(desc)}">${desc}</p>`}
           <div class="actions">
             ${actions.map(
