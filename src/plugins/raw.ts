@@ -7,10 +7,11 @@ customElements.whenDefined('gem-book').then(() => {
   customElements.define(
     'gbp-raw',
     class extends GemBookPluginElement {
-      static observedAttributes = ['src', 'lang', 'range'];
+      static observedAttributes = ['src', 'lang', 'range', 'highlight'];
       src: string;
       lang: string;
       range: string;
+      highlight: string;
 
       mounted() {
         this.renderContent();
@@ -39,7 +40,9 @@ customElements.whenDefined('gem-book').then(() => {
         const content = div.innerHTML;
 
         const extension = this.src.split('.').pop() || '';
-        this.innerHTML = `<gem-book-pre lang=${this.lang || extension} range=${this.range}>${content}</gem-book-pre>`;
+        this.innerHTML = `<gem-book-pre lang="${this.lang || extension}" highlight="${this.highlight}" range="${
+          this.range
+        }">${content}</gem-book-pre>`;
       }
     },
   );

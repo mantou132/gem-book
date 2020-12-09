@@ -175,13 +175,14 @@ const langAliases: Record<string, string> = {
 export class Pre extends GemElement {
   @attribute lang: string;
   @attribute range: string;
+  @attribute highlight: string;
 
   @refobject codeRef: RefObject<HTMLElement>;
 
-  get ranges() {
-    const ranges = this.range.split(/,\s*/);
+  getRanges(range: string) {
+    const ranges = range.split(/,\s*/);
     return ranges.map((range) => {
-      const [start, end] = range.split('-');
+      const [start, end = start] = range.split('-');
       return [parseInt(start) || 1, parseInt(end) || 0];
     });
   }
@@ -189,7 +190,7 @@ export class Pre extends GemElement {
   getParts(s: string) {
     const lines = s.split(/\n|\r\n/);
     const parts = this.range
-      ? this.ranges.map(([start, end]) => {
+      ? this.getRanges(this.range).map(([start, end]) => {
           let result = '';
           for (let i = start - 1; i < (end || lines.length); i++) {
             result += lines[i] + '\n';
@@ -202,7 +203,18 @@ export class Pre extends GemElement {
 
   render() {
     const lang = this.lang;
+    const lineHeight = 1.5;
+    const padding = 1;
     return html`
+      ${this.highlight
+        ? this.getRanges(this.highlight).map(
+            ([start, end]) =>
+              html`<span
+                class="highlight"
+                style="top: ${start * lineHeight + padding}em; height: ${(end - start + 1) * lineHeight}em"
+              ></span>`,
+          )
+        : ''}
       <i class="code-lang-name">${lang}</i>
       <code ref=${this.codeRef.ref}>${this.getParts(this.textContent || '')}</code>
       <style>
@@ -210,6 +222,13 @@ export class Pre extends GemElement {
           position: relative;
           display: block;
           color: #f8f8f2;
+        }
+        .highlight {
+          display: block;
+          position: absolute;
+          pointer-events: none;
+          background: #fff2;
+          width: 100%;
         }
         .code-lang-name {
           position: absolute;
@@ -226,19 +245,18 @@ export class Pre extends GemElement {
           background: #3c526d;
         }
         code {
+          display: block;
+          padding: ${padding}em;
           font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+          line-height: ${lineHeight};
           text-align: left;
           white-space: pre;
-          line-height: 1.5;
           tab-size: 2;
           hyphens: none;
-          display: block;
-          padding: 1rem;
           overflow: auto;
           overflow-clip-box: content-box;
           box-shadow: none;
           border: none;
-          font-size: 1em;
           background: transparent;
           scrollbar-width: thin;
         }

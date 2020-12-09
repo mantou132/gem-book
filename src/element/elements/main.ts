@@ -58,8 +58,8 @@ export class Main extends GemElement<State> {
     };
 
     renderer.code = (code, infostring) => {
-      const lang = infostring?.match(/\S*/)?.[0];
-      return `<gem-book-pre lang=${lang}>${escapeHTML(code)}</gem-book-pre>`;
+      const [lang, highlight] = infostring?.split(/\s+/) || [];
+      return `<gem-book-pre lang="${lang}" highlight="${highlight}">${escapeHTML(code)}</gem-book-pre>`;
     };
 
     const { displayRank } = this;
