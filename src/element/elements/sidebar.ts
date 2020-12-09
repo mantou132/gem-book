@@ -51,7 +51,7 @@ export class SideBar extends GemElement {
           pattern=${children ? new URL(link, location.origin).pathname : link}
           href=${link}
         >
-          ${title ? capitalize(title) : 'No title'}
+          ${type === 'heading' ? '# ' : ''} ${title ? capitalize(title) : 'No title'}
         </gem-active-link>
         ${children ? html`<div class="links item hash">${children.map((item) => this.renderItem(item))}</div>` : null}
       `;
