@@ -55,12 +55,39 @@ export function resolveTheme(p: string) {
   }
 }
 
+export function checkRelativeLink(fullPath: string, docsRootDir: string) {
+  const md = fs.readFileSync(fullPath, 'utf8');
+  const lines = md.split('\n');
+  const results = [...md.matchAll(/\[.*?\]\((.*?)(\s+.*?)?\)/g)];
+  const links = results.map(([, link]) => link).filter((link) => /^\.?\.?\//.test(link));
+  links.forEach((link, index) => {
+    const targetPath = link.startsWith('/') ? path.join(docsRootDir, link) : path.resolve(path.dirname(fullPath), link);
+    if (!fs.existsSync(targetPath)) {
+      const strIndex = results[index].index || 0;
+      let currentNum = 0;
+      let lineNum = 1;
+      let colNum = 1;
+      for (const line of lines) {
+        if (strIndex > currentNum + line.length) {
+          lineNum += 1;
+        } else {
+          colNum = strIndex - currentNum + 1;
+          break;
+        }
+        currentNum += line.length + 1;
+      }
+      const position = `(${lineNum},${colNum})`;
+      console.warn(`${fullPath}${position} link warn: ${link}`);
+    }
+  });
+}
+
 type FileMetadata = FrontMatter & {
   title: string;
   headings?: NavItem[];
 };
 
-export function getMetadata(fullPath: string, displayRank?: boolean): FileMetadata {
+export function getMetadata(fullPath: string, displayRank: boolean | undefined): FileMetadata {
   const getTitle = () => {
     const basename = path.basename(fullPath);
     if (isIndexFile(basename)) return '';
@@ -105,10 +132,8 @@ export function getMetadata(fullPath: string, displayRank?: boolean): FileMetada
     } else {
       return result;
     }
-  } else {
-    if (isMdfile(fullPath)) {
-      return parseMd(fullPath);
-    }
+  } else if (isMdfile(fullPath)) {
+    return parseMd(fullPath);
   }
   return { title: '' };
 }

@@ -28,6 +28,7 @@ import {
   isSomeContent,
   inspectObject,
   getRepoTitle,
+  checkRelativeLink,
 } from './utils';
 import { startBuilder, builderEventTarget } from './builder';
 
@@ -36,6 +37,7 @@ import lang from './lang.json';
 
 program.version(version, '-v, --version');
 
+let docsRootDir = '';
 let output = '';
 let templatePath = '';
 let themePath = '';
@@ -70,6 +72,9 @@ function readDir(dir: string, link = '/') {
       const fullPath = path.join(dir, filename);
       if (fs.statSync(fullPath).isFile()) {
         if (isMdfile(fullPath)) {
+          if (debugMode) {
+            checkRelativeLink(fullPath, docsRootDir);
+          }
           item.type = 'file';
           item.link = `${link}${filename}`;
           const { title, headings: children, isNav, navTitle, sidebarIgnore } = getMetadata(
@@ -83,7 +88,7 @@ function readDir(dir: string, link = '/') {
         item.type = 'dir';
         item.link = `${link}${filename}/`;
         item.children = readDir(fullPath, path.posix.join(link, filename) + '/');
-        const { title, isNav, navTitle, sidebarIgnore } = getMetadata(fullPath);
+        const { title, isNav, navTitle, sidebarIgnore } = getMetadata(fullPath, false);
         Object.assign(item, { title, isNav, navTitle, sidebarIgnore });
         result.push(item);
       }
@@ -92,8 +97,6 @@ function readDir(dir: string, link = '/') {
 }
 
 async function generateBookConfig(dir: string) {
-  const fullDir = path.resolve(process.cwd(), dir);
-
   //icon path
   if (iconPath) {
     bookConfig.icon ??= isURL(iconPath)
@@ -116,11 +119,11 @@ async function generateBookConfig(dir: string) {
 
   if (bookConfig.i18n) {
     const sidebarConfig: SidebarConfig = {};
-    fs.readdirSync(fullDir).forEach((code) => {
-      const fullPath = path.join(fullDir, code);
+    fs.readdirSync(docsRootDir).forEach((code) => {
+      const fullPath = path.join(docsRootDir, code);
       if (fs.statSync(fullPath).isDirectory()) {
         sidebarConfig[code] = {
-          data: readDir(path.join(fullDir, code)),
+          data: readDir(path.join(docsRootDir, code)),
           name: code in lang ? lang[code as keyof typeof lang] : code,
         };
       }
@@ -129,7 +132,7 @@ async function generateBookConfig(dir: string) {
   } else {
     // recursive scan dir
     // fill sidebar
-    bookConfig.sidebar = readDir(fullDir);
+    bookConfig.sidebar = readDir(docsRootDir);
   }
 
   // create file
@@ -213,6 +216,7 @@ program
   })
   .arguments('<dir>')
   .action(async (dir: string) => {
+    docsRootDir = path.resolve(process.cwd(), dir);
     await generateBookConfig(dir);
     if (!buildMode) {
       fs.watch(dir, { recursive: true }, (type, filePath) => {
