@@ -122,10 +122,12 @@ async function generateBookConfig(dir: string) {
     fs.readdirSync(docsRootDir).forEach((code) => {
       const fullPath = path.join(docsRootDir, code);
       if (fs.statSync(fullPath).isDirectory()) {
-        sidebarConfig[code] = {
-          data: readDir(path.join(docsRootDir, code)),
-          name: code in lang ? lang[code as keyof typeof lang] : code,
-        };
+        if (code in lang) {
+          sidebarConfig[code] = {
+            data: readDir(path.join(docsRootDir, code)),
+            name: lang[code as keyof typeof lang],
+          };
+        }
       }
     });
     bookConfig.sidebar = sidebarConfig;
