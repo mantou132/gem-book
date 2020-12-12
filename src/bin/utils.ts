@@ -16,7 +16,7 @@ import { isIndexFile, parseFilename } from '../common/utils';
 
 // https://github.com/webpack/webpack/issues/4175#issuecomment-277232067
 declare global {
-  let __non_webpack_require__: (mod: string) => any;
+  let __non_webpack_require__: typeof require;
 }
 
 export async function getGithubUrl() {

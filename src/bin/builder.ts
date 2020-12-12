@@ -53,7 +53,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
           test: /\.ts$/,
           use: [
             {
-              loader: path.resolve(__dirname, '../node_modules/ts-loader'),
+              loader: __non_webpack_require__.resolve('ts-loader'),
               options: {
                 configFile: path.resolve(__dirname, '../tsconfig.json'),
                 // Install cli without installing dev @types dependency
