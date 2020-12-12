@@ -4,7 +4,7 @@ The `<gem-book>` element provides the theme API, which can be very convenient to
 
 ## Default theme
 
-<gbp-raw src="/src/element/helper/theme.ts" range="3-18"></gbp-raw>
+<gbp-raw src="/src/common/theme.ts"></gbp-raw>
 
 ## Custom theme
 

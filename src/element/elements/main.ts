@@ -159,13 +159,13 @@ export class Main extends GemElement<State> {
           align-items: center;
           gap: 0.2em;
           color: inherit;
-          background: rgba(${theme.primaryColorRGB}, 0.1);
+          background: rgba(${theme.primaryColorRGB}, 0.2);
           text-decoration: none;
-          border-bottom: 1px solid rgba(${theme.textColorRGB}, 0.3);
+          border-bottom: 1px solid rgba(${theme.textColorRGB}, 0.4);
           line-height: 1.2;
         }
         .link:hover {
-          background: rgba(${theme.primaryColorRGB}, 0.3);
+          background: rgba(${theme.primaryColorRGB}, 0.4);
           border-color: currentColor;
         }
         h1,

@@ -1,25 +1,34 @@
-import { createTheme, updateTheme } from '@mantou/gem/helper/theme';
-
-export const defaultTheme = {
-  font:
-    '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif',
-  sidebarWidth: '230px',
-  mainWidth: '780px',
-  headerHeight: '55px',
-  backgroundColor: 'white',
-  borderColor: '#eaeaea',
-  textColorRGB: '40, 44, 52',
-  textColor: 'rgb(40, 44, 52)',
-  primaryColorRGB: '38, 192, 227',
-  primaryColor: 'rgb(38, 192, 227)',
-  inlineCodeBackground: '#ffe56433',
-  blockCodeBackground: '#2e3440',
-};
+import { createTheme, getThemeStore, updateTheme } from '@mantou/gem/helper/theme';
+import { defaultTheme } from '../../common/theme';
 
 export type Theme = typeof defaultTheme;
 
-export const theme = createTheme(defaultTheme);
+function generateTheme(theme: Theme) {
+  const div = document.createElement('div');
+  document.body.append(div);
+  const style = getComputedStyle(div);
+  const getRGB = (color: string) => {
+    div.setAttribute('style', `color: ${color}`);
+    const rgb = style.color.match(/rgba?\((\d+,\s\d+,\s\d+)(,\s\d+)?\)/)?.[1];
+    if (!rgb) throw new Error(`Not support color: ${color}`);
+    return rgb;
+  };
+  const colors = {
+    textColorRGB: getRGB(theme.textColor),
+    primaryColorRGB: getRGB(theme.primaryColor),
+  };
+  div.remove();
 
-export function changeTheme(newTheme?: Partial<typeof theme>) {
-  updateTheme(theme, { ...newTheme });
+  return {
+    ...theme,
+    ...colors,
+  };
+}
+
+export const theme = createTheme(generateTheme(defaultTheme));
+
+export function changeTheme(newTheme?: Partial<Theme>) {
+  if (newTheme) {
+    updateTheme(theme, generateTheme({ ...getThemeStore(theme), ...newTheme }));
+  }
 }
