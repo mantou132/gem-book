@@ -45,14 +45,13 @@ export function getRepoTitle() {
 
 export function resolveTheme(p: string) {
   if (!p) return { theme: null, resolveThemePath: p };
-  const file = p.startsWith('.json') ? p : `${p}.json`;
+  let resolveThemePath = '';
   try {
-    const resolveThemePath = path.resolve(process.cwd(), file);
-    return { resolveThemePath, theme: __non_webpack_require__(resolveThemePath) };
+    resolveThemePath = __non_webpack_require__.resolve(path.resolve(process.cwd(), p));
   } catch {
-    const resolveThemePath = path.resolve(__dirname, `../themes/${file}`);
-    return { resolveThemePath, theme: __non_webpack_require__(resolveThemePath) };
+    resolveThemePath = __non_webpack_require__.resolve(path.resolve(__dirname, `../themes/${p}`));
   }
+  return { resolveThemePath, theme: __non_webpack_require__(resolveThemePath) };
 }
 
 export function checkRelativeLink(fullPath: string, docsRootDir: string) {

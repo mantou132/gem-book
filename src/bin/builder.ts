@@ -105,7 +105,13 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
       .concat(
         !buildMode && resolveThemePath
           ? new CopyWebpackPlugin({
-              patterns: [{ from: resolveThemePath, to: path.resolve(outputDir, DEV_THEME_FILE) }],
+              patterns: [
+                {
+                  from: resolveThemePath,
+                  to: path.resolve(outputDir, DEV_THEME_FILE),
+                  transform: () => JSON.stringify(theme),
+                },
+              ],
             })
           : [],
       ),
