@@ -89,6 +89,11 @@ export class Homepage extends GemElement {
             padding: 0.3rem 1rem;
           }
         }
+        @media print {
+          .hero {
+            background: transparent;
+          }
+        }
       </style>
       <div class="hero" part=${this.hero}>
         <div class="body">
@@ -147,7 +152,7 @@ export class Homepage extends GemElement {
           width: 100%;
           height: 10em;
         }
-        @media ${mediaQuery.PHONE} {
+        @media ${mediaQuery.PHONE}, print {
           .features .body {
             display: block;
           }
@@ -208,6 +213,12 @@ export class Homepage extends GemElement {
           display: inline-block;
           opacity: 0.05;
           background: currentColor;
+        }
+        @media print {
+          :host {
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+          }
         }
       </style>
       ${this.renderHero()}${this.renderFeature()}

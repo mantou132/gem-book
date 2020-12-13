@@ -135,7 +135,7 @@ export class Main extends GemElement<State> {
   render() {
     const { fetching, content } = this.state;
     return html`
-      ${content || html`<div style="height: 20em">${selfI18n.get('loading')}</div>`}
+      ${content || html`<div>${selfI18n.get('loading')}</div>`}
       <style>
         ${this.linkStyle}
       </style>
@@ -149,12 +149,13 @@ export class Main extends GemElement<State> {
           background: ${theme.borderColor};
         }
         :host {
+          -webkit-print-color-adjust: economy;
+          color-adjust: economy;
           display: block;
           width: 100%;
           box-sizing: border-box;
           z-index: 1;
           opacity: ${fetching ? 0.3 : 1};
-          min-height: 10rem;
           line-height: 1.7;
         }
         :host :first-child {

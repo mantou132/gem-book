@@ -1,6 +1,7 @@
 import { html, GemElement, customElement, attribute, refobject, RefObject } from '@mantou/gem';
 import Prism from 'prismjs';
 
+import { theme } from '../helper/theme';
 import { loadScript } from '../lib/utils';
 
 // https://github.com/PrismJS/prism/blob/master/plugins/autoloader/prism-autoloader.js
@@ -347,6 +348,7 @@ export class Pre extends GemElement {
         }
         @media print {
           code {
+            border-left: 8px solid rgba(${theme.textColorRGB}, 0.2);
             white-space: pre-wrap;
             word-break: break-word;
           }

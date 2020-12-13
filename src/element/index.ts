@@ -311,7 +311,8 @@ export class GemBookElement extends GemElement<State> {
           display: grid;
           grid-template-areas: 'left aside content right';
           grid-template-columns: auto ${theme.sidebarWidth} minmax(auto, ${theme.mainWidth}) auto;
-          grid-template-rows: repeat(4, auto) 1fr;
+          /* repeat(5, auto) 1fr */
+          grid-template-rows: repeat(44, auto);
           grid-column-gap: 3rem;
           text-rendering: optimizeLegibility;
           font: 16px/1.7 ${theme.font};
@@ -334,12 +335,11 @@ export class GemBookElement extends GemElement<State> {
         .nav-shadow ~ gem-book-sidebar {
           margin-top: ${theme.headerHeight};
           top: ${theme.headerHeight};
-          height: calc(100vh - ${theme.headerHeight});
+          max-height: calc(100vh - ${theme.headerHeight});
         }
         gem-book-sidebar {
-          /* how to span all row? */
-          grid-area: 1 / aside / 6 / aside;
-          height: 100vh;
+          grid-area: 1 / aside / -1 / aside;
+          max-height: 100vh;
         }
         gem-book-nav {
           grid-area: 1 / aside / 2 / content;
@@ -361,6 +361,7 @@ export class GemBookElement extends GemElement<State> {
           margin-top: 3rem;
         }
         gem-light-route {
+          min-height: 20rem;
           overflow: hidden;
           margin: 0 -3rem;
           padding: 0 3rem;
