@@ -68,12 +68,17 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
       ],
     },
     resolve: {
-      extensions: ['.tsx', '.ts', '.js'],
+      extensions: ['.ts', '.js'],
     },
     output: {
       path: outputDir,
       publicPath: '/',
       filename: 'bundle.js?[contenthash]',
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+      },
     },
     plugins: [
       new HtmlWebpackPlugin({
