@@ -10,6 +10,8 @@ import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 import { FrontMatter } from '../../common/frontmatter';
 import { getMdPath, isSameOrigin, getUserLink, escapeHTML } from '../lib/utils';
 import { theme } from '../helper/theme';
+import { selfI18n } from '../helper/i18n';
+
 import { homepageData } from './homepage';
 import { anchor, link } from './icons';
 
@@ -133,7 +135,7 @@ export class Main extends GemElement<State> {
   render() {
     const { fetching, content } = this.state;
     return html`
-      ${content || html`<div style="height: 20em">Loading...</div>`}
+      ${content || html`<div style="height: 20em">${selfI18n.get('loading')}</div>`}
       <style>
         ${this.linkStyle}
       </style>
