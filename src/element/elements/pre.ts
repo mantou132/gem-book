@@ -345,6 +345,12 @@ export class Pre extends GemElement {
         .token.entity {
           cursor: help;
         }
+        @media print {
+          code {
+            white-space: pre-wrap;
+            word-break: break-word;
+          }
+        }
       </style>
     `;
   }

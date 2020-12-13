@@ -318,12 +318,6 @@ export class Main extends GemElement<State> {
             border-radius: 0;
           }
         }
-        @media print {
-          gem-book-pre {
-            white-space: pre-wrap;
-            word-break: break-word;
-          }
-        }
       </style>
     `;
   }

@@ -420,6 +420,20 @@ export class GemBookElement extends GemElement<State> {
             text-align: left;
           }
         }
+        @media print {
+          .nav-shadow,
+          gem-book-nav,
+          gem-book-sidebar,
+          gem-book-edit-link,
+          gem-book-rel-link,
+          gem-book-footer,
+          slot[name] {
+            display: none;
+          }
+          gem-light-route {
+            grid-area: auto / left / auto / right;
+          }
+        }
       </style>
       ${hasNavbar
         ? html`
