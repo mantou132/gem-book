@@ -1,4 +1,4 @@
-import { html, GemElement, customElement, connectStore, attribute } from '@mantou/gem';
+import { html, GemElement, customElement, connectStore, attribute, css } from '@mantou/gem';
 import '@mantou/gem/elements/link';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
@@ -37,7 +37,18 @@ export class Footer extends GemElement {
         }
       </style>
       ${this.footer
-        ? mdRender.unsafeRender(this.footer, `p { margin : 0 }`)
+        ? mdRender.unsafeRender(
+            this.footer,
+            css`
+              p {
+                margin: 0;
+              }
+              .link,
+              .link:hover {
+                background: none;
+              }
+            `,
+          )
         : selfI18n.get('footer', (t) => html`<gem-link href="https://gem-book.js.org">&lt;${t}&gt;</gem-link>`)}
     `;
   }

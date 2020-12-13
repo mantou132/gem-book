@@ -1,7 +1,7 @@
 export interface Hero {
   title?: string;
   desc?: string;
-  actions: { text: string; link: string }[];
+  actions?: { text: string; link: string }[];
 }
 
 export interface Feature {
@@ -18,7 +18,7 @@ export interface FrontMatter {
 
   /** The following is the homepage options */
 
-  hero?: Hero;
-  // `null` when `features:` has no members
+  // `null` when `hero:`/`features:` has no members
+  hero?: Hero | null;
   features?: Feature[] | null;
 }

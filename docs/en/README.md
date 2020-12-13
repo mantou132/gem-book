@@ -4,7 +4,7 @@ hero:
   desc: Create your document website easily and quickly
   actions:
     - text: Getting Started
-      link: ./guide/
+      link: ./002-guide/README.md
 features:
   - title: Out of the box
     desc: Just run the command line to pack all front-end resources, so that all attention can be paid to document writing

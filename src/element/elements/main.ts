@@ -1,4 +1,4 @@
-import { html, GemElement, customElement, attribute, raw, boolattribute, updateStore, css } from '@mantou/gem';
+import { html, GemElement, customElement, attribute, boolattribute, updateStore, css } from '@mantou/gem';
 import marked from 'marked';
 import fm from 'front-matter';
 
@@ -42,6 +42,23 @@ export class Main extends GemElement<State> {
 
   cache = new Map<string, string>();
 
+  linkStyle = css`
+    .link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2em;
+      color: inherit;
+      text-decoration: none;
+      line-height: 1.2;
+      background: rgba(${theme.primaryColorRGB}, 0.2);
+      border-bottom: 1px solid rgba(${theme.textColorRGB}, 0.4);
+    }
+    .link:hover {
+      background: rgba(${theme.primaryColorRGB}, 0.4);
+      border-color: currentColor;
+    }
+  `;
+
   getMdRenderer() {
     const renderer = new marked.Renderer();
     // https://github.com/markedjs/marked/blob/ed18cd58218ed4ab98d3457bec2872ba1f71230e/lib/marked.esm.js#L986
@@ -50,11 +67,7 @@ export class Main extends GemElement<State> {
       const [, text, customId] = fullText.match(/^(.*?)\s*(?:{#(.*)})?$/s) as RegExpMatchArray;
       const tag = `h${level}`;
       const id = customId || `${this.options.headerPrefix}${slugger.slug(r)}`;
-      return raw`
-        <${tag} class="markdown-header" id="${id}">
-          <a class="header-anchor" href="#${id}">${anchor}</a>
-          ${text}</${tag}>
-      `;
+      return `<${tag} class="markdown-header" id="${id}"><a class="header-anchor" href="#${id}">${anchor}</a>${text}</${tag}>`;
     };
 
     renderer.code = (code, infostring) => {
@@ -65,17 +78,14 @@ export class Main extends GemElement<State> {
     const { displayRank } = this;
     renderer.link = function (href, title, text) {
       if (href?.startsWith('.')) {
-        return raw`
-          <gem-link class="link" path=${getUserLink(href, displayRank)} title=${title || ''}>${text}</gem-link>
-        `;
+        return `<gem-link class="link" path=${getUserLink(href, displayRank)} title="${
+          title || ''
+        }">${text}</gem-link>`;
       }
       const internal = isSameOrigin(href || '');
-      return raw`
-        <a class="link" target=${internal ? '_self' : '_blank'} href=${href || ''} title=${title || ''}>
-          ${text}
-          ${internal ? '' : link}
-        </a>
-      `;
+      return `<a class="link" target=${internal ? '_self' : '_blank'} href="${href || ''}" title="${
+        title || ''
+      }">${text}${internal ? '' : link}</a>`;
     };
     return renderer;
   }
@@ -125,6 +135,9 @@ export class Main extends GemElement<State> {
     return html`
       ${content || html`<div style="height: 20em">Loading...</div>`}
       <style>
+        ${this.linkStyle}
+      </style>
+      <style>
         :not(:defined)::before {
           display: block;
           content: 'The element is not defined';
@@ -153,20 +166,6 @@ export class Main extends GemElement<State> {
         }
         a {
           color: inherit;
-        }
-        .link {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.2em;
-          color: inherit;
-          background: rgba(${theme.primaryColorRGB}, 0.2);
-          text-decoration: none;
-          border-bottom: 1px solid rgba(${theme.textColorRGB}, 0.4);
-          line-height: 1.2;
-        }
-        .link:hover {
-          background: rgba(${theme.primaryColorRGB}, 0.4);
-          border-color: currentColor;
         }
         h1,
         h2,
@@ -346,16 +345,7 @@ export class Main extends GemElement<State> {
   unsafeRender(s: string, style = '') {
     const htmlstr = marked.parse(s, { renderer: this.mdRenderer });
     const cssstr = css`
-      a,
-      gem-link {
-        border-bottom: 1px solid rgba(${theme.textColorRGB}, 0.3);
-        color: inherit;
-        text-decoration: none;
-      }
-      a:hover,
-      gem-link:hover {
-        border-bottom: 1px solid;
-      }
+      ${this.linkStyle}
       ${style}
     `;
     return html`<gem-unsafe content=${htmlstr} contentcss=${cssstr}></gem-unsafe>`;

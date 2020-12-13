@@ -21,7 +21,9 @@ export class Homepage extends GemElement {
   @part hero: string;
 
   renderHero() {
-    const { title, desc, actions } = homepageData.hero || { title: '', desc: '', actions: [{ text: '', link: '' }] };
+    const { hero = { title: '', desc: '', actions: [{ text: '', link: '' }] } } = homepageData;
+    if (hero === null) return null;
+    const { title, desc, actions } = hero;
     return html`
       <style>
         .hero {
@@ -91,9 +93,9 @@ export class Homepage extends GemElement {
       <div class="hero" part=${this.hero}>
         <div class="body">
           ${title === undefined ? '' : html`<h1 class="title ${placeholder(title)}">${title}</h1>`}
-          ${desc === undefined ? '' : html`<p class="desc ${placeholder(desc)}">${desc}</p>`}
+          ${desc === undefined ? '' : html`<p class="desc ${placeholder(desc)}">${mdRender.unsafeRender(desc)}</p>`}
           <div class="actions">
-            ${actions.map(
+            ${actions?.map(
               ({ link, text }, index) =>
                 html`<gem-link class=${placeholder(text)} href=${getUserLink(link)}>
                   ${text}${index ? html`<gem-use .root=${container} selector="#arrow"></gem-use>` : ''}
@@ -177,19 +179,7 @@ export class Homepage extends GemElement {
               <div class="feature ${feature.icon ? 'has-icon' : ''}">
                 ${feature.icon ? html`<img class="icon" src=${feature.icon} />` : ''}
                 <h3 class="feat-title ${placeholder(feature.title)}">${feature.title}</h3>
-                <p class="feat-desc ${placeholder(feature.desc)}">
-                  ${mdRender.unsafeRender(
-                    feature.desc,
-                    `
-                      a, gem-link {
-                        background: rgba(${theme.primaryColorRGB}, 0.1);
-                      }
-                      a:hover, gem-link:hover {
-                        background: rgba(${theme.primaryColorRGB}, 0.2);
-                      }
-                    `,
-                  )}
-                </p>
+                <p class="feat-desc ${placeholder(feature.desc)}">${mdRender.unsafeRender(feature.desc)}</p>
               </div>
             `,
           )}

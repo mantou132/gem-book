@@ -4,7 +4,7 @@ hero:
   desc: 简单、快速创建你的文档网站
   actions:
     - text: 快速开始
-      link: ./guide/
+      link: ./002-guide/README.md
 features:
   - title: 开箱即用
     desc: 只需运行命令行就能打包所有前端资源，让所有注意力都能放在文档编写上
