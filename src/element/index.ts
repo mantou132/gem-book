@@ -10,6 +10,7 @@ import {
   part,
   slot,
   globalemitter,
+  state,
 } from '@mantou/gem';
 import * as Gem from '@mantou/gem';
 import marked from 'marked';
@@ -83,6 +84,8 @@ export class GemBookElement extends GemElement<State> {
   @slot mainBefore: string;
   @slot mainAfter: string;
   @slot navInside: string;
+
+  @state isHomePage: boolean;
 
   state: State = {
     config: undefined, // `src` generate
@@ -296,7 +299,8 @@ export class GemBookElement extends GemElement<State> {
       (e) => e.sidebarIgnore !== true && (!homeMode || e.link !== homePage),
     );
 
-    const renderHomePage = homeMode && homePage === history.getParams().path;
+    this.isHomePage = homePage === history.getParams().path;
+    const renderHomePage = homeMode && this.isHomePage;
 
     return html`
       <gem-reflect>
