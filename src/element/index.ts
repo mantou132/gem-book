@@ -426,6 +426,9 @@ export class GemBookElement extends GemElement<State> {
           }
         }
         @media print {
+          :host {
+            display: block;
+          }
           .nav-shadow,
           gem-book-nav,
           gem-book-sidebar,

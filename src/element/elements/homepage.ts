@@ -118,7 +118,7 @@ export class Homepage extends GemElement {
     return html`
       <style>
         .features {
-          padding: 3rem 1rem;
+          padding: 3rem;
         }
         .features .body {
           display: grid;

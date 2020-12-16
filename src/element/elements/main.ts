@@ -288,15 +288,6 @@ export class Main extends GemElement<State> {
         .markdown-header:hover .header-anchor {
           opacity: 1;
         }
-        @media ${mediaQuery.PHONE} {
-          .header-anchor {
-            display: none;
-          }
-          h1 {
-            font-size: 2.5rem;
-          }
-        }
-
         code {
           font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
           font-size: 90%;
@@ -315,9 +306,17 @@ export class Main extends GemElement<State> {
           background: ${theme.blockCodeBackground};
         }
         @media ${mediaQuery.PHONE} {
-          gem-book-pre {
-            margin: 1rem -1rem;
-            border-radius: 0;
+          .header-anchor {
+            display: none;
+          }
+          h1 {
+            font-size: 2.5rem;
+          }
+          @media screen {
+            gem-book-pre {
+              margin: 1rem -1rem;
+              border-radius: 0;
+            }
           }
         }
       </style>

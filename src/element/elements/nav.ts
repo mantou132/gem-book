@@ -58,20 +58,29 @@ export class Nav extends GemElement {
     }
   };
 
-  renderItem = ({ navTitle, title, link }: NavItem) => {
+  renderExternalItem = ({ navTitle, title, link }: NavItem) => {
     if (link) {
-      const external = !isSameOrigin(link);
       return html`
-        <gem-active-link class="${external ? 'external' : ''} item" href=${link} pattern=${`${link}*`}>
+        <gem-link class="external item" href=${link}>
           ${capitalize(navTitle || title)}
-          ${external ? html`<gem-use .root=${container} selector="#link"></gem-use>` : null}
+          <gem-use .root=${container} selector="#link"></gem-use>
+        </gem-link>
+      `;
+    }
+  };
+
+  renderInternalItem = ({ navTitle, title, link }: NavItem) => {
+    if (link) {
+      return html`
+        <gem-active-link class="item" href=${link} pattern="${link}*">
+          ${capitalize(navTitle || title)}
         </gem-active-link>
       `;
     }
   };
 
   render() {
-    const githubLink = this.github ? this.renderItem({ title: 'github', link: this.github }) : null;
+    const githubLink = this.github ? this.renderExternalItem({ title: 'github', link: this.github }) : null;
     const internals = this.nav?.filter((e) => isSameOrigin(e.link)) || [];
     const externals = this.nav?.filter((e) => !isSameOrigin(e.link)) || [];
 
@@ -81,11 +90,6 @@ export class Nav extends GemElement {
           --height: ${theme.headerHeight};
           display: flex;
           line-height: var(--height);
-        }
-        gem-link,
-        gem-active-link {
-          text-decoration: none;
-          color: inherit;
         }
         .item {
           display: flex;
@@ -106,7 +110,7 @@ export class Nav extends GemElement {
           bottom: 0;
           opacity: 0;
         }
-        .title {
+        .internals {
           flex-grow: 1;
           display: flex;
         }
@@ -119,7 +123,7 @@ export class Nav extends GemElement {
           font-weight: 300;
           padding: 0 1rem;
         }
-        .title img {
+        .internals img {
           height: calc(0.8 * var(--height));
           min-width: calc(0.8 * var(--height));
           object-fit: contain;
@@ -127,6 +131,14 @@ export class Nav extends GemElement {
         }
         .item + .item {
           margin-left: 1rem;
+        }
+        gem-link,
+        gem-active-link {
+          text-decoration: none;
+          color: inherit;
+        }
+        gem-active-link:active {
+          background: rgba(${theme.primaryColorRGB}, 0.1);
         }
         gem-active-link:hover,
         gem-active-link.active {
@@ -160,15 +172,15 @@ export class Nav extends GemElement {
           }
         }
       </style>
-      <div class="title">
+      <div class="internals">
         <gem-link class="item homelink" path="/">
           ${this.icon ? html`<img alt=${this.tl} src=${this.icon} />` : null}
           ${mediaQuery.isPhone && this.icon && Number(this.nav?.length) >= 2 ? '' : this.tl}
         </gem-link>
-        ${internals.map(this.renderItem)}
+        ${internals.map(this.renderInternalItem)}
       </div>
       <slot class="item"></slot>
-      ${externals.map(this.renderItem)} ${githubLink} ${this.renderI18nSelect()}
+      ${externals.map(this.renderExternalItem)} ${githubLink} ${this.renderI18nSelect()}
     `;
   }
 
