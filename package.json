@@ -10,6 +10,7 @@
     "generator"
   ],
   "main": "index.js",
+  "module": "index.js",
   "bin": {
     "gem-book": "bin/index.js"
   },
@@ -47,7 +48,6 @@
     "marked": "^0.8.2",
     "mkdirp": "^0.5.5",
     "parse-github-url": "^1.0.2",
-    "prismjs": "^1.22.0",
     "ts-loader": "^8.0.6",
     "typescript": "^4.0.3",
     "webpack": "^4.44.2",

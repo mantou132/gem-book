@@ -1,8 +1,6 @@
 import { html, GemElement, customElement, attribute, refobject, RefObject } from '@mantou/gem';
-import Prism from 'prismjs';
 
 import { theme } from '../helper/theme';
-import { loadScript } from '../lib/utils';
 
 // https://github.com/PrismJS/prism/blob/master/plugins/autoloader/prism-autoloader.js
 const langDependencies: Record<string, string | string[]> = {
@@ -361,6 +359,9 @@ export class Pre extends GemElement {
     this.effect(
       async () => {
         if (!this.codeRef.element) return;
+        const esmHost = 'https://cdn.skypack.dev/prismjs';
+        await import(/* webpackIgnore: true */ `${esmHost}?min`);
+        const { Prism } = window;
 
         // TODO: wait Intersection
 
@@ -373,7 +374,7 @@ export class Pre extends GemElement {
             await Promise.all(
               [...langs].map((lang) => {
                 if (!Prism.languages[lang]) {
-                  return loadScript(`https://unpkg.com/prismjs@1.22.0/components/prism-${lang}.min.js`);
+                  return import(/* webpackIgnore: true */ `${esmHost}/components/prism-${lang}.min.js`);
                 }
               }),
             );

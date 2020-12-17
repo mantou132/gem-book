@@ -11,58 +11,40 @@ import {
   slot,
   globalemitter,
   state,
+  refobject,
+  RefObject,
 } from '@mantou/gem';
-import * as Gem from '@mantou/gem';
-import marked from 'marked';
-import Prism from 'prismjs';
 
 import '@mantou/gem/elements/title';
 import '@mantou/gem/elements/route';
 import '@mantou/gem/elements/reflect';
-import { RouteItem } from '@mantou/gem/elements/route';
-import { I18n } from '@mantou/gem/helper/i18n';
+import { GemLightRouteElement } from '@mantou/gem/elements/route';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
-import { NavItem, BookConfig } from '../common/config';
+import { BookConfig } from '../common/config';
 import './elements/nav';
 import './elements/sidebar';
-import './elements/main';
 import './elements/homepage';
 import './elements/footer';
 import './elements/edit-link';
 import './elements/rel-link';
-import {
-  flatNav,
-  capitalize,
-  getLinkPath,
-  NavItemWithLink,
-  getMdPath,
-  getUserLink,
-  getAlternateUrl,
-} from './lib/utils';
-import { selfI18n } from './helper/i18n';
+import './elements/meta';
+import { GemBookPluginElement } from './elements/plugin';
 import { theme, changeTheme, Theme } from './helper/theme';
-
-const sharedConfig: Partial<BookConfig> = {};
-class GemBookPluginElement extends GemElement {
-  static Gem = Gem;
-  static Prism = Prism;
-  static marked = marked;
-  static config = sharedConfig;
-  static theme = theme;
-}
-
-type State = { config: BookConfig | undefined };
+import { bookStore, updateBookConfig } from './store';
 
 /**
  * @custom-element gem-book
  * @prop {BookConfig} config
+ * @prop {Theme} theme
  * @attr src
  */
 @customElement('gem-book')
-@connectStore(history.store)
-export class GemBookElement extends GemElement<State> {
+@connectStore(bookStore)
+export class GemBookElement extends GemElement {
   static GemBookPluginElement = GemBookPluginElement;
+
+  @refobject routeRef: RefObject<GemLightRouteElement>;
 
   @attribute src: string;
 
@@ -87,235 +69,29 @@ export class GemBookElement extends GemElement<State> {
 
   @state isHomePage: boolean;
 
-  state: State = {
-    config: undefined, // `src` generate
-  };
-
   constructor(config: BookConfig, theme?: Partial<Theme>) {
     super();
     this.config = config;
     this.theme = theme;
   }
 
-  private getConfig() {
-    return this.config || this.state.config;
-  }
-
-  private getI18nSidebar() {
-    const config = this.getConfig();
-    let sidebar: NavItem[] = [];
-    let lang = '';
-    let langlist: { code: string; name: string }[] = [];
-    let languagechangeHandle = (_evt: CustomEvent<string>) => {
-      //
-    };
-    if (config) {
-      if (config.sidebar instanceof Array) {
-        sidebar = config.sidebar;
-      } else {
-        const sidebarConfig = config.sidebar;
-        langlist = Object.keys(config.sidebar).map((code) => ({ code, name: sidebarConfig[code].name }));
-        const fallbackLanguage = langlist[0].code;
-        // detect language
-        const i18n = new I18n<any>({ fallbackLanguage, resources: sidebarConfig, cache: true, urlParamsType: 'path' });
-        lang = i18n.currentLanguage;
-        history.basePath = `/${lang}`;
-        sidebar = sidebarConfig[lang].data;
-        languagechangeHandle = async (evt: CustomEvent<string>) => {
-          const { path, query, hash } = history.getParams();
-          // will modify `history.getParams()`
-          history.basePath = `/${evt.detail}`;
-          await i18n.setLanguage(evt.detail);
-          // Use custom anchors id to ensure that the hash is correct after i18n switching
-          history.replace({ path, query, hash });
-        };
-      }
-    }
-
-    if (lang) {
-      selfI18n.setLanguage(lang in selfI18n.resources ? lang : selfI18n.fallbackLanguage);
-    }
-    return { sidebar, lang, langlist, languagechangeHandle };
-  }
-
-  private processSidebar(sidebar: NavItem[]) {
-    const config = this.getConfig();
-    const process = (item: NavItem): NavItemWithLink => {
-      return {
-        ...item,
-        // /guide/
-        link: item.link && getUserLink(item.link, config?.displayRank),
-        // /guide/readme
-        userFullPath: item.link && getLinkPath(item.link, config?.displayRank),
-        originLink: item.link,
-        children: item.children?.map(process),
-      } as NavItemWithLink;
-    };
-    return sidebar.map(process);
-  }
-
-  private getNav(sidebar: NavItem[]) {
-    const config = this.getConfig();
-    const nav: NavItem[] = [];
-    const traverseSidebar = (items: NavItem[]) => {
-      items.forEach((item) => {
-        if (item.isNav) {
-          nav.push(item);
-        } else if (item.children) {
-          traverseSidebar(item.children);
-        }
-      });
-    };
-    traverseSidebar(sidebar);
-    return nav.concat(config?.nav || []);
-  }
-
-  private getNavRoutes(nav: NavItem[]): RouteItem[] {
-    return nav
-      .filter(({ type, link, children }) => type === 'dir' && link !== children?.[0].link)
-      .map(({ link, children }) => ({ pattern: link, redirect: children?.[0].link }));
-  }
-
-  private getRouter(links: NavItemWithLink[], title: string, lang: string) {
-    const config = this.getConfig();
-    const routes: RouteItem[] = [];
-    links.forEach(({ title: pageTitle, link, userFullPath, originLink }) => {
-      const routeTitle = `${capitalize(pageTitle)}${pageTitle ? ' - ' : ''}${title}`;
-      const routeContent = html`
-        <gem-book-main lang=${lang} link=${originLink} ?display-rank=${config?.displayRank}></gem-book-main>
-      `;
-
-      routes.push({
-        title: routeTitle,
-        pattern: link,
-        content: routeContent,
-      });
-
-      if (userFullPath !== link) {
-        // /xxx/readme => /xxx/
-        routes.push({
-          pattern: userFullPath,
-          redirect: link,
-        });
-      }
-
-      if (!config?.displayRank) {
-        // /001-x/001-xxx => /x/xxx
-        const path = getLinkPath(originLink, true);
-        if (path !== link) {
-          routes.push({
-            pattern: path,
-            redirect: link,
-          });
-        }
-      }
-    });
-
-    if (!routes.some(({ pattern }) => pattern === '/')) {
-      const firstRoutePath = routes.find(({ pattern }) => !!pattern)?.pattern;
-      if (firstRoutePath) {
-        routes.push({
-          pattern: '/',
-          redirect: firstRoutePath,
-        });
-      }
-    }
-
-    routes.push({
-      pattern: '*',
-      redirect: '/',
-    });
-
-    return routes;
-  }
-
-  private getHomePage(links: RouteItem[]) {
-    const link = links.find((e) => e.pattern === '/');
-    if (!link) return '';
-    return link.redirect || link.pattern;
-  }
-
-  // 如果当前路径在 isNav 的目录中，则只返回 isNav 目录内容
-  // 如果当前路径不在 isNav 目录中，则返回除所有 isNav 目录的内容
-  // 不考虑嵌套 isNav 目录
-  private getCurrentSidebar(sidebar: NavItemWithLink[]) {
-    const { path } = history.getParams();
-
-    let currentNavNode: NavItemWithLink | undefined;
-    let resultNavNode: NavItemWithLink | undefined;
-    const resultWithoutNav: NavItemWithLink[] = [];
-
-    const traverseSidebar = (items: NavItemWithLink[], result: NavItemWithLink[]) => {
-      items.forEach((item) => {
-        let tempNode: NavItemWithLink | undefined;
-        if (!resultNavNode && currentNavNode && item.link === path && item.type === 'file') {
-          resultNavNode = currentNavNode;
-        }
-        if (item.isNav && item.type === 'dir') {
-          currentNavNode = item;
-          tempNode = item;
-        } else {
-          result.push(item);
-        }
-        if (item.children) {
-          item.children = traverseSidebar(item.children, []);
-        }
-        if (tempNode) {
-          currentNavNode = undefined;
-        }
-      });
-      return items;
-    };
-    traverseSidebar(sidebar, resultWithoutNav);
-    return resultNavNode ? resultNavNode.children || [] : resultWithoutNav;
-  }
-
   changeTheme = changeTheme;
 
   render() {
-    const config = this.getConfig();
+    const { config, nav = [], routes = [], lang = '', homePage = '' } = bookStore;
     if (!config) return null;
 
-    const {
-      footer = '',
-      icon = '',
-      github = '',
-      sourceBranch,
-      sourceDir = '',
-      title = '',
-      homeMode,
-      displayRank,
-    } = config;
-    const { sidebar, lang, langlist, languagechangeHandle } = this.getI18nSidebar();
-    const sidebarResult = this.processSidebar(sidebar);
-    const links = flatNav(sidebarResult);
-    const nav = this.getNav(sidebarResult);
+    const { icon = '', title = '', homeMode } = config;
     const hasNavbar = icon || title || nav.length;
-    const routes = [...this.getNavRoutes(nav), ...this.getRouter(links, title, lang)];
-    const homePage = this.getHomePage(routes);
-
-    const currentSidebar = this.getCurrentSidebar(sidebarResult);
-    const refLinks = flatNav(currentSidebar).filter(
-      (e) => e.sidebarIgnore !== true && (!homeMode || e.link !== homePage),
-    );
-
     this.isHomePage = homePage === history.getParams().path;
     const renderHomePage = homeMode && this.isHomePage;
 
     return html`
-      <gem-reflect>
-        ${links
-          .filter((e) => e.type === 'file')
-          .map(({ originLink }) => html`<link rel="prefetch" href=${getMdPath(originLink, lang)}></link>`)}
-        ${// 404 ?
-        langlist.map(({ code }) => html`<link rel="alternate" hreflang=${code} href=${getAlternateUrl(code)} />`)}
-      </gem-reflect>
       <style>
         :host {
           display: grid;
           grid-template-areas: 'left aside content right';
           grid-template-columns: auto ${theme.sidebarWidth} minmax(auto, ${theme.mainWidth}) auto;
-          /* repeat(5, auto) 1fr */
           grid-template-rows: repeat(44, auto);
           grid-column-gap: 3rem;
           text-rendering: optimizeLegibility;
@@ -443,80 +219,56 @@ export class GemBookElement extends GemElement<State> {
           }
         }
       </style>
+      <gem-book-meta></gem-book-meta>
       ${hasNavbar
         ? html`
             <div class="nav-shadow" part=${this.navShadow}></div>
-            <gem-book-nav
-              part=${this.nav}
-              tl=${title}
-              icon=${icon}
-              github=${github}
-              lang=${lang}
-              .langlist=${langlist}
-              .nav=${nav}
-              @languagechange=${languagechangeHandle}
-            >
+            <gem-book-nav part=${this.nav}>
               <slot name=${this.navInside}></slot>
             </gem-book-nav>
           `
         : null}
       ${renderHomePage
-        ? html`<gem-book-homepage
-            .displayRank=${displayRank}
-            exportparts="hero: ${this.homepageHero}"
-          ></gem-book-homepage>`
+        ? html`<gem-book-homepage exportparts="hero: ${this.homepageHero}"></gem-book-homepage>`
         : html`<slot name=${this.mainBefore}></slot>`}
       <gem-light-route
+        ref=${this.routeRef.ref}
         part=${this.main}
         .key=${lang}
         .routes=${routes}
         @change=${(e: CustomEvent) => this.routechange(e.detail)}
       ></gem-light-route>
-      ${github && sourceBranch
-        ? html`
-            <gem-book-edit-link
-              part=${this.editLink}
-              github=${github}
-              source-branch=${sourceBranch}
-              srouce-dir=${sourceDir}
-              lang=${lang}
-              .links=${links}
-            ></gem-book-edit-link>
-          `
-        : null}
-      <gem-book-sidebar
-        part=${this.sidebar}
-        @languagechange=${languagechangeHandle}
-        .homePage=${homeMode ? homePage : ''}
-        .sidebar=${currentSidebar}
-      >
+      <gem-book-edit-link part=${this.editLink}></gem-book-edit-link>
+      <gem-book-sidebar part=${this.sidebar}>
         <slot name=${this.sidebarBefore}></slot>
       </gem-book-sidebar>
-      <gem-book-rel-link part=${this.relLink} .links=${refLinks}></gem-book-rel-link>
+      <gem-book-rel-link part=${this.relLink}></gem-book-rel-link>
       ${renderHomePage ? '' : html`<slot name=${this.mainAfter}></slot>`}
-      <gem-book-footer part=${this.footer} .footer=${footer}></gem-book-footer>
+      <gem-book-footer part=${this.footer}></gem-book-footer>
     `;
   }
 
   mounted() {
     this.effect(
       async () => {
-        if (this.src && !this.config) {
+        if (this.src) {
           const config = await (await fetch(this.src)).json();
-          this.setState({ config });
+          updateBookConfig(config, this);
         }
       },
       () => [this.src],
     );
     this.effect(
-      ([config]) => {
-        if (config) Object.assign(sharedConfig, config);
+      () => {
+        if (this.config) {
+          updateBookConfig(this.config, this);
+        }
       },
-      () => [this.getConfig()],
+      () => [this.config],
     );
     this.effect(
       () => {
-        this.changeTheme(this.theme);
+        changeTheme(this.theme);
       },
       () => [this.theme],
     );

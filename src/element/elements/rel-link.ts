@@ -1,21 +1,24 @@
-import { html, GemElement, customElement, history, connectStore, property } from '@mantou/gem';
+import { html, GemElement, customElement, connectStore, property } from '@mantou/gem';
 
 import '@mantou/gem/elements/link';
 
 import { NavItem } from '../../common/config';
 import { theme } from '../helper/theme';
 import { capitalize } from '../lib/utils';
+import { bookStore } from '../store';
 
 @customElement('gem-book-rel-link')
-@connectStore(history.store)
+@connectStore(bookStore)
 export class RelLink extends GemElement {
   @property links: NavItem[];
 
   render() {
-    const { path } = history.getParams();
-    const index = this.links.findIndex(({ link }) => link === path);
-    const prev = this.links[index - 1];
-    const next = this.links[index + 1];
+    const { currentLinks, getCurrentLink } = bookStore;
+    const currentLink = getCurrentLink?.();
+    if (!currentLinks || !currentLink) return;
+    const index = currentLinks.findIndex((item) => currentLink.originLink === item.originLink);
+    const prev = currentLinks[index - 1];
+    const next = currentLinks[index + 1];
     return html`
       <style>
         :host {

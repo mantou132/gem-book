@@ -61,20 +61,6 @@ export function getUserLink(originPath: string, displayRank?: boolean) {
   }
 }
 
-const scriptCache = new Map<string, Promise<unknown>>();
-export async function loadScript(src: string) {
-  if (scriptCache.has(src)) return scriptCache.get(src);
-  const script = document.createElement('script');
-  script.src = src;
-  document.body.append(script);
-  const promise = new Promise((res, rej) => {
-    script.onload = res;
-    script.onerror = rej;
-  });
-  scriptCache.set(src, promise);
-  return promise;
-}
-
 const div = document.createElement('div');
 export function escapeHTML(s: string) {
   div.textContent = s;

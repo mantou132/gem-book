@@ -4,7 +4,7 @@
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
-    "module": "ES2015"
+    "module": "ES2020"
   },
   "include": ["src/element", "src/common", "src/plugins", "src/index.ts"]
 }

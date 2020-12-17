@@ -1,13 +1,14 @@
-import { html, GemElement, customElement, attribute, history, connectStore, property } from '@mantou/gem';
+import { html, GemElement, customElement, history, connectStore } from '@mantou/gem';
 
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { container } from './icons';
-import { getUserLink, getMdPath, NavItemWithLink } from '../lib/utils';
+import { getUserLink, getMdPath } from '../lib/utils';
 import { selfI18n } from '../helper/i18n';
 import { theme } from '../helper/theme';
+import { bookStore } from '../store';
 
 interface State {
   lastUpdated: string;
@@ -29,16 +30,8 @@ const fetchData = async (api: string) => {
  * @attr source-branch
  */
 @customElement('gem-book-edit-link')
-@connectStore(history.store)
 @connectStore(selfI18n.store)
 export class EditLink extends GemElement<State> {
-  @attribute github: string;
-  @attribute srouceDir: string;
-  @attribute sourceBranch: string;
-  @attribute lang: string;
-
-  @property links: NavItemWithLink[] | undefined;
-
   state = {
     lastUpdated: '',
     message: '',
@@ -49,7 +42,7 @@ export class EditLink extends GemElement<State> {
     const { lastUpdated } = this.state;
     return (
       lastUpdated &&
-      new Intl.DateTimeFormat(this.lang || 'default', {
+      new Intl.DateTimeFormat(bookStore.lang || 'default', {
         year: 'numeric',
         month: 'numeric',
         day: 'numeric',
@@ -61,16 +54,21 @@ export class EditLink extends GemElement<State> {
   }
 
   getMdFullPath = () => {
+    const { config, lang, links = [] } = bookStore;
+    const { sourceDir = '' } = config || {};
     const { path } = history.getParams();
-    const link = this.links?.find(({ originLink }) => getUserLink(originLink) === path);
+    const link = links.find(({ originLink }) => getUserLink(originLink) === path);
     if (!link) throw new Error('not found link');
-    const sroucePath = this.srouceDir ? `/${this.srouceDir}` : '';
-    return `${sroucePath}${getMdPath(link.originLink, this.lang)}`;
+    const sroucePath = sourceDir ? `/${sourceDir}` : '';
+    return `${sroucePath}${getMdPath(link.originLink, lang)}`;
   };
 
   render() {
     const { lastUpdated } = this;
     const { message, commitUrl } = this.state;
+    const { config } = bookStore;
+    const { github, sourceBranch = '' } = config || {};
+    if (!github || !sourceBranch) return;
     return html`
       <style>
         :host {
@@ -105,7 +103,7 @@ export class EditLink extends GemElement<State> {
           }
         }
       </style>
-      <gem-link class="edit" href=${`${this.github}/blob/${this.sourceBranch}${this.getMdFullPath()}`}>
+      <gem-link class="edit" href=${`${github}/blob/${sourceBranch}${this.getMdFullPath()}`}>
         <gem-use selector="#compose" .root=${container}></gem-use>
         <span>${selfI18n.get('editOnGithub')}</span>
       </gem-link>
@@ -122,14 +120,16 @@ export class EditLink extends GemElement<State> {
   mounted() {
     this.effect(
       async () => {
-        if (!this.github) return;
-        const repo = new URL(this.github).pathname;
+        const { config } = bookStore;
+        const { github, sourceBranch = '' } = config || {};
+        if (!github) return;
+        const repo = new URL(github).pathname;
         const path = this.getMdFullPath();
         const query = new URLSearchParams({
           path,
           page: '1',
           per_page: '1',
-          sha: this.sourceBranch,
+          sha: sourceBranch,
         });
         try {
           const api = `https://api.github.com/repos${repo}/commits?${query}`;

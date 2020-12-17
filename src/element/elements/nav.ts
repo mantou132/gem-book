@@ -1,14 +1,4 @@
-import {
-  html,
-  GemElement,
-  customElement,
-  attribute,
-  property,
-  Emitter,
-  refobject,
-  RefObject,
-  globalemitter,
-} from '@mantou/gem';
+import { html, GemElement, customElement, refobject, RefObject, globalemitter, connectStore } from '@mantou/gem';
 
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
@@ -16,6 +6,7 @@ import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 import { NavItem } from '../../common/config';
 import { theme } from '../helper/theme';
 import { capitalize, isSameOrigin } from '../lib/utils';
+import { bookStore } from '../store';
 import { container } from './icons';
 
 /**
@@ -24,34 +15,26 @@ import { container } from './icons';
  * @attr github
  */
 @customElement('gem-book-nav')
+@connectStore(bookStore)
 export class Nav extends GemElement {
-  @attribute tl: string;
-  @attribute github: string;
-  @attribute icon: string;
-  @attribute lang: string;
-
-  @property nav: NavItem[] | undefined;
-  @property langlist: { code: string; name: string }[];
-
-  @globalemitter languagechange: Emitter<string>;
+  @globalemitter languagechange = (v: string) => bookStore.languagechangeHandle?.(v);
 
   @refobject i18nRef: RefObject<HTMLSelectElement>;
 
   renderI18nSelect = () => {
-    if (this.lang) {
-      const name = this.langlist.find(({ code }) => code === this.lang)?.name;
+    const { langList = [], lang } = bookStore;
+    if (lang) {
+      const name = langList.find(({ code }) => code === lang)?.name;
       return html`
         <div class="item">
-          ${mediaQuery.isPhone ? '' : name || this.lang}
+          ${mediaQuery.isPhone ? '' : name || lang}
           <gem-use @click=${() => this.i18nRef.element?.click()} .root=${container} selector="#i18n"></gem-use>
           <select
             class="i18n-select"
             ref=${this.i18nRef.ref}
             @change=${(e: any) => this.languagechange(e.target.value)}
           >
-            ${this.langlist.map(
-              ({ name, code }) => html`<option value=${code} ?selected=${code === this.lang}>${name}</option>`,
-            )}
+            ${langList.map(({ name, code }) => html`<option value=${code} ?selected=${code === lang}>${name}</option>`)}
           </select>
         </div>
       `;
@@ -80,9 +63,11 @@ export class Nav extends GemElement {
   };
 
   render() {
-    const githubLink = this.github ? this.renderExternalItem({ title: 'github', link: this.github }) : null;
-    const internals = this.nav?.filter((e) => isSameOrigin(e.link)) || [];
-    const externals = this.nav?.filter((e) => !isSameOrigin(e.link)) || [];
+    const { config, nav = [] } = bookStore;
+    const { github = '', icon = '', title = '' } = config || {};
+    const githubLink = config ? this.renderExternalItem({ title: 'github', link: github }) : null;
+    const internals = nav?.filter((e) => isSameOrigin(e.link)) || [];
+    const externals = nav?.filter((e) => !isSameOrigin(e.link)) || [];
 
     return html`
       <style>
@@ -174,8 +159,8 @@ export class Nav extends GemElement {
       </style>
       <div class="internals">
         <gem-link class="item homelink" path="/">
-          ${this.icon ? html`<img alt=${this.tl} src=${this.icon} />` : null}
-          ${mediaQuery.isPhone && this.icon && Number(this.nav?.length) >= 2 ? '' : this.tl}
+          ${icon ? html`<img alt=${title} src=${icon} />` : null}
+          ${mediaQuery.isPhone && icon && Number(nav?.length) >= 2 ? '' : title}
         </gem-link>
         ${internals.map(this.renderInternalItem)}
       </div>
@@ -185,8 +170,9 @@ export class Nav extends GemElement {
   }
 
   updated() {
-    if (this.i18nRef.element) {
-      this.i18nRef.element.value = this.lang;
+    if (this.i18nRef.element && bookStore.lang) {
+      // browser history back
+      this.i18nRef.element.value = bookStore.lang;
     }
   }
 }

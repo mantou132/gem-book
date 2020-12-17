@@ -1,16 +1,18 @@
-import { html, GemElement, customElement, connectStore, attribute, css } from '@mantou/gem';
+import { html, GemElement, customElement, connectStore, css } from '@mantou/gem';
 import '@mantou/gem/elements/link';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { selfI18n } from '../helper/i18n';
 import { theme } from '../helper/theme';
+import { bookStore } from '../store';
 import { mdRender } from './main';
 
 @customElement('gem-book-footer')
 @connectStore(selfI18n.store)
+@connectStore(bookStore)
 export class Footer extends GemElement {
-  @attribute footer: string;
   render() {
+    const { config } = bookStore;
     return html`
       <style>
         :host {
@@ -36,9 +38,9 @@ export class Footer extends GemElement {
           border-bottom: 1px solid;
         }
       </style>
-      ${this.footer
+      ${config?.footer
         ? mdRender.unsafeRender(
-            this.footer,
+            config.footer,
             css`
               p {
                 margin: 0;

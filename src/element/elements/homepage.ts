@@ -1,4 +1,4 @@
-import { html, GemElement, customElement, property, createStore, connectStore, part } from '@mantou/gem';
+import { html, GemElement, customElement, createStore, connectStore, part } from '@mantou/gem';
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
@@ -16,8 +16,6 @@ const placeholder = (s: string) => (s ? '' : 'placeholder');
 @customElement('gem-book-homepage')
 @connectStore(homepageData)
 export class Homepage extends GemElement {
-  @property displayRank?: boolean;
-
   @part hero: string;
 
   renderHero() {
@@ -114,7 +112,6 @@ export class Homepage extends GemElement {
 
   renderFeature() {
     const { features = Array(3).fill({ title: '', desc: '' }) } = homepageData;
-    if (features === null) return null;
     return html`
       <style>
         .features {
@@ -179,7 +176,7 @@ export class Homepage extends GemElement {
       </style>
       <div class="features">
         <div class="body">
-          ${features.map(
+          ${features?.map(
             (feature) => html`
               <div class="feature ${feature.icon ? 'has-icon' : ''}">
                 ${feature.icon ? html`<img class="icon" src=${feature.icon} />` : ''}

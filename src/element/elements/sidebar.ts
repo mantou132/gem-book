@@ -1,13 +1,4 @@
-import {
-  html,
-  GemElement,
-  customElement,
-  property,
-  TemplateResult,
-  history,
-  connectStore,
-  attribute,
-} from '@mantou/gem';
+import { html, GemElement, customElement, TemplateResult, connectStore } from '@mantou/gem';
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
@@ -16,21 +7,20 @@ import { NavItem } from '../../common/config';
 import { container } from './icons';
 import { capitalize } from '../lib/utils';
 import { theme } from '../helper/theme';
+import { bookStore } from '../store';
 
 @customElement('gem-book-sidebar')
-@connectStore(history.store)
+@connectStore(bookStore)
 export class SideBar extends GemElement {
-  @attribute homePage: string;
-
-  @property sidebar: NavItem[];
-
   toggleLinks = (e: MouseEvent) => {
     const ele = e.target as HTMLDivElement;
     ele.classList.toggle('close');
   };
 
   renderItem = ({ type, link, title, children, sidebarIgnore }: NavItem, isTop = false): TemplateResult | null => {
-    if (sidebarIgnore || (this.homePage && this.homePage === link)) {
+    const { homePage, config } = bookStore;
+    const homeMode = config?.homeMode;
+    if (sidebarIgnore || (homeMode && homePage === link)) {
       return html`<!-- No need to render homepage item -->`;
     }
     if (type === 'dir') {
@@ -169,7 +159,7 @@ export class SideBar extends GemElement {
           margin-top: 0.5rem;
         }
       </style>
-      ${this.sidebar.map((item) => this.renderItem(item, true))}
+      ${bookStore.currentSidebar?.map((item) => this.renderItem(item, true))}
     `;
   }
 
