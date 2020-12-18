@@ -1,6 +1,29 @@
 # Extension
 
-`<gem-book>` allows multiple ways to expand.
+`<gem-book>` renders markdown and also extends the markdown syntax. In addition, some methods are provided for users to customize `<gem-book>`.
+
+## Markdown enhancement
+
+### Code line highlight
+
+_Not referring to the code highlighting of the programming language_
+
+````md 3-4
+```md 2-3
+# title
+
+highlight line 3
+highlight line 4
+```
+````
+
+### Fixed heading anchor hash {#fixed-hash}
+
+By default, hash is generated based on the title text field, but sometimes you need to fix the hash, such as internationalization.
+
+```md
+### Fixed heading anchor hash {#fixed-hash}
+```
 
 ## Parts
 
