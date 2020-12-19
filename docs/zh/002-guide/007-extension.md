@@ -2,22 +2,22 @@
 
 `<gem-book>` 渲染 markdown，同时也扩展了 markdown 语法。另外还提供一些方法让用户自定义 `<gem-book>`。
 
-## Markdown enhancement
+## Markdown 增强
 
-### Code line highlight
+### 高亮代码行
 
 _并非指编程语言的代码高亮_
 
-````md 3-4
-```md 2-3
-# title
+````md 4-5
+```md 3-4
+# 标题
 
-highlight line 3
-highlight line 4
+行 3
+行 4
 ```
 ````
 
-### 固定标题锚 Hash {#fixed-hash}
+### 固定标题锚点 Hash {#fixed-hash}
 
 默认会根据标题文本字段生成 hash，但有时你需要固定 hash，比如国际化时。
 

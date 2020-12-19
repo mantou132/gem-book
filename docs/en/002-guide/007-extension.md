@@ -4,16 +4,16 @@
 
 ## Markdown enhancement
 
-### Code line highlight
+### Highlight Code line
 
-_Not referring to the code highlighting of the programming language_
+_Different from programming language code highlight_
 
-````md 3-4
-```md 2-3
+````md 4-5
+```md 3-4
 # title
 
-highlight line 3
-highlight line 4
+line 3
+line 4
 ```
 ````
 

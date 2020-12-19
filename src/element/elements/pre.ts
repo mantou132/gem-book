@@ -210,7 +210,7 @@ export class Pre extends GemElement {
             ([start, end]) =>
               html`<span
                 class="highlight"
-                style="top: ${start * lineHeight + padding}em; height: ${(end - start + 1) * lineHeight}em"
+                style="top: ${(start - 1) * lineHeight + padding}em; height: ${(end - start + 1) * lineHeight}em"
               ></span>`,
           )
         : ''}
@@ -349,6 +349,9 @@ export class Pre extends GemElement {
             border-left: 8px solid rgba(${theme.textColorRGB}, 0.2);
             white-space: pre-wrap;
             word-break: break-word;
+          }
+          .highlight {
+            display: none;
           }
         }
       </style>
