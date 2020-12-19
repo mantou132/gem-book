@@ -3,10 +3,10 @@ import WebpackDevServer from 'webpack-dev-server';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import path from 'path';
-import fs from 'fs';
+import { writeFileSync, symlinkSync, renameSync } from 'fs';
 import { EventEmitter } from 'events';
 import { BookConfig } from '../common/config';
-import { resolveTheme, isURL } from './utils';
+import { resolveLocalPlugin, resolveTheme, isURL } from './utils';
 import { DEV_THEME_FILE, STATS_FILE } from '../common/constant';
 
 interface BuilderOptions {
@@ -24,9 +24,10 @@ interface BuilderOptions {
 export const builderEventTarget = new EventEmitter();
 
 const entryDir = path.resolve(__dirname, '../src/website');
+const pluginDir = path.resolve(__dirname, '../src/plugins');
 const updateLog = path.resolve(entryDir, './update.log');
 const update = () => {
-  fs.writeFileSync(updateLog, String(Date.now()));
+  writeFileSync(updateLog, String(Date.now()));
 };
 
 // dev mode uses memory file system
@@ -39,6 +40,16 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
   if (path.extname(output) === '.json') {
     return;
   }
+
+  plugins.forEach((plugin) => {
+    const localPath = resolveLocalPlugin(plugin);
+    if (localPath) {
+      const filename = path.basename(localPath);
+      const uniqueFilename = filename + Date.now();
+      symlinkSync(localPath, path.resolve(pluginDir, uniqueFilename));
+      renameSync(path.resolve(pluginDir, uniqueFilename), path.resolve(pluginDir, filename));
+    }
+  });
 
   const isRemoteIcon = isURL(iconPath);
   const docsDir = path.resolve(dir);
@@ -140,7 +151,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
       }
 
       if (debugMode) {
-        fs.writeFileSync(path.resolve(outputDir, STATS_FILE), JSON.stringify(stats.toJson({}, true), null, 2));
+        writeFileSync(path.resolve(outputDir, STATS_FILE), JSON.stringify(stats.toJson({}, true), null, 2));
       }
     });
   } else {

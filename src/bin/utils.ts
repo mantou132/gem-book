@@ -1,5 +1,5 @@
 import path from 'path';
-import fs from 'fs';
+import { readFileSync, existsSync, statSync, readdirSync, lstatSync } from 'fs';
 import util from 'util';
 import { URL } from 'url';
 import gitRemoteOriginUrl from 'git-remote-origin-url';
@@ -43,25 +43,47 @@ export function getRepoTitle() {
   }
 }
 
+// Prefer built-in
+export function resolveLocalPlugin(p: string) {
+  try {
+    const pluginDir = path.resolve(__dirname, `../plugins`);
+    const plugin = __non_webpack_require__.resolve(path.resolve(pluginDir, p));
+    if (inTheDir(pluginDir, plugin) && !lstatSync(plugin).isSymbolicLink()) {
+      return;
+    }
+  } catch {
+    //
+  }
+  for (const ext of ['', '.js', '.ts']) {
+    try {
+      console.log(path.resolve(process.cwd(), `${p}${ext}`));
+      return __non_webpack_require__.resolve(path.resolve(process.cwd(), `${p}${ext}`));
+    } catch {
+      //
+    }
+  }
+}
+
+// Prefer built-in
 export function resolveTheme(p: string) {
   if (!p) return { theme: null, resolveThemePath: p };
   let resolveThemePath = '';
   try {
-    resolveThemePath = __non_webpack_require__.resolve(path.resolve(process.cwd(), p));
-  } catch {
     resolveThemePath = __non_webpack_require__.resolve(path.resolve(__dirname, `../themes/${p}`));
+  } catch {
+    resolveThemePath = __non_webpack_require__.resolve(path.resolve(process.cwd(), p));
   }
   return { resolveThemePath, theme: __non_webpack_require__(resolveThemePath) };
 }
 
 export function checkRelativeLink(fullPath: string, docsRootDir: string) {
-  const md = fs.readFileSync(fullPath, 'utf8');
+  const md = readFileSync(fullPath, 'utf8');
   const lines = md.split('\n');
   const results = [...md.matchAll(/\[.*?\]\((.*?)(\s+.*?)?\)/g)];
   const links = results.map(([, link]) => link).filter((link) => /^\.?\.?\//.test(link));
   links.forEach((link, index) => {
     const targetPath = link.startsWith('/') ? path.join(docsRootDir, link) : path.resolve(path.dirname(fullPath), link);
-    if (!fs.existsSync(targetPath)) {
+    if (!existsSync(targetPath)) {
       const strIndex = results[index].index || 0;
       let currentNum = 0;
       let lineNum = 1;
@@ -94,7 +116,7 @@ export function getMetadata(fullPath: string, displayRank: boolean | undefined):
     return displayRank ? filename : parseFilename(filename).title;
   };
   const parseMd = (fullPath: string) => {
-    const md = fs.readFileSync(fullPath, 'utf8');
+    const md = readFileSync(fullPath, 'utf8');
     const { attributes, body } = fm<FileMetadata>(md);
     const html = marked(body);
     const { window } = new JSDOM(html);
@@ -116,14 +138,14 @@ export function getMetadata(fullPath: string, displayRank: boolean | undefined):
     };
   };
 
-  if (fs.statSync(fullPath).isDirectory()) {
-    const files = fs.readdirSync(fullPath);
+  if (statSync(fullPath).isDirectory()) {
+    const files = readdirSync(fullPath);
     const result = {
       title: getTitle(),
     };
     const configFile = files.find(isDirConfigFile);
     if (configFile) {
-      const config = YAML.parse(fs.readFileSync(path.join(fullPath, configFile), 'utf-8'));
+      const config = YAML.parse(readFileSync(path.join(fullPath, configFile), 'utf-8'));
       return {
         ...result,
         ...config,
@@ -153,12 +175,13 @@ export function isURL(s: string) {
   }
 }
 
+// dir2 is in dir
 export function inTheDir(dir: string, dir2: string) {
   return !path.relative(dir, dir2).startsWith('.');
 }
 
 export function isSomeContent(filePath: string, content: string) {
-  return fs.existsSync(filePath) && content === fs.readFileSync(filePath, 'utf-8');
+  return existsSync(filePath) && content === readFileSync(filePath, 'utf-8');
 }
 
 export function inspectObject(obj: any) {
