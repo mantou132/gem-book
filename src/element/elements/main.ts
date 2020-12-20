@@ -77,6 +77,12 @@ export class Main extends GemElement<State> {
       return `<gem-book-pre lang="${lang}" highlight="${highlight}">${escapeHTML(code)}</gem-book-pre>`;
     };
 
+    renderer.image = (href, title, text) => {
+      if (href === null) return text;
+      const url = new URL(href, `${location.origin}${this.lang ? `/${this.lang}` : ''}${this.link}`);
+      return `<img src="${url.href}" alt="${text}" title="${title || ''}"/>`;
+    };
+
     const { displayRank } = this;
     renderer.link = function (href, title, text) {
       if (href?.startsWith('.')) {
