@@ -4,7 +4,7 @@
 
 ## Markdown enhancement
 
-### Highlight Code line
+### Highlight code line
 
 _Different from programming language code highlight_
 

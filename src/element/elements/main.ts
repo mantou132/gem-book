@@ -150,7 +150,7 @@ export class Main extends GemElement<State> {
           display: block;
           content: 'The element is not defined';
           padding: 1em;
-          border-radius: 4px;
+          border-radius: 0.25rem;
           text-align: center;
           background: ${theme.borderColor};
         }
@@ -236,7 +236,7 @@ export class Main extends GemElement<State> {
         }
         :host > ol,
         :host > ul {
-          padding-left: 20px;
+          padding-left: 1.25rem;
           margin: 1rem 0;
         }
         .contains-task-list {
@@ -248,7 +248,7 @@ export class Main extends GemElement<State> {
         }
         blockquote {
           background: rgba(${theme.textColorRGB}, 0.05);
-          border-left: 8px solid rgba(${theme.textColorRGB}, 0.2);
+          border-left: 0.5rem solid rgba(${theme.textColorRGB}, 0.2);
           margin: 1.2em 0;
           padding: 0.8em 1em;
         }
@@ -273,8 +273,8 @@ export class Main extends GemElement<State> {
         .header-anchor {
           float: left;
           line-height: 1;
-          margin-left: -20px;
-          padding-right: 4px;
+          margin-left: -1.25rem;
+          padding-right: 0.25rem;
           opacity: 0;
           border-bottom: none;
         }
@@ -298,7 +298,6 @@ export class Main extends GemElement<State> {
           font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
           font-size: 90%;
           background: ${theme.inlineCodeBackground};
-          border-radius: 4px;
           padding: 0 3px;
         }
         a code {
@@ -307,7 +306,7 @@ export class Main extends GemElement<State> {
         }
         gem-book-pre {
           z-index: 2;
-          border-radius: 4px;
+          border-radius: 0.25rem;
           margin: 1rem 0px;
           background: ${theme.blockCodeBackground};
         }

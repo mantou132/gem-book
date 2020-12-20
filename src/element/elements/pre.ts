@@ -221,6 +221,7 @@ export class Pre extends GemElement {
           position: relative;
           display: block;
           color: #f8f8f2;
+          font-size: 0.875em;
         }
         .highlight {
           display: block;
@@ -231,9 +232,9 @@ export class Pre extends GemElement {
         }
         .code-lang-name {
           position: absolute;
-          top: 3px;
-          right: 7px;
-          font-size: 10px;
+          top: 0.3em;
+          right: 0.7em;
+          font-size: 0.714em;
           color: #cacaca;
           user-select: none;
         }
@@ -260,7 +261,7 @@ export class Pre extends GemElement {
           scrollbar-width: thin;
         }
         code::-webkit-scrollbar {
-          height: 1rem;
+          height: 0.5em;
         }
         code::-webkit-scrollbar-thumb {
           background: #fff3;
@@ -346,7 +347,7 @@ export class Pre extends GemElement {
         }
         @media print {
           code {
-            border-left: 8px solid rgba(${theme.textColorRGB}, 0.2);
+            border-left: 0.5rem solid rgba(${theme.textColorRGB}, 0.2);
             white-space: pre-wrap;
             word-break: break-word;
           }
