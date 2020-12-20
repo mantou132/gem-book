@@ -82,7 +82,9 @@ function getNav(sidebar: NavItem[], origin: NavItem[]) {
   const traverseSidebar = (items: NavItem[]) => {
     items.forEach((item) => {
       if (item.isNav) {
-        nav.push(item);
+        if (item.type === 'file' || (item.type === 'dir' && item.children?.length)) {
+          nav.push(item);
+        }
       } else if (item.children) {
         traverseSidebar(item.children);
       }
