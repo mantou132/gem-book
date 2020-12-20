@@ -34,7 +34,7 @@ gem-book docs
 # Specify title
 gem-book docs -t MyApp
 
-# Add logo.png in the docs directory and specify the logo
+# Specify logo
 gem-book docs -t MyApp -i logo.png
 
 # Render readme.md/index.md as the project homepage
@@ -48,6 +48,8 @@ gem-book docs -t MyApp -i logo.png --home-mode --build
 More [options](./003-cli.md).
 
 ### Use `<gem-book>`
+
+The above command uses `webpack` to package a complete front-end project, but you can also use the `<gem-book>` element directly in HTML.
 
 ```bash
 # Only generate <gem-book> requires json configuration file
@@ -78,7 +80,7 @@ The command line tool directly maps the directory structure to the sidebar struc
 - Build documentation into front-end projects
 - Provide a command line to parse the directory into a `<gem-book>` configuration file
 - Provide `<gem-book>` for front-end projects
-- Provide API for custom rendering
+- Provide API for users to extend
 
 ### No-Goal
 

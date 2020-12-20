@@ -1,5 +1,5 @@
 import { createTheme, getThemeStore, updateTheme } from '@mantou/gem/helper/theme';
-import { defaultTheme } from '../../common/theme';
+import { defaultTheme } from './default-theme';
 
 export type Theme = typeof defaultTheme;
 

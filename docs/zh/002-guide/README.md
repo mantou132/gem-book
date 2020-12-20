@@ -33,7 +33,7 @@ gem-book docs
 # 指定标题
 gem-book docs -t MyApp
 
-# 在 docs 目录添加 logo.png，指定 logo
+# 指定图标
 gem-book docs -t MyApp -i logo.png
 
 # 将 readme.md/index.md 渲染成项目首页
@@ -47,6 +47,8 @@ gem-book docs -t MyApp -i logo.png --home-mode --build
 更多参数请查看[选项](./003-cli.md)。
 
 ### 使用 `<gem-book>`
+
+上面的命令使用 `webpack` 打包完整的前端项目，但你也可以直接在 HTML 中使用 `<gem-book>` 元素。
 
 ```bash
 # 仅生成 <gem-book> 需要 json 配置文件
@@ -77,7 +79,7 @@ render(html`<gem-book .config=${config}></gem-book>`, document.body);
 - 将文档构建成前端项目
 - 提供解析目录成 `<gem-book>` 配置文件的命令行
 - 提供 `<gem-book>` 供前端项目使用
-- 提供 API 进行自定义渲染
+- 提供 API 供用户扩展
 
 ### 不是目标
 

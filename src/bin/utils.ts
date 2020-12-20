@@ -56,7 +56,6 @@ export function resolveLocalPlugin(p: string) {
   }
   for (const ext of ['', '.js', '.ts']) {
     try {
-      console.log(path.resolve(process.cwd(), `${p}${ext}`));
       return __non_webpack_require__.resolve(path.resolve(process.cwd(), `${p}${ext}`));
     } catch {
       //
