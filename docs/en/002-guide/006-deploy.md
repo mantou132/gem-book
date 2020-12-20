@@ -14,3 +14,13 @@ Configure the build script (`gem-book docs --build`) and publish directory (`doc
   to = "/index.html"
   status = 200
 ```
+
+### Vercel
+
+Configure the build script (`gem-book docs --build`) and publish directory (`docs`) in Vercel, and then configure the redirection rules in the project `vercel.json`:
+
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
+```
