@@ -45,7 +45,7 @@ gem-book::part(homepage-hero) {
 
 ## 插件
 
-插件就是自定义元素，在 Markdown 中使用就能自定义渲染内容，下面是内置插件 `<gbp-raw>` 的使用方式。
+`<gem-book>` 使用自定义元素作为插件系统，他们可以自定义渲染 Markdown 内容或者增强 `<gem-book>` 的能力。下面是内置插件 `<gbp-raw>` 的使用方式。
 
 引入插件：
 
@@ -59,13 +59,13 @@ or
 <script type="module" src="https://unpkg.com/gem-book/plugins/raw.js"></script>
 ```
 
-然后在 Markdown 中使用：
+然后在 Markdown 中使用它来渲染仓库中的文件：
 
 ```md
 <gbp-raw src="/src/plugins/raw.ts"></gbp-raw>
 ```
 
-任意元素都可以作为插件，但如果你想像 `<gbp-raw>` 一样读取 `<gem-book>` 的数据，就需要创建 `GemBookPluginElement`, 他扩展自 [`GemElement`](https://gem-docs.netlify.app/API/)，通过下面这种方式获取 `GemBookPluginElement` 和读取 `<gem-book>` 配置。
+任意元素都可以作为插件，但如果你想像 `<gbp-raw>` 一样读取 `<gem-book>` 的数据，就需要使用 `GemBookPluginElement`, 他扩展自 [`GemElement`](https://gem-docs.netlify.app/API/)，通过下面这种方式获取 `GemBookPluginElement` 和读取 `<gem-book>` 配置。
 
 ```js
 customElements.whenDefined('gem-book').then(({ GemBookPluginElement }) => {
@@ -79,4 +79,26 @@ customElements.whenDefined('gem-book').then(({ GemBookPluginElement }) => {
     },
   );
 });
+```
+
+有些插件需要配合插槽使用，比如内置插件 `<gbp-comment>`，它使用 [Gitalk](https://github.com/gitalk/gitalk) 为网站带来评论功能：
+
+```html
+<gem-book>
+  <gbp-comment slot="main-after" client-id="xxx" client-secret="xxx"></gbp-comment>
+</gem-book>
+```
+
+如果使用自带命令行构建网站，`<gem-book>` 是自动插入文档的，你需要使用 `--template` 指定模版文件，然后在模版中使用 DOM API 加载 `<gbp-comment>`：
+
+```html
+<script>
+  addEventListener('load', () => {
+    const commentElement = document.createElement('gbp-comment');
+    commentElement.slot = 'main-after';
+    commentElement.clientId = 'xxx';
+    commentElement.clientSecret = 'xxx';
+    document.querySelector('gem-book').append(commentElement);
+  });
+</script>
 ```

@@ -45,7 +45,7 @@ gem-book::part(homepage-hero) {
 
 ## Plugins
 
-Plugins are custom elements that can be used in Markdown to customize the rendering content. Here is how to use the built-in plugin `<gbp-raw>`.
+`<gem-book>` uses custom elements as a plugin system, they can customize the rendering of Markdown content or enhance the ability of `<gem-book>`. The following is how to use the built-in plugin `<gbp-raw>`.
 
 import plugin:
 
@@ -59,13 +59,13 @@ or
 <script type="module" src="https://unpkg.com/gem-book/plugins/raw.js"></script>
 ```
 
-Then use it in Markdown:
+Then use it in Markdown to render files in the warehouse:
 
 ```md
 <gbp-raw src="/src/plugins/raw.ts"></gbp-raw>
 ```
 
-Any element can be used as a plugin, but if you want to read the data of `<gem-book>` like `<gbp-raw>`, you need to create a `GemBookPluginElement`, which extends from [`GemElement`](https://gem-docs.netlify.app/API/), obtain `GemBookPluginElement` and read `<gem-book>` configuration in the following way.
+Any element can be used as a plugin, but if you want to read the data of `<gem-book>` like `<gbp-raw>`, you need to use `GemBookPluginElement`, which extends from [`GemElement`](https://gem-docs.netlify.app/API/), obtain `GemBookPluginElement` and read `<gem-book>` configuration in the following way.
 
 ```js
 customElements.whenDefined('gem-book').then(({ GemBookPluginElement }) => {
@@ -79,4 +79,26 @@ customElements.whenDefined('gem-book').then(({ GemBookPluginElement }) => {
     },
   );
 });
+```
+
+Some plugin need to be used with slots, such as the built-in plugin `<gbp-comment>`, which uses [Gitalk](https://github.com/gitalk/gitalk) to bring comments to the website:
+
+```html
+<gem-book>
+  <gbp-comment slot="main-after" client-id="xxx" client-secret="xxx"></gbp-comment>
+</gem-book>
+```
+
+If you use the built-in command line to build a website, `<gem-book>` is automatically inserted into the document, you need to use `--template` to specify the template file, and then use the DOM API to load the `<gbp-comment>` in the template:
+
+```html
+<script>
+  addEventListener('load', () => {
+    const commentElement = document.createElement('gbp-comment');
+    commentElement.slot = 'main-after';
+    commentElement.clientId = 'xxx';
+    commentElement.clientSecret = 'xxx';
+    document.querySelector('gem-book').append(commentElement);
+  });
+</script>
 ```
