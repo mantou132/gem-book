@@ -77,11 +77,11 @@ function readDir(dir: string, link = '/') {
           }
           item.type = 'file';
           item.link = `${link}${filename}`;
-          const { title, headings: children, isNav, navTitle, sidebarIgnore } = getMetadata(
+          const { title, headings: children, isNav, navTitle, sidebarIgnore, hero, features } = getMetadata(
             fullPath,
             bookConfig.displayRank,
           );
-          Object.assign(item, { title, children, isNav, navTitle, sidebarIgnore });
+          Object.assign(item, { title, children, isNav, navTitle, sidebarIgnore, hero, features });
           result.push(item);
         }
       } else {

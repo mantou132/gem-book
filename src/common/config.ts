@@ -1,12 +1,11 @@
-export interface NavItem {
+import { FrontMatter } from './frontmatter';
+
+export type NavItem = FrontMatter & {
   title: string;
   link: string;
   type?: 'dir' | 'file' | 'heading';
   children?: NavItem[];
-  isNav?: boolean;
-  navTitle?: string;
-  sidebarIgnore?: boolean;
-}
+};
 
 export type SidebarConfig = NavItem[] | { [lang: string]: { name: string; data: NavItem[] } };
 

@@ -17,8 +17,6 @@ export interface FrontMatter {
   sidebarIgnore?: boolean;
 
   /** The following is the homepage options */
-
-  // `null` when `hero:`/`features:` has no members
-  hero?: Hero | null;
-  features?: Feature[] | null;
+  hero?: Hero;
+  features?: Feature[];
 }

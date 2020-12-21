@@ -84,7 +84,8 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
     output: {
       path: outputDir,
       publicPath: '/',
-      filename: 'bundle.js?[contenthash]',
+      filename: '[name].bundle.js?[contenthash]',
+      chunkFilename: '[name].bundle.js?[contenthash]',
     },
     optimization: {
       splitChunks: {

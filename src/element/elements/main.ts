@@ -1,18 +1,15 @@
-import { html, GemElement, customElement, attribute, boolattribute, updateStore, css } from '@mantou/gem';
+import { html, GemElement, customElement, attribute, boolattribute, css } from '@mantou/gem';
 import marked from 'marked';
-import fm from 'front-matter';
 
 import '@mantou/gem/elements/unsafe';
 import '@mantou/gem/elements/link';
 
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
-import { FrontMatter } from '../../common/frontmatter';
 import { getMdPath, isSameOrigin, getUserLink, escapeHTML } from '../lib/utils';
 import { theme } from '../helper/theme';
 import { selfI18n } from '../helper/i18n';
 
-import { homepageData } from './homepage';
 import { anchor, link } from './icons';
 
 import './pre';
@@ -109,11 +106,9 @@ export class Main extends GemElement<State> {
       md = await (await fetch(mdPath)).text();
       this.cache.set(mdPath, md);
     }
-    const {
-      body: mdBody,
-      attributes: { hero, features },
-    } = fm<FrontMatter>(md);
-    updateStore(homepageData, { hero, features });
+    const [, , _sToken, _frontmatter, _eToken, mdBody] =
+      md.match(/^(([\r\n\s]*---\s*(?:\r\n|\n))(.*?)((?:\r\n|\n)---\s*(?:\r\n|\n)?))?(.*)$/s) || [];
+
     const elements = [
       ...parser.parseFromString(marked.parse(mdBody, { renderer: this.mdRenderer }), 'text/html').body.children,
     ];

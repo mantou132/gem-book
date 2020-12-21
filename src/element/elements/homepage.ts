@@ -1,26 +1,20 @@
-import { html, GemElement, customElement, createStore, connectStore, part } from '@mantou/gem';
+import { html, GemElement, customElement, part } from '@mantou/gem';
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
-import { FrontMatter } from '../../common/frontmatter';
 import { theme } from '../helper/theme';
-import { getUserLink } from '../lib/utils';
+import { getUserLink, NavItemWithLink } from '../lib/utils';
+import { bookStore } from '../store';
 import { container } from './icons';
 import { mdRender } from './main';
 
-export const homepageData = createStore<FrontMatter>({});
-
-const placeholder = (s: string) => (s ? '' : 'placeholder');
-
 @customElement('gem-book-homepage')
-@connectStore(homepageData)
 export class Homepage extends GemElement {
   @part hero: string;
 
-  renderHero() {
-    const { hero = { title: '', desc: '', actions: [{ text: '', link: '' }] } } = homepageData;
-    if (hero === null) return null;
+  renderHero({ hero }: NavItemWithLink) {
+    if (!hero) return null;
     const { title, desc, actions } = hero;
     return html`
       <style>
@@ -37,14 +31,8 @@ export class Homepage extends GemElement {
           font-size: 3rem;
           font-weight: bold;
         }
-        .title.placeholder::before {
-          width: 4em;
-        }
         .desc {
           opacity: 0.6;
-        }
-        .desc.placeholder::before {
-          width: 20em;
         }
         .actions {
           display: flex;
@@ -53,10 +41,6 @@ export class Homepage extends GemElement {
           gap: 1rem;
           justify-content: center;
           align-items: center;
-        }
-        .actions .placeholder::before {
-          width: 5em;
-          opacity: 0;
         }
         gem-link {
           color: ${theme.primaryColor};
@@ -95,12 +79,12 @@ export class Homepage extends GemElement {
       </style>
       <div class="hero" part=${this.hero}>
         <div class="body">
-          ${title === undefined ? '' : html`<h1 class="title ${placeholder(title)}">${title}</h1>`}
-          ${desc === undefined ? '' : html`<p class="desc ${placeholder(desc)}">${mdRender.unsafeRender(desc)}</p>`}
+          ${!title ? '' : html`<h1 class="title">${title}</h1>`}
+          ${!desc ? '' : html`<p class="desc">${mdRender.unsafeRender(desc)}</p>`}
           <div class="actions">
             ${actions?.map(
               ({ link, text }, index) =>
-                html`<gem-link class=${placeholder(text)} href=${getUserLink(link)}>
+                html`<gem-link href=${getUserLink(link)}>
                   ${text}${index ? html`<gem-use .root=${container} selector="#arrow"></gem-use>` : ''}
                 </gem-link>`,
             )}
@@ -110,8 +94,7 @@ export class Homepage extends GemElement {
     `;
   }
 
-  renderFeature() {
-    const { features = Array(3).fill({ title: '', desc: '' }) } = homepageData;
+  renderFeature({ features }: NavItemWithLink) {
     return html`
       <style>
         .features {
@@ -141,13 +124,6 @@ export class Homepage extends GemElement {
           margin: 1rem 0;
           letter-spacing: 0.05em;
           font-weight: 300;
-        }
-        .feat-title.placeholder::before {
-          width: 5em;
-        }
-        .feat-desc.placeholder::before {
-          width: 100%;
-          height: 10em;
         }
         @media ${mediaQuery.PHONE}, print {
           .features .body {
@@ -180,8 +156,8 @@ export class Homepage extends GemElement {
             (feature) => html`
               <div class="feature ${feature.icon ? 'has-icon' : ''}">
                 ${feature.icon ? html`<img class="icon" src=${feature.icon} />` : ''}
-                <h3 class="feat-title ${placeholder(feature.title)}">${feature.title}</h3>
-                <p class="feat-desc ${placeholder(feature.desc)}">${mdRender.unsafeRender(feature.desc)}</p>
+                <h3 class="feat-title">${feature.title}</h3>
+                <p class="feat-desc">${mdRender.unsafeRender(feature.desc)}</p>
               </div>
             `,
           )}
@@ -191,6 +167,8 @@ export class Homepage extends GemElement {
   }
 
   render() {
+    const homePage = bookStore.links?.find((e) => e.link === bookStore.homePage);
+    if (!homePage) return null;
     return html`
       <style>
         :host {
@@ -201,16 +179,6 @@ export class Homepage extends GemElement {
           width: 100%;
           max-width: ${theme.mainWidth};
         }
-        .placeholder {
-          pointer-events: none;
-        }
-        .placeholder::before {
-          max-width: 100%;
-          content: 'x';
-          display: inline-block;
-          opacity: 0.05;
-          background: currentColor;
-        }
         @media print {
           :host {
             -webkit-print-color-adjust: exact;
@@ -218,7 +186,7 @@ export class Homepage extends GemElement {
           }
         }
       </style>
-      ${this.renderHero()}${this.renderFeature()}
+      ${this.renderHero(homePage)}${this.renderFeature(homePage)}
     `;
   }
 }
