@@ -145,6 +145,7 @@ export class SideBar extends GemElement {
           background: currentColor;
           margin-right: calc(1em - 4px);
           opacity: 0.6;
+          flex-shrink: 0;
         }
         .item gem-use {
           transform: rotate(90deg);
