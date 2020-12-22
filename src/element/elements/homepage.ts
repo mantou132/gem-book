@@ -126,27 +126,18 @@ export class Homepage extends GemElement {
           font-weight: 300;
         }
         @media ${mediaQuery.PHONE}, print {
+          .features {
+            padding: 3rem 1rem;
+          }
           .features .body {
             display: block;
           }
-          .feature {
-            display: grid;
-            grid-template-areas: 'icon content';
-            grid-template-columns: auto 1fr;
-            margin-bottom: 1rem;
-          }
           .icon {
-            grid-area: 1 / icon / 3 / icon;
             width: 5rem;
-            margin-right: 1rem;
-          }
-          .feat-title {
-            font-size: 1.5em;
           }
           .feat-title,
           .feat-desc {
             margin: 0;
-            grid-area: auto / content;
           }
         }
       </style>
