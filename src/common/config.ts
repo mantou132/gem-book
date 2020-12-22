@@ -18,7 +18,6 @@ export interface BookConfig {
   github?: string;
   sourceDir?: string;
   sourceBranch?: string;
-  i18n?: boolean;
   displayRank?: boolean;
   homeMode?: boolean;
   footer?: string;

@@ -43,6 +43,7 @@ let templatePath = '';
 let themePath = '';
 let iconPath = '';
 let ga = '';
+let i18nMode = false;
 let buildMode = false;
 let onlyJson = false;
 let debugMode = false;
@@ -117,7 +118,7 @@ async function generateBookConfig(dir: string) {
   // CI not support
   bookConfig.sourceBranch ??= getRepoInfo().branch || 'master';
 
-  if (bookConfig.i18n) {
+  if (i18nMode) {
     const sidebarConfig: SidebarConfig = {};
     fs.readdirSync(docsRootDir).forEach((code) => {
       const fullPath = path.join(docsRootDir, code);
@@ -178,7 +179,7 @@ program
     bookConfig.footer = footer;
   })
   .option('--i18n', 'enabled i18n', () => {
-    bookConfig.i18n = true;
+    i18nMode = true;
   })
   .option('--display-rank', 'sorting number is not displayed in the link', () => {
     bookConfig.displayRank = true;

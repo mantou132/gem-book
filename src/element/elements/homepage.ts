@@ -4,7 +4,7 @@ import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { theme } from '../helper/theme';
-import { getUserLink, NavItemWithLink } from '../lib/utils';
+import { getRemotePath, getUserLink, NavItemWithLink } from '../lib/utils';
 import { bookStore } from '../store';
 import { container } from './icons';
 import { mdRender } from './main';
@@ -94,7 +94,7 @@ export class Homepage extends GemElement {
     `;
   }
 
-  renderFeature({ features }: NavItemWithLink) {
+  renderFeature({ features, originLink }: NavItemWithLink) {
     return html`
       <style>
         .features {
@@ -146,7 +146,13 @@ export class Homepage extends GemElement {
           ${features?.map(
             (feature) => html`
               <div class="feature ${feature.icon ? 'has-icon' : ''}">
-                ${feature.icon ? html`<img class="icon" src=${feature.icon} />` : ''}
+                ${feature.icon
+                  ? html`<img
+                      class="icon"
+                      src=${new URL(feature.icon, `${location.origin}${getRemotePath(originLink, bookStore.lang)}`)
+                        .href}
+                    />`
+                  : ''}
                 <h3 class="feat-title">${feature.title}</h3>
                 <p class="feat-desc">${mdRender.unsafeRender(feature.desc)}</p>
               </div>
@@ -158,8 +164,8 @@ export class Homepage extends GemElement {
   }
 
   render() {
-    const homePage = bookStore.links?.find((e) => e.link === bookStore.homePage);
-    if (!homePage) return null;
+    const homePageLink = bookStore.links?.find((e) => e.link === bookStore.homePage);
+    if (!homePageLink) return null;
     return html`
       <style>
         :host {
@@ -177,7 +183,7 @@ export class Homepage extends GemElement {
           }
         }
       </style>
-      ${this.renderHero(homePage)}${this.renderFeature(homePage)}
+      ${this.renderHero(homePageLink)}${this.renderFeature(homePageLink)}
     `;
   }
 }

@@ -6,7 +6,7 @@ import '@mantou/gem/elements/link';
 
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
-import { getMdPath, isSameOrigin, getUserLink, escapeHTML } from '../lib/utils';
+import { getRemotePath, isSameOrigin, getUserLink, escapeHTML } from '../lib/utils';
 import { theme } from '../helper/theme';
 import { selfI18n } from '../helper/i18n';
 
@@ -76,7 +76,7 @@ export class Main extends GemElement<State> {
 
     renderer.image = (href, title, text) => {
       if (href === null) return text;
-      const url = new URL(href, `${location.origin}${this.lang ? `/${this.lang}` : ''}${this.link}`);
+      const url = new URL(href, `${location.origin}${getRemotePath(this.link, this.lang)}`);
       return `<img src="${url.href}" alt="${text}" title="${title || ''}"/>`;
     };
 
@@ -100,7 +100,7 @@ export class Main extends GemElement<State> {
       fetching: true,
       content: null,
     });
-    const mdPath = getMdPath(this.link, this.lang);
+    const mdPath = getRemotePath(this.link, this.lang);
     let md = this.cache.get(mdPath);
     if (!md) {
       md = await (await fetch(mdPath)).text();

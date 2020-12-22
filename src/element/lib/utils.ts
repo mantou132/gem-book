@@ -22,7 +22,7 @@ export function flatNav(nav: NavItem[]): NavItemWithLink[] {
     .flat();
 }
 
-export function getMdPath(originPath: string, lang?: string) {
+export function getRemotePath(originPath: string, lang?: string) {
   const langPath = lang ? `/${lang}` : '';
   return `${langPath}${originPath}`;
 }

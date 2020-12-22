@@ -5,7 +5,7 @@ import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { container } from './icons';
-import { getUserLink, getMdPath } from '../lib/utils';
+import { getUserLink, getRemotePath } from '../lib/utils';
 import { selfI18n } from '../helper/i18n';
 import { theme } from '../helper/theme';
 import { bookStore } from '../store';
@@ -60,7 +60,7 @@ export class EditLink extends GemElement<State> {
     const link = links.find(({ originLink }) => getUserLink(originLink) === path);
     if (!link) throw new Error('not found link');
     const sroucePath = sourceDir ? `/${sourceDir}` : '';
-    return `${sroucePath}${getMdPath(link.originLink, lang)}`;
+    return `${sroucePath}${getRemotePath(link.originLink, lang)}`;
   };
 
   render() {
