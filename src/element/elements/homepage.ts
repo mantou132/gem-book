@@ -1,4 +1,4 @@
-import { html, GemElement, customElement, part } from '@mantou/gem';
+import { html, GemElement, customElement, part, connectStore } from '@mantou/gem';
 import '@mantou/gem/elements/link';
 import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
@@ -10,6 +10,7 @@ import { container } from './icons';
 import { mdRender } from './main';
 
 @customElement('gem-book-homepage')
+@connectStore(bookStore)
 export class Homepage extends GemElement {
   @part hero: string;
 
