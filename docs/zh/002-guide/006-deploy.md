@@ -11,7 +11,7 @@ Netlify 中配置构建脚本（`gem-book docs --build`）和发布目录（`doc
 ```toml
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/"
   status = 200
 ```
 
@@ -21,6 +21,6 @@ Vercel 中配置构建脚本（`gem-book docs --build`）和发布目录（`docs
 
 ```json
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }
 ```

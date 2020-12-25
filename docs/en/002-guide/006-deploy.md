@@ -11,7 +11,7 @@ Configure the build script (`gem-book docs --build`) and publish directory (`doc
 ```toml
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/"
   status = 200
 ```
 
@@ -21,6 +21,6 @@ Configure the build script (`gem-book docs --build`) and publish directory (`doc
 
 ```json
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }
 ```
