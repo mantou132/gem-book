@@ -15,6 +15,9 @@ export class Meta extends GemElement {
           : links
               ?.filter((e) => e.type === 'file')
               .map(({ originLink }) => html`<link rel="prefetch" href=${getRemotePath(originLink, lang)}></link>`)}
+        ${lang && langList && !location.pathname.startsWith(`/${lang}`)
+          ? html`<link rel="canonical" href=${getAlternateUrl(langList[0].code)} />`
+          : ''}
         ${// 404 ?
         langList?.map(({ code }) => html`<link rel="alternate" hreflang=${code} href=${getAlternateUrl(code)} />`)}
       </gem-reflect>
