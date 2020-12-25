@@ -58,7 +58,7 @@ export class EditLink extends GemElement<State> {
     const { sourceDir = '' } = config || {};
     const { path } = history.getParams();
     const link = links.find(({ originLink }) => getUserLink(originLink) === path);
-    if (!link) throw new Error('not found link');
+    if (!link) return;
     const sroucePath = sourceDir ? `/${sourceDir}` : '';
     return `${sroucePath}${getRemotePath(link.originLink, lang)}`;
   };
@@ -68,7 +68,8 @@ export class EditLink extends GemElement<State> {
     const { message, commitUrl } = this.state;
     const { config } = bookStore;
     const { github, sourceBranch = '' } = config || {};
-    if (!github || !sourceBranch) return;
+    const fullPath = this.getMdFullPath();
+    if (!github || !sourceBranch || !fullPath) return;
     return html`
       <style>
         :host {
@@ -103,7 +104,7 @@ export class EditLink extends GemElement<State> {
           }
         }
       </style>
-      <gem-link class="edit" href=${`${github}/blob/${sourceBranch}${this.getMdFullPath()}`}>
+      <gem-link class="edit" href=${`${github}/blob/${sourceBranch}${fullPath}`}>
         <gem-use selector="#compose" .root=${container}></gem-use>
         <span>${selfI18n.get('editOnGithub')}</span>
       </gem-link>
@@ -125,6 +126,7 @@ export class EditLink extends GemElement<State> {
         if (!github) return;
         const repo = new URL(github).pathname;
         const path = this.getMdFullPath();
+        if (!path) return;
         const query = new URLSearchParams({
           path,
           page: '1',

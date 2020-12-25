@@ -6,6 +6,8 @@ import { selfI18n } from './helper/i18n';
 import { getLinkPath, getUserLink, NavItemWithLink, flatNav, capitalize } from './lib/utils';
 
 import './elements/main';
+import './elements/404';
+
 import { GemBookElement } from '.';
 
 interface CurrentBookConfig {
@@ -148,7 +150,7 @@ function getRouter(links: NavItemWithLink[], title: string, lang: string, displa
 
   routes.push({
     pattern: '*',
-    redirect: '/',
+    content: html`<gem-book-404></gem-book-404>`,
   });
 
   return routes;
