@@ -16,6 +16,9 @@ export interface FrontMatter {
   navTitle?: string;
   sidebarIgnore?: boolean;
 
+  // dir config
+  reverse?: boolean;
+
   /** The following is the homepage options */
   hero?: Hero;
   features?: Feature[];

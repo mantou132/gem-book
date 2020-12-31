@@ -29,6 +29,7 @@ import {
   inspectObject,
   getRepoTitle,
   checkRelativeLink,
+  readDirConfig,
 } from './utils';
 import { startBuilder, builderEventTarget } from './builder';
 
@@ -60,13 +61,15 @@ function readDir(dir: string, link = '/') {
   if (!bookConfig.displayRank && new Set(filenameWithoutRankNumberList).size !== filenames.length) {
     throw new Error('After removing the rank number, duplicate file names are found, use `--display-rank`');
   }
+  const config = readDirConfig(dir);
   filenames
     .sort((filename1, filename2) => {
       const { rank: rank1 } = parseFilename(filename1);
       const { rank: rank2 } = parseFilename(filename2);
+      const reverse = config?.reverse ? -1 : 1;
       if (isIndexFile(filename1)) return -1;
-      if (parseInt(rank1) > parseInt(rank2) || !rank2) return 1;
-      return -1;
+      if (parseInt(rank1) > parseInt(rank2) || !rank2) return 1 * reverse;
+      return -1 * reverse;
     })
     .forEach((filename) => {
       const item: NavItem = { title: '', link: '' };

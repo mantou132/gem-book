@@ -102,6 +102,14 @@ export function checkRelativeLink(fullPath: string, docsRootDir: string) {
   });
 }
 
+export function readDirConfig(fullPath: string) {
+  const files = readdirSync(fullPath);
+  const configFile = files.find(isDirConfigFile);
+  if (configFile) {
+    return YAML.parse(readFileSync(path.join(fullPath, configFile), 'utf-8')) as FrontMatter;
+  }
+}
+
 type FileMetadata = FrontMatter & {
   title: string;
   headings?: NavItem[];
@@ -138,20 +146,10 @@ export function getMetadata(fullPath: string, displayRank: boolean | undefined):
   };
 
   if (statSync(fullPath).isDirectory()) {
-    const files = readdirSync(fullPath);
-    const result = {
+    return {
       title: getTitle(),
+      ...readDirConfig(fullPath),
     };
-    const configFile = files.find(isDirConfigFile);
-    if (configFile) {
-      const config = YAML.parse(readFileSync(path.join(fullPath, configFile), 'utf-8'));
-      return {
-        ...result,
-        ...config,
-      };
-    } else {
-      return result;
-    }
   } else if (isMdfile(fullPath)) {
     return parseMd(fullPath);
   }
