@@ -27,10 +27,12 @@ export function getRemotePath(originPath: string, lang?: string) {
   return `${langPath}${originPath}`;
 }
 
-export function getAlternateUrl(lang: string) {
+export function getAlternateUrl(lang: string, pathname?: string) {
   const { origin } = location;
   const { path, query, hash } = history.getParams();
-  return `${origin}/${lang}${path}${query}${hash}`;
+  const fullPath = getRemotePath(pathname || path, lang);
+  if (pathname) return `${origin}${fullPath}`;
+  return `${origin}${fullPath}${query}${hash}`;
 }
 
 export function isSameOrigin(link: string) {
