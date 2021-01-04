@@ -25,7 +25,7 @@ export class Meta extends GemElement {
               .map(({ originLink }) => html`<link rel="prefetch" href=${getRemotePath(originLink, lang)}></link>`)}
 
         <!-- search engine -->
-        ${location.href !== canonicalLink ? html`<link rel="canonical" href=${canonicalLink} />` : ''}
+        <link rel="canonical" href=${canonicalLink} />
         ${langList?.map(({ code }) => html`<link rel="alternate" hreflang=${code} href=${getAlternateUrl(code)} />`)}
       </gem-reflect>
     `;
