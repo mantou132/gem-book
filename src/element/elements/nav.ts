@@ -126,10 +126,10 @@ export class Nav extends GemElement {
           background: rgba(${theme.primaryColorRGB}, 0.1);
         }
         gem-active-link:hover,
-        gem-active-link.active {
+        gem-active-link:where(.--active, :--active) {
           color: ${theme.primaryColor};
         }
-        gem-active-link.active::after {
+        gem-active-link:where(.--active, :--active)::after {
           content: '';
           position: absolute;
           left: 0;
