@@ -371,17 +371,16 @@ export class Pre extends GemElement {
 
         if (this.lang && !Prism.languages[this.lang]) {
           const lang = langAliases[this.lang] || this.lang;
-          let langDeps: string[] = [];
-          langDeps = langDeps.concat(langDependencies[lang] || []);
-          const langs = new Set([lang, ...langDeps]);
+          const langDeps = ([] as string[]).concat(langDependencies[lang] || []);
           try {
             await Promise.all(
-              [...langs].map((lang) => {
-                if (!Prism.languages[lang]) {
-                  return import(/* webpackIgnore: true */ `${esmHost}/components/prism-${lang}.min.js`);
+              langDeps.map((langDep) => {
+                if (!Prism.languages[langDep]) {
+                  return import(/* webpackIgnore: true */ `${esmHost}/components/prism-${langDep}.min.js`);
                 }
               }),
             );
+            await import(/* webpackIgnore: true */ `${esmHost}/components/prism-${lang}.min.js`);
           } catch {
             //
           }
