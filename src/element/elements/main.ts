@@ -83,9 +83,15 @@ export class Main extends GemElement<State> {
     const { displayRank } = this;
     renderer.link = function (href, title, text) {
       if (href?.startsWith('.')) {
-        return `<gem-link class="link" path=${getUserLink(href, displayRank)} title="${
-          title || ''
-        }">${text}</gem-link>`;
+        const { search, hash } = new URL(href, location.origin);
+        return `
+        <gem-link
+          class="link"
+          path="${getUserLink(href.replace(/#.*/, ''), displayRank)}"
+          hash="${hash}"
+          query="${search}"
+          title="${title || ''}"
+        >${text}</gem-link>`;
       }
       const internal = isSameOrigin(href || '');
       return `<a class="link" target=${internal ? '_self' : '_blank'} href="${href || ''}" title="${
