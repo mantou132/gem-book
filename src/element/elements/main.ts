@@ -1,8 +1,19 @@
-import { html, GemElement, customElement, attribute, boolattribute, css } from '@mantou/gem';
+import {
+  html,
+  GemElement,
+  customElement,
+  attribute,
+  boolattribute,
+  css,
+  createStore,
+  connectStore,
+  updateStore,
+} from '@mantou/gem';
 import marked from 'marked';
 
 import '@mantou/gem/elements/unsafe';
 import '@mantou/gem/elements/link';
+import '@mantou/gem/elements/reflect';
 
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
@@ -16,10 +27,15 @@ import './pre';
 
 const parser = new DOMParser();
 
-interface State {
+type State = {
   fetching: boolean;
   content: Element[] | null;
-}
+};
+
+export const mainState = createStore<State>({
+  fetching: false,
+  content: null,
+});
 
 /**
  * @attr link
@@ -27,15 +43,11 @@ interface State {
  * @attr display-rank
  */
 @customElement('gem-book-main')
-export class Main extends GemElement<State> {
+@connectStore(mainState)
+export class Main extends GemElement {
   @attribute link: string;
   @attribute lang: string;
   @boolattribute displayRank: boolean;
-
-  state = {
-    fetching: false,
-    content: null,
-  };
 
   mdRenderer = this.getMdRenderer();
 
@@ -66,12 +78,12 @@ export class Main extends GemElement<State> {
       const [, text, customId] = fullText.match(/^(.*?)\s*(?:{#(.*)})?$/s) as RegExpMatchArray;
       const tag = `h${level}`;
       const id = customId || `${this.options.headerPrefix}${slugger.slug(r)}`;
-      return `<${tag} class="markdown-header" id="${id}"><a class="header-anchor" href="#${id}">${anchor}</a>${text}</${tag}>`;
+      return `<${tag} class="markdown-header" id="${id}"><a class="header-anchor" aria-hidden="true" href="#${id}">${anchor}</a>${text}</${tag}>`;
     };
 
     renderer.code = (code, infostring) => {
-      const [lang, highlight] = infostring?.split(/\s+/) || [];
-      return `<gem-book-pre lang="${lang}" highlight="${highlight}">${escapeHTML(code)}</gem-book-pre>`;
+      const [lang, highlight = ''] = infostring?.split(/\s+/) || [];
+      return `<gem-book-pre codelang="${lang}" highlight="${highlight}">${escapeHTML(code)}</gem-book-pre>`;
     };
 
     renderer.image = (href, title, text) => {
@@ -85,24 +97,30 @@ export class Main extends GemElement<State> {
       if (href?.startsWith('.')) {
         const { search, hash } = new URL(href, location.origin);
         return `
-        <gem-link
-          class="link"
-          path="${getUserLink(href.replace(/#.*/, ''), displayRank)}"
-          hash="${hash}"
-          query="${search}"
-          title="${title || ''}"
-        >${text}</gem-link>`;
+          <gem-link
+            class="link"
+            path="${getUserLink(href.replace(/#.*/, ''), displayRank)}"
+            hash="${hash}"
+            query="${search}"
+            title="${title || ''}"
+          >${text}</gem-link>
+        `;
       }
       const internal = isSameOrigin(href || '');
-      return `<a class="link" target=${internal ? '_self' : '_blank'} href="${href || ''}" title="${
-        title || ''
-      }">${text}${internal ? '' : link}</a>`;
+      return `
+        <a
+          class="link"
+          ${internal ? '' : `ref="noreferrer" target="_blank"`}
+          href="${href || ''}"
+          title="${title || ''}"
+        >${text}${internal ? '' : link}</a>
+      `;
     };
     return renderer;
   }
 
   fetchData = async () => {
-    this.setState({
+    updateStore(mainState, {
       fetching: true,
       content: null,
     });
@@ -118,7 +136,7 @@ export class Main extends GemElement<State> {
     const elements = [
       ...parser.parseFromString(marked.parse(mdBody, { renderer: this.mdRenderer }), 'text/html').body.children,
     ];
-    this.setState({
+    updateStore(mainState, {
       fetching: false,
       content: elements,
     });
@@ -140,7 +158,7 @@ export class Main extends GemElement<State> {
   };
 
   render() {
-    const { fetching, content } = this.state;
+    const { fetching, content } = mainState;
     return html`
       ${content || html`<div>${selfI18n.get('loading')}</div>`}
       <style>

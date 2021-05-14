@@ -36,7 +36,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@mantou/gem": "^1.1.0",
+    "@mantou/gem": "^1.2.2",
     "commander": "^4.1.1",
     "copy-webpack-plugin": "^6.3.2",
     "front-matter": "^4.0.2",

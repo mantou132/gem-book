@@ -172,7 +172,7 @@ const langAliases: Record<string, string> = {
 
 @customElement('gem-book-pre')
 export class Pre extends GemElement {
-  @attribute lang: string;
+  @attribute codelang: string;
   @attribute range: string;
   @attribute highlight: string;
 
@@ -201,7 +201,7 @@ export class Pre extends GemElement {
   }
 
   render() {
-    const lang = this.lang;
+    const lang = this.codelang;
     const lineHeight = 1.5;
     const padding = 1;
     return html`
@@ -369,8 +369,8 @@ export class Pre extends GemElement {
 
         // TODO: wait Intersection
 
-        if (this.lang && !Prism.languages[this.lang]) {
-          const lang = langAliases[this.lang] || this.lang;
+        if (this.codelang && !Prism.languages[this.codelang]) {
+          const lang = langAliases[this.codelang] || this.codelang;
           const langDeps = ([] as string[]).concat(langDependencies[lang] || []);
           try {
             await Promise.all(
@@ -386,8 +386,8 @@ export class Pre extends GemElement {
           }
         }
 
-        const content = Prism.languages[this.lang]
-          ? Prism.highlight(this.textContent || '', Prism.languages[this.lang], this.lang)
+        const content = Prism.languages[this.codelang]
+          ? Prism.highlight(this.textContent || '', Prism.languages[this.codelang], this.codelang)
           : this.innerHTML;
         this.codeRef.element.innerHTML = this.getParts(content);
       },

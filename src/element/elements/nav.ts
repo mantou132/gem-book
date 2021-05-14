@@ -31,6 +31,7 @@ export class Nav extends GemElement {
           <gem-use @click=${() => this.i18nRef.element?.click()} .root=${container} selector="#i18n"></gem-use>
           <select
             class="i18n-select"
+            aria-label="language select"
             ref=${this.i18nRef.ref}
             @change=${(e: any) => this.languagechange(e.target.value)}
           >
@@ -159,7 +160,7 @@ export class Nav extends GemElement {
       </style>
       <div class="internals">
         <gem-link class="item homelink" path="/">
-          ${icon ? html`<img alt=${title} src=${icon} />` : null}
+          ${icon ? html`<img alt=${title} src=${icon} aria-hidden="true" />` : null}
           ${mediaQuery.isPhone && icon && Number(nav?.length) >= 2 ? '' : title}
         </gem-link>
         ${internals.map(this.renderInternalItem)}

@@ -7,9 +7,9 @@ customElements.whenDefined('gem-book').then(() => {
   customElements.define(
     'gbp-raw',
     class extends GemBookPluginElement {
-      static observedAttributes = ['src', 'lang', 'range', 'highlight'];
+      static observedAttributes = ['src', 'codelang', 'range', 'highlight'];
       src: string;
-      lang: string;
+      codelang: string;
       range: string;
       highlight: string;
 
@@ -40,7 +40,7 @@ customElements.whenDefined('gem-book').then(() => {
         const content = div.innerHTML;
 
         const extension = this.src.split('.').pop() || '';
-        this.innerHTML = `<gem-book-pre lang="${this.lang || extension}" highlight="${this.highlight}" range="${
+        this.innerHTML = `<gem-book-pre codelang="${this.codelang || extension}" highlight="${this.highlight}" range="${
           this.range
         }">${content}</gem-book-pre>`;
       }

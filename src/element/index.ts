@@ -219,11 +219,11 @@ export class GemBookElement extends GemElement {
           }
         }
       </style>
-      <gem-book-meta></gem-book-meta>
+      <gem-book-meta aria-hidden="true"></gem-book-meta>
       ${hasNavbar
         ? html`
             <div class="nav-shadow" part=${this.navShadow}></div>
-            <gem-book-nav part=${this.nav}>
+            <gem-book-nav role="navigation" part=${this.nav}>
               <slot name=${this.navInside}></slot>
             </gem-book-nav>
           `
@@ -233,18 +233,19 @@ export class GemBookElement extends GemElement {
         : html`<slot name=${this.mainBefore}></slot>`}
       <gem-light-route
         ref=${this.routeRef.ref}
+        role="main"
         part=${this.main}
         .key=${lang}
         .routes=${routes}
         @change=${(e: CustomEvent) => this.routechange(e.detail)}
       ></gem-light-route>
-      <gem-book-edit-link part=${this.editLink}></gem-book-edit-link>
-      <gem-book-sidebar part=${this.sidebar}>
+      <gem-book-edit-link role="complementary" part=${this.editLink}></gem-book-edit-link>
+      <gem-book-sidebar role="navigation" part=${this.sidebar}>
         <slot name=${this.sidebarBefore}></slot>
       </gem-book-sidebar>
-      <gem-book-rel-link part=${this.relLink}></gem-book-rel-link>
+      <gem-book-rel-link role="navigation" part=${this.relLink}></gem-book-rel-link>
       ${renderHomePage ? '' : html`<slot name=${this.mainAfter}></slot>`}
-      <gem-book-footer part=${this.footer}></gem-book-footer>
+      <gem-book-footer role="contentinfo" part=${this.footer}></gem-book-footer>
     `;
   }
 

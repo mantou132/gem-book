@@ -78,7 +78,7 @@ export class Homepage extends GemElement {
           }
         }
       </style>
-      <div class="hero" part=${this.hero}>
+      <div class="hero" part=${this.hero} role="banner">
         <div class="body">
           ${!title ? '' : html`<h1 class="title">${title}</h1>`}
           ${!desc ? '' : html`<p class="desc">${mdRender.unsafeRender(desc)}</p>`}
@@ -142,8 +142,8 @@ export class Homepage extends GemElement {
           }
         }
       </style>
-      <div class="features">
-        <div class="body">
+      <div role="region" aria-label="features" class="features">
+        <dl class="body">
           ${features?.map(
             (feature) => html`
               <div class="feature ${feature.icon ? 'has-icon' : ''}">
@@ -154,12 +154,12 @@ export class Homepage extends GemElement {
                         .href}
                     />`
                   : ''}
-                <h3 class="feat-title">${feature.title}</h3>
-                <p class="feat-desc">${mdRender.unsafeRender(feature.desc)}</p>
+                <dt class="feat-title">${feature.title}</dt>
+                <dd class="feat-desc">${mdRender.unsafeRender(feature.desc)}</dd>
               </div>
             `,
           )}
-        </div>
+        </dl>
       </div>
     `;
   }

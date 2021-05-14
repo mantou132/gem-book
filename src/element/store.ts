@@ -108,7 +108,7 @@ function getRouter(links: NavItemWithLink[], title: string, lang: string, displa
     const { title: pageTitle, link, userFullPath, originLink } = item;
     const routeTitle = `${capitalize(pageTitle)}${pageTitle ? ' - ' : ''}${title}`;
     const routeContent = html`
-      <gem-book-main lang=${lang} link=${originLink} ?display-rank=${displayRank}></gem-book-main>
+      <gem-book-main role="article" lang=${lang} link=${originLink} ?display-rank=${displayRank}></gem-book-main>
     `;
 
     routes.push({
@@ -150,7 +150,7 @@ function getRouter(links: NavItemWithLink[], title: string, lang: string, displa
 
   routes.push({
     pattern: '*',
-    content: html`<gem-book-404></gem-book-404>`,
+    content: html`<gem-book-404 role="region" aria-label="not found"></gem-book-404>`,
   });
 
   return routes;
