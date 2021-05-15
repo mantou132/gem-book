@@ -117,7 +117,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
           ? new CopyWebpackPlugin({
               patterns: [{ from: docsDir, to: outputDir }],
             })
-          : [],
+          : ([] as any),
       )
       .concat(
         !buildMode && resolveThemePath
@@ -130,7 +130,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
                 },
               ],
             })
-          : [],
+          : ([] as any),
       ),
     devtool: debugMode && 'source-map',
   });
@@ -141,18 +141,20 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
         return;
       }
 
+      if (!stats) return;
+
       const info = stats.toJson();
 
       if (stats.hasErrors()) {
-        console.error(info.errors.join());
+        console.error(info.errors);
       }
 
       if (stats.hasWarnings()) {
-        console.warn(info.warnings.join());
+        console.warn(info.warnings);
       }
 
       if (debugMode) {
-        writeFileSync(path.resolve(outputDir, STATS_FILE), JSON.stringify(stats.toJson({}, true), null, 2));
+        writeFileSync(path.resolve(outputDir, STATS_FILE), JSON.stringify(stats.toJson({ colors: true }), null, 2));
       }
     });
   } else {

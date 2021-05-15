@@ -15,6 +15,7 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "target": "ES2018",
+    "skipLibCheck": true,
     "lib": ["es2020", "dom", "DOM.Iterable"]
   },
   "include": ["src"],

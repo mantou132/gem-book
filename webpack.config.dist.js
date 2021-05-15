@@ -4,6 +4,7 @@ const path = require('path');
  * @type {import('webpack/declarations/WebpackOptions').WebpackOptions}
  */
 module.exports = {
+  mode: 'production',
   entry: `./src/element`,
   module: {
     rules: [

@@ -81,10 +81,15 @@ function readDir(dir: string, link = '/') {
           }
           item.type = 'file';
           item.link = `${link}${filename}`;
-          const { title, headings: children, isNav, navTitle, sidebarIgnore, hero, features } = getMetadata(
-            fullPath,
-            bookConfig.displayRank,
-          );
+          const {
+            title,
+            headings: children,
+            isNav,
+            navTitle,
+            sidebarIgnore,
+            hero,
+            features,
+          } = getMetadata(fullPath, bookConfig.displayRank);
           Object.assign(item, { title, children, isNav, navTitle, sidebarIgnore, hero, features });
           result.push(item);
         }
@@ -249,7 +254,3 @@ program
   });
 
 program.parse(process.argv);
-
-if (!program.args.length) {
-  program.outputHelp(() => program.help());
-}
