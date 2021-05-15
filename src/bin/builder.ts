@@ -2,6 +2,7 @@ import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import { GenerateSW } from 'workbox-webpack-plugin';
 import path from 'path';
 import { writeFileSync, symlinkSync, renameSync } from 'fs';
 import { EventEmitter } from 'events';
@@ -114,6 +115,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
       new CopyWebpackPlugin({
         patterns: [{ from: path.resolve(entryDir, 'robots.txt'), to: outputDir }],
       }),
+      new GenerateSW(),
     ]
       .concat(
         outputDir !== docsDir

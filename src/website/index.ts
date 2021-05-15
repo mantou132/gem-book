@@ -70,3 +70,9 @@ render(
   `,
   document.body,
 );
+
+if (!process.env.DEV_MODE) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js');
+  });
+}
