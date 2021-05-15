@@ -111,6 +111,9 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
         'process.env.PLUGINS': JSON.stringify(JSON.stringify(plugins)),
         'process.env.GA_ID': JSON.stringify(ga),
       }),
+      new CopyWebpackPlugin({
+        patterns: [{ from: path.resolve(entryDir, 'robots.txt'), to: outputDir }],
+      }),
     ]
       .concat(
         outputDir !== docsDir
