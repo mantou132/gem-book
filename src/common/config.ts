@@ -9,11 +9,8 @@ export type NavItem = FrontMatter & {
 
 export type SidebarConfig = NavItem[] | { [lang: string]: { name: string; data: NavItem[] } };
 
-export interface BookConfig {
-  // navbar icon absolute path
-  icon: string;
-  title: string;
-  sidebar: SidebarConfig;
+interface CommonConfig {
+  title?: string;
   nav?: NavItem[];
   github?: string;
   sourceDir?: string;
@@ -22,3 +19,25 @@ export interface BookConfig {
   homeMode?: boolean;
   footer?: string;
 }
+
+export type BookConfig = {
+  sidebar: SidebarConfig;
+  // navbar icon absolute path
+  icon?: string;
+} & CommonConfig;
+
+export interface CliUniqueConfig {
+  // relative path
+  icon?: string;
+  output?: string;
+  i18n?: boolean;
+  plugin?: string[];
+  ga?: string;
+  template?: string;
+  theme?: string;
+  build?: boolean;
+  json?: boolean;
+  debug?: boolean;
+}
+
+export type CliConfig = CliUniqueConfig & CommonConfig;

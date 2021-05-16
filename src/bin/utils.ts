@@ -64,15 +64,15 @@ export function resolveLocalPlugin(p: string) {
 }
 
 // Prefer built-in
-export function resolveTheme(p: string) {
-  if (!p) return { theme: null, resolveThemePath: p };
+export function resolveTheme(p?: string) {
+  if (!p) return { resolveThemePath: p, themeObject: null };
   let resolveThemePath = '';
   try {
     resolveThemePath = __non_webpack_require__.resolve(path.resolve(__dirname, `../themes/${p}`));
   } catch {
     resolveThemePath = __non_webpack_require__.resolve(path.resolve(process.cwd(), p));
   }
-  return { resolveThemePath, theme: __non_webpack_require__(resolveThemePath) };
+  return { resolveThemePath, themeObject: __non_webpack_require__(resolveThemePath) };
 }
 
 export function checkRelativeLink(fullPath: string, docsRootDir: string) {

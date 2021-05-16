@@ -6,21 +6,9 @@ import { GenerateSW } from 'workbox-webpack-plugin';
 import path from 'path';
 import { writeFileSync, symlinkSync, renameSync } from 'fs';
 import { EventEmitter } from 'events';
-import { BookConfig } from '../common/config';
+import { BookConfig, CliUniqueConfig } from '../common/config';
 import { resolveLocalPlugin, resolveTheme, isURL } from './utils';
 import { DEV_THEME_FILE, STATS_FILE } from '../common/constant';
-
-interface BuilderOptions {
-  dir: string;
-  output: string;
-  debugMode: boolean;
-  buildMode: boolean;
-  themePath: string;
-  templatePath: string;
-  iconPath: string;
-  plugins: string[];
-  ga: string;
-}
 
 export const builderEventTarget = new EventEmitter();
 
@@ -32,11 +20,11 @@ const update = () => {
 };
 
 // dev mode uses memory file system
-export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookConfig>) {
+export function startBuilder(dir: string, options: Required<CliUniqueConfig>, bookConfig: Partial<BookConfig>) {
   update();
   builderEventTarget.on('update', update);
 
-  const { dir, debugMode, buildMode, themePath, templatePath, output, iconPath, plugins, ga } = options;
+  const { debug, build, theme, template, output, icon, plugin: plugins, ga } = options;
 
   if (path.extname(output) === '.json') {
     return;
@@ -52,12 +40,12 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
     }
   });
 
-  const isRemoteIcon = isURL(iconPath);
+  const isRemoteIcon = isURL(icon);
   const docsDir = path.resolve(dir);
   const outputDir = output ? path.resolve(output) : docsDir;
-  const { theme, resolveThemePath } = resolveTheme(themePath);
+  const { themeObject, resolveThemePath } = resolveTheme(theme);
   const compiler = webpack({
-    mode: buildMode ? 'production' : 'development',
+    mode: build ? 'production' : 'development',
     entry: [updateLog, entryDir],
     module: {
       rules: [
@@ -96,19 +84,19 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
     plugins: [
       new HtmlWebpackPlugin({
         title: bookConfig.title || 'Gem-book App',
-        ...(templatePath ? { template: path.resolve(process.cwd(), templatePath) } : undefined),
+        ...(template ? { template: path.resolve(process.cwd(), template) } : undefined),
         // Automatically copied to the output directory
-        favicon: !isRemoteIcon && iconPath,
+        favicon: !isRemoteIcon && icon,
         meta: {
           viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',
         },
       }),
       new webpack.DefinePlugin({
         // dev mode
-        'process.env.DEV_MODE': !buildMode,
+        'process.env.DEV_MODE': !build,
         // build mode
         'process.env.BOOK_CONFIG': JSON.stringify(JSON.stringify(bookConfig)),
-        'process.env.THEME': JSON.stringify(JSON.stringify(theme)),
+        'process.env.THEME': JSON.stringify(JSON.stringify(themeObject)),
         'process.env.PLUGINS': JSON.stringify(JSON.stringify(plugins)),
         'process.env.GA_ID': JSON.stringify(ga),
       }),
@@ -125,21 +113,21 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
           : ([] as any),
       )
       .concat(
-        !buildMode && resolveThemePath
+        !build && resolveThemePath
           ? new CopyWebpackPlugin({
               patterns: [
                 {
                   from: resolveThemePath,
                   to: path.resolve(outputDir, DEV_THEME_FILE),
-                  transform: () => JSON.stringify(theme),
+                  transform: () => JSON.stringify(themeObject),
                 },
               ],
             })
           : ([] as any),
       ),
-    devtool: debugMode && 'source-map',
+    devtool: debug && 'source-map',
   });
-  if (buildMode) {
+  if (build) {
     compiler.run((err, stats) => {
       if (err) {
         console.error(err.stack || err);
@@ -158,7 +146,7 @@ export function startBuilder(options: BuilderOptions, bookConfig: Partial<BookCo
         console.warn(info.warnings);
       }
 
-      if (debugMode) {
+      if (debug) {
         writeFileSync(path.resolve(outputDir, STATS_FILE), JSON.stringify(stats.toJson({ colors: true }), null, 2));
       }
     });

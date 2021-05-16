@@ -14,8 +14,8 @@ import getRepoInfo from 'git-repo-info';
 import { debounce } from 'lodash';
 
 import { version } from '../../package.json';
-import { BookConfig, NavItem, SidebarConfig } from '../common/config';
-import { DEFAULT_FILE } from '../common/constant';
+import { BookConfig, CliConfig, CliUniqueConfig, NavItem, SidebarConfig } from '../common/config';
+import { DEFAULT_FILE, DEFAULT_CLI_FILE, DEFAULT_SOURCE_BRANCH } from '../common/constant';
 import { isIndexFile, parseFilename } from '../common/utils';
 
 import {
@@ -39,17 +39,32 @@ import lang from './lang.json';
 program.version(version, '-v, --version');
 
 let docsRootDir = '';
-let output = '';
-let templatePath = '';
-let themePath = '';
-let iconPath = '';
-let ga = '';
-let i18nMode = false;
-let buildMode = false;
-let onlyJson = false;
-let debugMode = false;
-const plugins: string[] = [];
+let useConfig = false;
 const bookConfig: Partial<BookConfig> = {};
+const cliConfig: Required<CliUniqueConfig> = {
+  icon: '',
+  output: '',
+  i18n: false,
+  plugin: [],
+  ga: '',
+  template: '',
+  theme: '',
+  build: false,
+  json: false,
+  debug: false,
+};
+
+function readConfig(configPath: string) {
+  const obj = __non_webpack_require__(path.resolve(process.cwd(), configPath)) as Partial<CliConfig & BookConfig>;
+  useConfig = true;
+  Object.keys(cliConfig).forEach((key: keyof CliUniqueConfig) => {
+    if (key in obj) {
+      Object.assign(cliConfig, { [key]: obj[key] });
+      delete obj[key];
+    }
+  });
+  Object.assign(bookConfig, obj);
+}
 
 function readDir(dir: string, link = '/') {
   const result: NavItem[] = [];
@@ -76,7 +91,7 @@ function readDir(dir: string, link = '/') {
       const fullPath = path.join(dir, filename);
       if (fs.statSync(fullPath).isFile()) {
         if (isMdfile(fullPath)) {
-          if (debugMode) {
+          if (cliConfig.debug) {
             checkRelativeLink(fullPath, docsRootDir);
           }
           item.type = 'file';
@@ -107,10 +122,10 @@ function readDir(dir: string, link = '/') {
 
 async function generateBookConfig(dir: string) {
   //icon path
-  if (iconPath) {
-    bookConfig.icon ??= isURL(iconPath)
-      ? iconPath
-      : `/${inTheDir(dir, iconPath) ? path.relative(dir, iconPath) : path.basename(iconPath)}`;
+  if (cliConfig.icon) {
+    bookConfig.icon ??= isURL(cliConfig.icon)
+      ? cliConfig.icon
+      : `/${inTheDir(dir, cliConfig.icon) ? path.relative(dir, cliConfig.icon) : path.basename(cliConfig.icon)}`;
   }
 
   // read github info
@@ -124,9 +139,9 @@ async function generateBookConfig(dir: string) {
 
   // default sourceBranch
   // CI not support
-  bookConfig.sourceBranch ??= getRepoInfo().branch || 'master';
+  bookConfig.sourceBranch ??= getRepoInfo().branch || DEFAULT_SOURCE_BRANCH;
 
-  if (i18nMode) {
+  if (cliConfig.i18n) {
     const sidebarConfig: SidebarConfig = {};
     fs.readdirSync(docsRootDir).forEach((code) => {
       const fullPath = path.join(docsRootDir, code);
@@ -147,17 +162,17 @@ async function generateBookConfig(dir: string) {
   }
 
   // create file
-  const configPath = path.resolve(output || dir, output.endsWith('.json') ? '' : DEFAULT_FILE);
+  const configPath = path.resolve(cliConfig.output || dir, cliConfig.output.endsWith('.json') ? '' : DEFAULT_FILE);
   const configStr = JSON.stringify(bookConfig, null, 2) + '\n';
   // buildMode: embeds the configuration into front-end resources
-  if (!(!onlyJson && buildMode)) {
+  if (!(!cliConfig.json && cliConfig.build)) {
     if (!isSomeContent(configPath, configStr)) {
       mkdirp.sync(path.dirname(configPath));
       // Trigger rename event
       fs.writeFileSync(configPath, configStr);
     }
   }
-  if (debugMode) inspectObject(JSON.parse(configStr));
+  if (cliConfig.debug) inspectObject(JSON.parse(configStr));
 
   builderEventTarget.emit('update');
 }
@@ -168,26 +183,34 @@ program
   .option('-t, --title <title>', 'document title', (title: string) => {
     bookConfig.title = title;
   })
-  .option('-i, --icon <icon>', 'project icon path or url', (path: string) => {
-    iconPath = path;
+  .option('-i, --icon <path>', 'project icon path or url', (path: string) => {
+    cliConfig.icon = path;
   })
-  .option('-o, --output <ouput file>', `ouput json file, default \`${output}\``, (dir: string) => {
-    output = dir;
-  })
-  .option('-d, --source-dir <source dir>', 'github source dir', (sourceDir: string) => {
+  .option(
+    '-o, --output <path>',
+    `output file or directory, default use docs dir, generate an \`${DEFAULT_FILE}\` file if only JSON is generated`,
+    (dir: string) => {
+      cliConfig.output = dir;
+    },
+  )
+  .option('-d, --source-dir <dir>', 'github source dir, default use docs dir', (sourceDir: string) => {
     bookConfig.sourceDir = sourceDir;
   })
-  .option('-b, --source-branch <source branch>', 'github source branch', (sourceBranch: string) => {
-    bookConfig.sourceBranch = sourceBranch;
+  .option(
+    '-b, --source-branch <branch>',
+    `github source branch, default \`${DEFAULT_SOURCE_BRANCH}\``,
+    (sourceBranch: string) => {
+      bookConfig.sourceBranch = sourceBranch;
+    },
+  )
+  .option('--github <url>', 'project github url', (link: string) => {
+    bookConfig.github = link;
   })
-  .option('--github <link>', 'github link', (link: string) => {
-    bookConfig.sourceBranch = link;
-  })
-  .option('--footer <footer>', 'footer markdown', (footer: string) => {
+  .option('--footer <string>', 'footer content, support markdown format', (footer: string) => {
     bookConfig.footer = footer;
   })
   .option('--i18n', 'enabled i18n', () => {
-    i18nMode = true;
+    cliConfig.i18n = true;
   })
   .option('--display-rank', 'sorting number is not displayed in the link', () => {
     bookConfig.displayRank = true;
@@ -196,60 +219,57 @@ program
     bookConfig.homeMode = true;
   })
   .option('--nav <title,link>', 'attach a nav item', (item: string) => {
-    bookConfig.nav = bookConfig.nav || [];
+    bookConfig.nav ||= [];
     const [title, link] = item.split(',');
     if (!link) throw new Error('nav options error');
     bookConfig.nav.push({ title, link });
   })
-  .option('--plugin <name>', 'load plugin', (name: string) => {
-    plugins.push(name);
+  .option('--plugin <name or path>', 'load plugin', (name: string) => {
+    cliConfig.plugin.push(name);
   })
-  .option('--ga <id>', 'add google analytics', (id: string) => {
-    ga = id;
+  .option('--ga <id>', 'google analytics ID', (id: string) => {
+    cliConfig.ga = id;
   })
-  .option('--template <path>', 'html template', (path) => {
-    templatePath = path;
+  .option('--template <path>', 'html template path', (path) => {
+    cliConfig.template = path;
   })
-  .option('--theme <path>', 'html template', (path) => {
-    themePath = path;
+  .option('--theme <name or path>', 'theme path', (path) => {
+    cliConfig.theme = path;
   })
-  .option('--build', 'output all front-end assets or book.json', () => {
-    buildMode = true;
+  .option('--build', `output all front-end assets or \`${DEFAULT_FILE}\``, () => {
+    cliConfig.build = true;
   })
-  .option('--json', 'only output book.json', () => {
-    onlyJson = true;
+  .option('--json', `only output \`${DEFAULT_FILE}\``, () => {
+    cliConfig.json = true;
   })
-  .option('--config <config file>', 'specify config file', (configPath: string) => {
-    Object.assign(bookConfig, __non_webpack_require__(path.resolve(process.cwd(), configPath)));
+  .option('--config <path>', `specify config file, default use \`${DEFAULT_CLI_FILE}\``, (configPath: string) => {
+    readConfig(configPath);
   })
   .option('--debug', 'enabled debug mode', () => {
-    debugMode = true;
+    cliConfig.debug = true;
   })
   .arguments('<dir>')
   .action(async (dir: string) => {
+    if (!useConfig) {
+      try {
+        readConfig(DEFAULT_CLI_FILE);
+      } catch {
+        //
+      }
+    }
+
     docsRootDir = path.resolve(process.cwd(), dir);
     await generateBookConfig(dir);
-    if (!buildMode) {
+    if (!cliConfig.build) {
       fs.watch(dir, { recursive: true }, (type, filePath) => {
         if (type === 'rename' || isDirConfigFile(filePath) || isMdfile(filePath)) {
           debounceCommand(dir);
         }
       });
     }
-    if (!onlyJson) {
-      const builderOptions = {
-        dir,
-        debugMode,
-        buildMode,
-        themePath,
-        templatePath,
-        output,
-        iconPath,
-        plugins,
-        ga,
-      };
-      if (debugMode) inspectObject(builderOptions);
-      startBuilder(builderOptions, bookConfig);
+    if (!cliConfig.json) {
+      if (cliConfig.debug) inspectObject(cliConfig);
+      startBuilder(dir, cliConfig, bookConfig);
     }
   });
 
