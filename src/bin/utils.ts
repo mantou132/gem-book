@@ -79,9 +79,12 @@ export function checkRelativeLink(fullPath: string, docsRootDir: string) {
   const md = readFileSync(fullPath, 'utf8');
   const lines = md.split('\n');
   const results = [...md.matchAll(/\[.*?\]\((.*?)(\s+.*?)?\)/g)];
-  const links = results.map(([, link]) => link).filter((link) => /^\.?\.?\//.test(link));
-  links.forEach((link, index) => {
-    const targetPath = link.startsWith('/') ? path.join(docsRootDir, link) : path.resolve(path.dirname(fullPath), link);
+  const links = results.map(([, link], index) => ({ link, index })).filter(({ link }) => /^\.?\.?\//.test(link));
+  links.forEach(({ link, index }) => {
+    const linkWithoutHash = link.replace(/#.*/, '');
+    const targetPath = link.startsWith('/')
+      ? path.join(docsRootDir, linkWithoutHash)
+      : path.resolve(path.dirname(fullPath), linkWithoutHash);
     if (!existsSync(targetPath)) {
       const strIndex = results[index].index || 0;
       let currentNum = 0;
