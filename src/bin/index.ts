@@ -23,13 +23,12 @@ import {
   isDirConfigFile,
   getMetadata,
   isMdfile,
-  inTheDir,
-  isURL,
   isSomeContent,
   inspectObject,
   getRepoTitle,
   checkRelativeLink,
   readDirConfig,
+  getIconDataUrl,
 } from './utils';
 import { startBuilder, builderEventTarget } from './builder';
 
@@ -130,9 +129,7 @@ function readDir(dir: string, link = '/') {
 async function generateBookConfig(dir: string) {
   //icon path
   if (cliConfig.icon) {
-    bookConfig.icon ??= isURL(cliConfig.icon)
-      ? cliConfig.icon
-      : `/${inTheDir(dir, cliConfig.icon) ? path.relative(dir, cliConfig.icon) : path.basename(cliConfig.icon)}`;
+    bookConfig.icon ??= await getIconDataUrl(cliConfig.icon);
   }
 
   // read github info

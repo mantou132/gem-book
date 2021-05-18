@@ -9,6 +9,7 @@ import marked from 'marked';
 import fm from 'front-matter';
 import YAML from 'yaml';
 import { startCase } from 'lodash';
+import Jimp from 'jimp/es';
 
 import { NavItem } from '../common/config';
 import { FrontMatter } from '../common/frontmatter';
@@ -186,4 +187,14 @@ export function isSomeContent(filePath: string, content: string) {
 
 export function inspectObject(obj: any) {
   console.log(util.inspect(obj, { colors: true, depth: null }));
+}
+
+export async function getIconDataUrl(path: string) {
+  try {
+    const image = await Jimp.read(path);
+    return await image.clone().resize(Jimp.AUTO, 100).getBase64Async(Jimp.MIME_PNG);
+  } catch (err) {
+    if (isURL(path)) return path;
+    throw err;
+  }
 }
