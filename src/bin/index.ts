@@ -2,7 +2,7 @@
  * Automatically generate configuration from directory
  *
  * @example
- * gem-book -c book.config.json src/docs
+ * gem-book -c gem-book.cli.json src/docs
  * gem-book -t documentTitle src/docs
  */
 
@@ -59,8 +59,15 @@ function readConfig(configPath: string) {
   useConfig = true;
   Object.keys(cliConfig).forEach((key: keyof CliUniqueConfig) => {
     if (key in obj) {
-      Object.assign(cliConfig, { [key]: obj[key] });
+      const value = obj[key];
       delete obj[key];
+
+      const cliConfigValue = cliConfig[key];
+
+      // Overriding command line options is not allowed
+      if (!(Array.isArray(cliConfigValue) ? cliConfigValue.length : cliConfigValue)) {
+        Object.assign(cliConfig, { [key]: value });
+      }
     }
   });
   Object.assign(bookConfig, obj);
@@ -242,11 +249,11 @@ program
   .option('--json', `only output \`${DEFAULT_FILE}\``, () => {
     cliConfig.json = true;
   })
-  .option('--config <path>', `specify config file, default use \`${DEFAULT_CLI_FILE}\``, (configPath: string) => {
-    readConfig(configPath);
-  })
   .option('--debug', 'enabled debug mode', () => {
     cliConfig.debug = true;
+  })
+  .option('--config <path>', `specify config file, default use \`${DEFAULT_CLI_FILE}\``, (configPath: string) => {
+    readConfig(configPath);
   })
   .arguments('<dir>')
   .action(async (dir: string) => {

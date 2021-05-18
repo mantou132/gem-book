@@ -18,7 +18,7 @@
   "scripts": {
     "lint": "tsc --noEmit && eslint --ext .ts --fix src/",
     "dev:cli": "webpack --watch --config webpack.config.cli.js",
-    "docs": "node ./bin docs -t Gem-book -i ./logo.png --i18n --home-mode --plugin raw --ga G-PZYZ441YD3 --debug",
+    "docs": "node ./bin docs",
     "dev:docs": "cross-env PORT=8090 nodemon --watch bin --exec \"npm run docs\"",
     "build:cli": "webpack --config webpack.config.cli.js",
     "build:ele": "tsc -p ./tsconfig.ele.json",
