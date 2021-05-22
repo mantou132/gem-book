@@ -69,6 +69,10 @@ export function startBuilder(dir: string, options: Required<CliUniqueConfig>, bo
     },
     resolve: {
       extensions: ['.ts', '.js'],
+      fallback: {
+        perf_hooks: false,
+        path: false,
+      },
     },
     output: {
       path: outputDir,
