@@ -39,7 +39,7 @@ export class Footer extends GemElement {
         }
       </style>
       ${config?.footer
-        ? mdRender.unsafeRender(
+        ? mdRender.unsafeRenderHTML(
             config.footer,
             css`
               p {

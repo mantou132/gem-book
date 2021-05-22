@@ -133,9 +133,7 @@ export class Main extends GemElement {
     const [, , _sToken, _frontmatter, _eToken, mdBody] =
       md.match(/^(([\r\n\s]*---\s*(?:\r\n|\n))(.*?)((?:\r\n|\n)---\s*(?:\r\n|\n)?))?(.*)$/s) || [];
 
-    const elements = [
-      ...parser.parseFromString(marked.parse(mdBody, { renderer: this.mdRenderer }), 'text/html').body.children,
-    ];
+    const elements = this.parseMarkdown(mdBody);
     updateStore(mainState, {
       fetching: false,
       content: elements,
@@ -368,7 +366,11 @@ export class Main extends GemElement {
     };
   }
 
-  unsafeRender(s: string, style = '') {
+  parseMarkdown(mdBody: string) {
+    return [...parser.parseFromString(marked.parse(mdBody, { renderer: this.mdRenderer }), 'text/html').body.children];
+  }
+
+  unsafeRenderHTML(s: string, style = '') {
     const htmlstr = marked.parse(s, { renderer: this.mdRenderer });
     const cssstr = css`
       ${this.linkStyle}

@@ -81,7 +81,7 @@ export class Homepage extends GemElement {
       <div class="hero" part=${this.hero} role="banner">
         <div class="body">
           ${!title ? '' : html`<h1 class="title">${title}</h1>`}
-          ${!desc ? '' : html`<p class="desc">${mdRender.unsafeRender(desc)}</p>`}
+          ${!desc ? '' : html`<p class="desc">${mdRender.unsafeRenderHTML(desc)}</p>`}
           <div class="actions">
             ${actions?.map(
               ({ link, text }, index) =>
@@ -155,7 +155,7 @@ export class Homepage extends GemElement {
                     />`
                   : ''}
                 <dt class="feat-title">${feature.title}</dt>
-                <dd class="feat-desc">${mdRender.unsafeRender(feature.desc)}</dd>
+                <dd class="feat-desc">${mdRender.unsafeRenderHTML(feature.desc)}</dd>
               </div>
             `,
           )}

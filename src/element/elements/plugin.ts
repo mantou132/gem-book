@@ -6,7 +6,7 @@ import { bookStore } from '../store';
 import { BookConfig } from '../../common/config';
 
 @connectStore(bookStore)
-export class GemBookPluginElement extends GemElement {
+export class GemBookPluginElement<T = any> extends GemElement<T> {
   static marked = marked;
   static Gem = Gem;
   static theme = theme;
