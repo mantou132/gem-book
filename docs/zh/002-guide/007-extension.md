@@ -37,7 +37,7 @@ gem-book::part(homepage-hero) {
 
 ## 插槽
 
-[插槽](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/slot)能让你自定义 `<gem-book>` 但内容，目前支持的插槽有 `sidebar-before`, `main-before`, `main-after`, `nav-inside`。
+[插槽](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/slot)能让你自定义 `<gem-book>` 的内容，目前支持的插槽有 `sidebar-before`, `main-before`, `main-after`, `nav-inside`。
 
 ```html
 <gem-book><div slot="sidebar-before">Hello</div></gem-book>
@@ -89,16 +89,4 @@ customElements.whenDefined('gem-book').then(({ GemBookPluginElement }) => {
 </gem-book>
 ```
 
-如果使用自带命令行构建网站，`<gem-book>` 是自动插入文档的，你需要使用 `--template` 指定模版文件，然后在模版中使用 DOM API 加载 `<gbp-comment>`：
-
-```html
-<script>
-  addEventListener('load', () => {
-    const commentElement = document.createElement('gbp-comment');
-    commentElement.slot = 'main-after';
-    commentElement.clientId = 'xxx';
-    commentElement.clientSecret = 'xxx';
-    document.querySelector('gem-book').append(commentElement);
-  });
-</script>
-```
+_可以使用 `--template` 指定模板文件_

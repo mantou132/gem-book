@@ -89,16 +89,4 @@ Some plugin need to be used with slots, such as the built-in plugin `<gbp-commen
 </gem-book>
 ```
 
-If you use the built-in command line to build a website, `<gem-book>` is automatically inserted into the document, you need to use `--template` to specify the template file, and then use the DOM API to load the `<gbp-comment>` in the template:
-
-```html
-<script>
-  addEventListener('load', () => {
-    const commentElement = document.createElement('gbp-comment');
-    commentElement.slot = 'main-after';
-    commentElement.clientId = 'xxx';
-    commentElement.clientSecret = 'xxx';
-    document.querySelector('gem-book').append(commentElement);
-  });
-</script>
-```
+_Can use `--template` specified template file_

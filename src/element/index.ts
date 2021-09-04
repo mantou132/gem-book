@@ -69,7 +69,7 @@ export class GemBookElement extends GemElement {
 
   @state isHomePage: boolean;
 
-  constructor(config: BookConfig, theme?: Partial<Theme>) {
+  constructor(config?: BookConfig, theme?: Partial<Theme>) {
     super();
     this.config = config;
     this.theme = theme;

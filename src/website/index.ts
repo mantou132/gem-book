@@ -1,7 +1,6 @@
-import { render, html } from '@mantou/gem';
+import { css } from '@mantou/gem';
 import { DEFAULT_FILE, DEV_THEME_FILE } from '../common/constant';
-import type { GemBookElement } from '../element';
-import '../element';
+import { GemBookElement } from '../element';
 
 if (process.env.GA_ID) {
   const script = document.createElement('script');
@@ -45,31 +44,34 @@ const config = JSON.parse(String(process.env.BOOK_CONFIG));
 const theme = JSON.parse(String(process.env.THEME));
 
 const devRender = () => {
+  const book = document.querySelector<GemBookElement>('gem-book') || new GemBookElement();
+  book.src = `/${DEFAULT_FILE}`;
   if (theme) {
-    const currentTheme = fetch(`/${DEV_THEME_FILE}`).then((res) => res.json());
-    queueMicrotask(async () => {
-      const book = document.querySelector<GemBookElement>('gem-book');
-      if (book) book.theme = await currentTheme;
-    });
+    fetch(`/${DEV_THEME_FILE}`)
+      .then((res) => res.json())
+      .then((e) => {
+        book.theme = e;
+      });
   }
-  return html`<gem-book src=${`/${DEFAULT_FILE}`}></gem-book>`;
+  document.body.append(book);
 };
 
 const buildRender = () => {
-  return html`<gem-book .config=${config} .theme=${theme}></gem-book>`;
+  const book = document.querySelector<GemBookElement>('gem-book') || new GemBookElement();
+  book.config = config;
+  book.theme = theme;
+  document.body.append(book);
 };
 
-render(
-  html`
-    <style>
-      body {
-        margin: 0;
-      }
-    </style>
-    ${process.env.DEV_MODE ? devRender() : buildRender()}
-  `,
-  document.body,
-);
+process.env.DEV_MODE ? devRender() : buildRender();
+
+const style = document.createElement('style');
+style.innerText = css`
+  body {
+    margin: 0;
+  }
+`;
+document.head.append(style);
 
 if (!process.env.DEV_MODE) {
   window.addEventListener('load', () => {

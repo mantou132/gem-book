@@ -165,8 +165,8 @@ export class Nav extends GemElement {
         </gem-link>
         ${internals.map(this.renderInternalItem)}
       </div>
-      <slot class="item"></slot>
       ${externals.map(this.renderExternalItem)} ${githubLink} ${this.renderI18nSelect()}
+      <slot class="item"></slot>
     `;
   }
 
