@@ -61,7 +61,7 @@ customElements.whenDefined('gem-book').then(async () => {
         `;
       document.head.append(style);
       docsearch({
-        appId: this.appId,
+        appId: this.appId || undefined,
         apiKey: this.apiKey,
         indexName: this.indexName,
         container: this.searchRef.element,
