@@ -3,9 +3,9 @@ import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 import { getAlternateUrl, getRemotePath } from '../lib/utils';
 import { bookStore } from '../store';
 
-import '@mantou/gem/elements/reflect';
-
 import { mainState } from './main';
+
+import '@mantou/gem/elements/reflect';
 
 @customElement('gem-book-meta')
 @connectStore(bookStore)

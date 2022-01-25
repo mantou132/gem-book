@@ -11,10 +11,6 @@ import {
 } from '@mantou/gem';
 import marked from 'marked';
 
-import '@mantou/gem/elements/unsafe';
-import '@mantou/gem/elements/link';
-import '@mantou/gem/elements/reflect';
-
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { getRemotePath, isSameOrigin, getUserLink, escapeHTML } from '../lib/utils';
@@ -23,6 +19,9 @@ import { selfI18n } from '../helper/i18n';
 
 import { anchor, link } from './icons';
 
+import '@mantou/gem/elements/unsafe';
+import '@mantou/gem/elements/link';
+import '@mantou/gem/elements/reflect';
 import './pre';
 
 const parser = new DOMParser();
@@ -325,7 +324,6 @@ export class Main extends GemElement {
           z-index: 2;
           border-radius: 0.25rem;
           margin: 1rem 0px;
-          background: ${theme.blockCodeBackground};
         }
         @media ${mediaQuery.PHONE} {
           .header-anchor {

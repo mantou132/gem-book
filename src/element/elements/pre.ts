@@ -1,4 +1,7 @@
-import { html, GemElement, customElement, attribute, refobject, RefObject } from '@mantou/gem';
+// https://spectrum.adobe.com/page/code/
+import { adoptedStyle, customElement, attribute, refobject, RefObject } from '@mantou/gem/lib/decorators';
+import { GemElement, html } from '@mantou/gem/lib/element';
+import { createCSSSheet, css, styleMap } from '@mantou/gem/lib/utils';
 
 import { theme } from '../helper/theme';
 
@@ -14,6 +17,8 @@ const langDependencies: Record<string, string | string[]> = {
   c: 'clike',
   csharp: 'clike',
   cpp: 'c',
+  cfscript: 'clike',
+  chaiscript: ['clike', 'cpp'],
   coffeescript: 'javascript',
   crystal: 'ruby',
   'css-extras': 'css',
@@ -35,6 +40,7 @@ const langDependencies: Record<string, string | string[]> = {
   handlebars: 'markup-templating',
   haxe: 'clike',
   hlsl: 'c',
+  idris: 'haskell',
   java: 'clike',
   javadoc: ['markup', 'java', 'javadoclike'],
   jolie: 'clike',
@@ -47,11 +53,11 @@ const langDependencies: Record<string, string | string[]> = {
   latte: ['clike', 'markup-templating', 'php'],
   less: 'css',
   lilypond: 'scheme',
+  liquid: 'markup-templating',
   markdown: 'markup',
   'markup-templating': 'markup',
   mongodb: 'javascript',
   n4js: 'javascript',
-  nginx: 'clike',
   objectivec: 'c',
   opencl: 'c',
   parser: 'markup',
@@ -64,9 +70,11 @@ const langDependencies: Record<string, string | string[]> = {
   pug: ['markup', 'javascript'],
   purebasic: 'clike',
   purescript: 'haskell',
+  qsharp: 'clike',
   qml: 'javascript',
   qore: 'clike',
   racket: 'scheme',
+  cshtml: ['markup', 'csharp'],
   jsx: ['markup', 'javascript'],
   tsx: ['jsx', 'typescript'],
   reason: 'clike',
@@ -80,14 +88,15 @@ const langDependencies: Record<string, string | string[]> = {
   soy: 'markup-templating',
   sparql: 'turtle',
   sqf: 'clike',
-  swift: 'clike',
+  squirrel: 'clike',
   't4-cs': ['t4-templating', 'csharp'],
   't4-vb': ['t4-templating', 'vbnet'],
   tap: 'yaml',
   tt2: ['clike', 'markup-templating'],
   textile: 'markup',
-  twig: 'markup',
+  twig: 'markup-templating',
   typescript: 'javascript',
+  v: 'clike',
   vala: 'clike',
   vbnet: 'basic',
   velocity: 'markup',
@@ -106,29 +115,39 @@ const langAliases: Record<string, string> = {
   rss: 'markup',
   js: 'javascript',
   g4: 'antlr4',
+  ino: 'arduino',
   adoc: 'asciidoc',
+  avs: 'avisynth',
+  avdl: 'avro-idl',
   shell: 'bash',
   shortcode: 'bbcode',
   rbnf: 'bnf',
   oscript: 'bsl',
   cs: 'csharp',
   dotnet: 'csharp',
+  cfc: 'cfscript',
   coffee: 'coffeescript',
   conc: 'concurnas',
   jinja2: 'django',
   'dns-zone': 'dns-zone-file',
   dockerfile: 'docker',
+  gv: 'dot',
   eta: 'ejs',
   xlsx: 'excel-formula',
   xls: 'excel-formula',
   gamemakerlanguage: 'gml',
+  gni: 'gn',
+  'go-mod': 'go-module',
+  hbs: 'handlebars',
   hs: 'haskell',
+  idr: 'idris',
   gitignore: 'ignore',
   hgignore: 'ignore',
   npmignore: 'ignore',
   webmanifest: 'json',
   kt: 'kotlin',
   kts: 'kotlin',
+  kum: 'kumir',
   tex: 'latex',
   context: 'latex',
   ly: 'lilypond',
@@ -140,6 +159,7 @@ const langAliases: Record<string, string> = {
   n4jsd: 'n4js',
   nani: 'naniscript',
   objc: 'objectivec',
+  qasm: 'openqasm',
   objectpascal: 'pascal',
   px: 'pcaxis',
   pcode: 'peoplecode',
@@ -148,7 +168,9 @@ const langAliases: Record<string, string> = {
   pbfasm: 'purebasic',
   purs: 'purescript',
   py: 'python',
+  qs: 'qsharp',
   rkt: 'racket',
+  razor: 'cshtml',
   rpy: 'renpy',
   robot: 'robotframework',
   rb: 'ruby',
@@ -159,18 +181,150 @@ const langAliases: Record<string, string> = {
   sln: 'solution-file',
   rq: 'sparql',
   t4: 't4-cs',
+  trickle: 'tremor',
+  troy: 'tremor',
   trig: 'turtle',
   ts: 'typescript',
   tsconfig: 'typoscript',
   uscript: 'unrealscript',
   uc: 'unrealscript',
+  url: 'uri',
   vb: 'visual-basic',
   vba: 'visual-basic',
+  webidl: 'web-idl',
+  mathematica: 'wolfram',
+  nb: 'wolfram',
+  wl: 'wolfram',
   xeoracube: 'xeora',
   yml: 'yaml',
 };
 
+const style = createCSSSheet(css`
+  :host {
+    position: relative;
+    display: block;
+    font-size: 0.875em;
+    background: rgba(${theme.textColorRGB}, 0.05);
+    border-radius: 4px;
+    --comment-color: var(--code-comment-color, #6e6e6e);
+    --section-color: var(--code-section-color, #c9252d);
+    --title-color: var(--code-title-color, #4646c6);
+    --variable-color: var(--code-variable-color, #ae0e66);
+    --literal-color: var(--code-literal-color, #6f38b1);
+    --string-color: var(--code-string-color, #12805c);
+    --function-color: var(--code-function-color, #0d66d0);
+    --keyword-color: var(--code-keyword-color, #93219e);
+    --attribute-color: var(--code-attribute-color, #4646c6);
+  }
+  .highlight {
+    display: block;
+    position: absolute;
+    pointer-events: none;
+    background: black;
+    opacity: 0.05;
+    width: 100%;
+  }
+  .code {
+    display: block;
+    font-family: monospace;
+    text-align: left;
+    white-space: pre;
+    tab-size: 2;
+    hyphens: none;
+    overflow: auto;
+    overflow-clip-box: content-box;
+    box-shadow: none;
+    border: none;
+    background: transparent;
+    scrollbar-width: thin;
+  }
+  .code::-webkit-scrollbar {
+    height: 0.5em;
+  }
+  .code::-webkit-scrollbar-thumb {
+    border-radius: inherit;
+  }
+  .token.comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata {
+    color: var(--comment-color);
+    font-style: italic;
+  }
+  .token.punctuation {
+    color: var(--title-color);
+  }
+  .token.tag .punctuation {
+    color: ${theme.textColor};
+  }
+  .token.tag,
+  .token.tag .class-name,
+  .token.property,
+  .token.constant,
+  .token.symbol,
+  .token.deleted,
+  .token.operator,
+  .token.entity {
+    color: var(--section-color);
+  }
+  .token.url,
+  .language-css .token.string,
+  .style .token.string,
+  .token.variable {
+    color: var(--variable-color);
+  }
+  .token.boolean,
+  .token.number {
+    color: var(--literal-color);
+  }
+  .token.attr-value,
+  .token.string,
+  .token.char,
+  .token.builtin,
+  .token.inserted {
+    color: var(--string-color);
+  }
+  .token.atrule,
+  .token.function,
+  .token.class-name {
+    color: var(--function-color);
+  }
+  .token.keyword {
+    color: var(--keyword-color);
+  }
+  .token.selector,
+  .token.attr-name,
+  .token.regex,
+  .token.important {
+    color: var(--attribute-color);
+  }
+  .token.important,
+  .token.bold {
+    font-weight: bold;
+  }
+  .token.italic {
+    font-style: italic;
+  }
+  .token.entity {
+    cursor: help;
+  }
+  @media print {
+    code {
+      border-left: 5px solid ${theme.borderColor};
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .highlight {
+      display: none;
+    }
+  }
+`);
+
+/**
+ * @customElement gem-book-pre
+ */
 @customElement('gem-book-pre')
+@adoptedStyle(style)
 export class Pre extends GemElement {
   @attribute codelang: string;
   @attribute range: string;
@@ -178,7 +332,7 @@ export class Pre extends GemElement {
 
   @refobject codeRef: RefObject<HTMLElement>;
 
-  getRanges(range: string) {
+  #getRanges(range: string) {
     const ranges = range.split(/,\s*/);
     return ranges.map((range) => {
       const [start, end = start] = range.split('-');
@@ -186,10 +340,10 @@ export class Pre extends GemElement {
     });
   }
 
-  getParts(s: string) {
+  #getParts(s: string) {
     const lines = s.split(/\n|\r\n/);
     const parts = this.range
-      ? this.getRanges(this.range).map(([start, end]) => {
+      ? this.#getRanges(this.range).map(([start, end]) => {
           let result = '';
           for (let i = start - 1; i < (end || lines.length); i++) {
             result += lines[i] + '\n';
@@ -200,175 +354,13 @@ export class Pre extends GemElement {
     return parts.join('\n...\n\n');
   }
 
-  render() {
-    const lang = this.codelang;
-    const lineHeight = 1.5;
-    const padding = 1;
-    return html`
-      ${this.highlight
-        ? this.getRanges(this.highlight).map(
-            ([start, end]) =>
-              html`<span
-                class="highlight"
-                style="top: ${(start - 1) * lineHeight + padding}em; height: ${(end - start + 1) * lineHeight}em"
-              ></span>`,
-          )
-        : ''}
-      <i class="code-lang-name">${lang}</i>
-      <code ref=${this.codeRef.ref}>${this.getParts(this.textContent || '')}</code>
-      <style>
-        :host {
-          position: relative;
-          display: block;
-          color: #f8f8f2;
-          font-size: 0.875em;
-        }
-        .highlight {
-          display: block;
-          position: absolute;
-          pointer-events: none;
-          background: #fff2;
-          width: 100%;
-        }
-        .code-lang-name {
-          position: absolute;
-          top: 0.3em;
-          right: 0.7em;
-          font-size: 0.714em;
-          color: #cacaca;
-          user-select: none;
-        }
-        .code-lang-name::selection {
-          background: transparent;
-        }
-        ::selection {
-          background: #3c526d;
-        }
-        code {
-          display: block;
-          padding: ${padding}em;
-          font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-          line-height: ${lineHeight};
-          text-align: left;
-          white-space: pre;
-          tab-size: 2;
-          hyphens: none;
-          overflow: auto;
-          overflow-clip-box: content-box;
-          box-shadow: none;
-          border: none;
-          background: transparent;
-          scrollbar-width: thin;
-        }
-        code::-webkit-scrollbar {
-          height: 0.5em;
-        }
-        code::-webkit-scrollbar-thumb {
-          background: #fff3;
-          border-radius: inherit;
-        }
-
-        .token.comment,
-        .token.prolog,
-        .token.doctype,
-        .token.cdata {
-          color: #636f88;
-        }
-
-        .token.punctuation {
-          color: #81a1c1;
-        }
-
-        .namespace {
-          opacity: 0.7;
-        }
-
-        .token.property,
-        .token.tag,
-        .token.constant,
-        .token.symbol,
-        .token.deleted {
-          color: #81a1c1;
-        }
-
-        .token.number {
-          color: #b48ead;
-        }
-
-        .token.boolean {
-          color: #81a1c1;
-        }
-
-        .token.selector,
-        .token.attr-name,
-        .token.string,
-        .token.char,
-        .token.builtin,
-        .token.inserted {
-          color: #a3be8c;
-        }
-
-        .token.operator,
-        .token.entity,
-        .token.url,
-        .language-css .token.string,
-        .style .token.string,
-        .token.variable {
-          color: #81a1c1;
-        }
-
-        .token.atrule,
-        .token.attr-value,
-        .token.function,
-        .token.class-name {
-          color: #88c0d0;
-        }
-
-        .token.keyword {
-          color: #81a1c1;
-        }
-
-        .token.regex,
-        .token.important {
-          color: #ebcb8b;
-        }
-
-        .token.important,
-        .token.bold {
-          font-weight: bold;
-        }
-
-        .token.italic {
-          font-style: italic;
-        }
-
-        .token.entity {
-          cursor: help;
-        }
-        @media print {
-          code {
-            border-left: 0.5rem solid rgba(${theme.textColorRGB}, 0.2);
-            white-space: pre-wrap;
-            word-break: break-word;
-          }
-          .highlight {
-            display: none;
-          }
-        }
-      </style>
-    `;
-  }
-
   mounted() {
     this.effect(
       async () => {
         if (!this.codeRef.element) return;
-        const esmHost = 'https://cdn.skypack.dev/prismjs';
-        await import(/* webpackIgnore: true */ `${esmHost}?min`);
-        const { Prism } = window;
-
-        // TODO: wait Intersection
-
+        const esmHost = 'https://cdn.skypack.dev/prismjs@v1.26.0';
+        await import(/* @vite-ignore */ /* webpackIgnore: true */ `${esmHost}?min`);
+        const { Prism } = window as any;
         if (this.codelang && !Prism.languages[this.codelang]) {
           const lang = langAliases[this.codelang] || this.codelang;
           const langDeps = ([] as string[]).concat(langDependencies[lang] || []);
@@ -376,22 +368,51 @@ export class Pre extends GemElement {
             await Promise.all(
               langDeps.map((langDep) => {
                 if (!Prism.languages[langDep]) {
-                  return import(/* webpackIgnore: true */ `${esmHost}/components/prism-${langDep}.min.js`);
+                  return import(
+                    /* @vite-ignore */ /* webpackIgnore: true */ `${esmHost}/components/prism-${langDep}.min.js`
+                  );
                 }
               }),
             );
-            await import(/* webpackIgnore: true */ `${esmHost}/components/prism-${lang}.min.js`);
+            await import(/* @vite-ignore */ /* webpackIgnore: true */ `${esmHost}/components/prism-${lang}.min.js`);
           } catch {
             //
           }
         }
-
         const content = Prism.languages[this.codelang]
           ? Prism.highlight(this.textContent || '', Prism.languages[this.codelang], this.codelang)
           : this.innerHTML;
-        this.codeRef.element.innerHTML = this.getParts(content);
+        this.codeRef.element.innerHTML = this.#getParts(content);
       },
       () => [],
     );
+  }
+
+  render() {
+    const lineHeight = 1.6;
+    const padding = 1;
+    return html`
+      ${this.highlight
+        ? this.#getRanges(this.highlight).map(
+            ([start, end]) =>
+              html`
+                <span
+                  class="highlight"
+                  style=${styleMap({
+                    top: `${(start - 1) * lineHeight + padding}em`,
+                    height: `${(end - start + 1) * lineHeight}em`,
+                  })}
+                ></span>
+              `,
+          )
+        : ''}
+      <code ref=${this.codeRef.ref} class="code">${this.#getParts(this.textContent || '')}</code>
+      <style>
+        code {
+          padding: ${padding}em;
+          line-height: ${lineHeight};
+        }
+      </style>
+    `;
   }
 }

@@ -1,11 +1,11 @@
 import { html, GemElement, customElement, connectStore, property } from '@mantou/gem';
 
-import '@mantou/gem/elements/link';
-
 import { NavItem } from '../../common/config';
 import { theme } from '../helper/theme';
 import { capitalize } from '../lib/utils';
 import { bookStore } from '../store';
+
+import '@mantou/gem/elements/link';
 
 @customElement('gem-book-rel-link')
 @connectStore(bookStore)

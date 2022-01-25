@@ -5,10 +5,10 @@ import { BookConfig, NavItem } from '../common/config';
 import { selfI18n } from './helper/i18n';
 import { getLinkPath, getUserLink, NavItemWithLink, flatNav, capitalize } from './lib/utils';
 
+import { GemBookElement } from '.';
+
 import './elements/main';
 import './elements/404';
-
-import { GemBookElement } from '.';
 
 interface CurrentBookConfig {
   config: BookConfig;

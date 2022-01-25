@@ -2,6 +2,5 @@
   "backgroundColor": "rgb(55, 55, 55)",
   "borderColor": "rgb(102, 102, 102)",
   "textColor": "rgb(240, 240, 240)",
-  "inlineCodeBackground": "#ffe56433",
-  "blockCodeBackground": "rgb(23, 26, 32)"
+  "inlineCodeBackground": "#ffe56433"
 }

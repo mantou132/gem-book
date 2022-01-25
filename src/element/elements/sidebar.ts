@@ -92,16 +92,16 @@ export class SideBar extends GemElement {
           line-height: 1.2;
           padding: 0.15em 0;
         }
-        gem-active-link:where(.--active, :--active) {
+        gem-active-link:where([data-active], :--active) {
           color: inherit;
         }
-        gem-active-link:not(:where(.--active, :--active)):hover {
+        gem-active-link:not(:where([data-active], :--active)):hover {
           opacity: 0.6;
         }
-        gem-active-link:where(.--active, :--active):not([pattern*='#']) {
+        gem-active-link:where([data-active], :--active):not([pattern*='#']) {
           font-weight: bolder;
         }
-        gem-active-link:where(.--active, :--active) + .hash {
+        gem-active-link:where([data-active], :--active) + .hash {
           display: block;
         }
         .arrow {
@@ -165,7 +165,7 @@ export class SideBar extends GemElement {
   }
 
   updated() {
-    const activeEle = this.shadowRoot?.querySelector(':where(.--active, :--active)');
+    const activeEle = this.shadowRoot?.querySelector(':where([data-active], :--active)');
     const removeCloseClass = (e: Element | null | undefined) => {
       if (e) {
         e.classList.remove('close');

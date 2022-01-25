@@ -1,6 +1,4 @@
 import { html, GemElement, customElement, part, connectStore } from '@mantou/gem';
-import '@mantou/gem/elements/link';
-import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { theme } from '../helper/theme';
@@ -8,6 +6,9 @@ import { getRemotePath, getUserLink, NavItemWithLink } from '../lib/utils';
 import { bookStore } from '../store';
 import { container } from './icons';
 import { mdRender } from './main';
+
+import '@mantou/gem/elements/link';
+import '@mantou/gem/elements/use';
 
 @customElement('gem-book-homepage')
 @connectStore(bookStore)

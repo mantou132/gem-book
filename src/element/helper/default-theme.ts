@@ -10,5 +10,4 @@ export const defaultTheme = {
   textColor: 'rgb(40, 44, 52)',
   primaryColor: 'rgb(38, 192, 227)',
   inlineCodeBackground: '#ffe56433',
-  blockCodeBackground: '#2e3440',
 };

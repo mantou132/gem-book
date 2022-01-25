@@ -15,13 +15,17 @@ import {
   RefObject,
 } from '@mantou/gem';
 
-import '@mantou/gem/elements/title';
-import '@mantou/gem/elements/route';
-import '@mantou/gem/elements/reflect';
 import { GemLightRouteElement } from '@mantou/gem/elements/route';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { BookConfig } from '../common/config';
+import { GemBookPluginElement } from './elements/plugin';
+import { theme, changeTheme, Theme } from './helper/theme';
+import { bookStore, updateBookConfig } from './store';
+
+import '@mantou/gem/elements/title';
+import '@mantou/gem/elements/route';
+import '@mantou/gem/elements/reflect';
 import './elements/nav';
 import './elements/sidebar';
 import './elements/homepage';
@@ -29,9 +33,6 @@ import './elements/footer';
 import './elements/edit-link';
 import './elements/rel-link';
 import './elements/meta';
-import { GemBookPluginElement } from './elements/plugin';
-import { theme, changeTheme, Theme } from './helper/theme';
-import { bookStore, updateBookConfig } from './store';
 
 /**
  * @custom-element gem-book
@@ -237,7 +238,7 @@ export class GemBookElement extends GemElement {
         part=${this.main}
         .key=${lang}
         .routes=${routes}
-        @change=${(e: CustomEvent) => this.routechange(e.detail)}
+        @routechange=${(e: CustomEvent) => this.routechange(e.detail)}
       ></gem-light-route>
       <gem-book-edit-link role="complementary" part=${this.editLink}></gem-book-edit-link>
       <gem-book-sidebar role="navigation" part=${this.sidebar}>

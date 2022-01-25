@@ -1,11 +1,12 @@
 import { html, GemElement, customElement, connectStore, css } from '@mantou/gem';
-import '@mantou/gem/elements/link';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { selfI18n } from '../helper/i18n';
 import { theme } from '../helper/theme';
 import { bookStore } from '../store';
 import { mdRender } from './main';
+
+import '@mantou/gem/elements/link';
 
 @customElement('gem-book-footer')
 @connectStore(selfI18n.store)

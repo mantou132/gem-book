@@ -1,13 +1,14 @@
 import { html, GemElement, customElement, refobject, RefObject, globalemitter, connectStore } from '@mantou/gem';
 
-import '@mantou/gem/elements/link';
-import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 import { NavItem } from '../../common/config';
 import { theme } from '../helper/theme';
 import { capitalize, isSameOrigin } from '../lib/utils';
 import { bookStore } from '../store';
 import { container } from './icons';
+
+import '@mantou/gem/elements/link';
+import '@mantou/gem/elements/use';
 
 /**
  * @attr tl
@@ -127,10 +128,10 @@ export class Nav extends GemElement {
           background: rgba(${theme.primaryColorRGB}, 0.1);
         }
         gem-active-link:hover,
-        gem-active-link:where(.--active, :--active) {
+        gem-active-link:where([data-active], :--active) {
           color: ${theme.primaryColor};
         }
-        gem-active-link:where(.--active, :--active)::after {
+        gem-active-link:where([data-active], :--active)::after {
           content: '';
           position: absolute;
           left: 0;

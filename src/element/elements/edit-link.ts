@@ -1,7 +1,5 @@
 import { html, GemElement, customElement, history, connectStore } from '@mantou/gem';
 
-import '@mantou/gem/elements/link';
-import '@mantou/gem/elements/use';
 import { mediaQuery } from '@mantou/gem/helper/mediaquery';
 
 import { container } from './icons';
@@ -9,6 +7,9 @@ import { getUserLink, getRemotePath } from '../lib/utils';
 import { selfI18n } from '../helper/i18n';
 import { theme } from '../helper/theme';
 import { bookStore } from '../store';
+
+import '@mantou/gem/elements/link';
+import '@mantou/gem/elements/use';
 
 interface State {
   lastUpdated: string;

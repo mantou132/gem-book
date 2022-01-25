@@ -27,9 +27,9 @@ These projects are using `<gem-book>`, [add your?](https://github.com/mantou132/
 
 ```bash
 # development cli
-npm run dev:cli
+yarn run dev:cli
 # watch docs & development `<gem-book>`
-npm run dev:docs
+yarn run dev:docs
 # install the cli locally
-npm link
+yarn link
 ```

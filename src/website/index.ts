@@ -75,6 +75,6 @@ document.head.append(style);
 
 if (!process.env.DEV_MODE) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js');
+    navigator.serviceWorker?.register('/service-worker.js');
   });
 }
